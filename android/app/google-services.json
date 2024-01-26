@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "528339674320",
+    "project_id": "raffl-2ec83",
+    "storage_bucket": "raffl-2ec83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528339674320:android:0a9604af4c5d13965d6ad5",
+        "android_client_info": {
+          "package_name": "com.example.raffl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "528339674320-715p39k4ig3pah00dsb34jgte3401ich.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDylneigkjtChp8aeHIBjRk1IN0fVrR8rI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "528339674320-715p39k4ig3pah00dsb34jgte3401ich.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "528339674320-7cah8161esgtghs90ru16o2qfsj7v1jd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.raffl.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
