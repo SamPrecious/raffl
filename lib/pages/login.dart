@@ -1,7 +1,7 @@
 //The login screen for Raffl
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:raffl/widgets/login_widget.dart';
+import 'package:raffl/widgets/auth_widget.dart';
 import 'package:raffl/pages/home.dart';
 
 class Login extends StatelessWidget {
@@ -19,22 +19,29 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
+            stream: FirebaseAuth.instance.authStateChanges(), //Determines if user is logged in
             builder: (context, snapshot) {
               /*
               TODO:
               Add extra cases for errors and stuff
                */
-              if(snapshot.hasData){
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return Center(child: CircularProgressIndicator()); //Loading wheel while waiting
+              }
+              else if(snapshot.hasError){
+                return Center(child: Text('Error Occured')); //Error while signing in
+              }
+              else if(snapshot.hasData){ //If user is logged in
                 return Home();
               }else{
-                return LoginWidget();
+                return Home();//LoginWidget();
               }
 
             }
         ),
     );
-        /*
+
+    /*
     return Scaffold(
         body: SafeArea(
           child: Text('Test'),

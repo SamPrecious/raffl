@@ -12,7 +12,8 @@ and just use this to access them like a getter
 */
 
 final ButtonStyle standardButton = ElevatedButton.styleFrom(
-  minimumSize: const Size(50,50),
+  minimumSize: const Size(150,25),
+  padding: const EdgeInsets.all(12.0),
   backgroundColor: secondaryColor,
   foregroundColor: primaryColor,
   elevation: 1, //Lookup what this does

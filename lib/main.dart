@@ -5,6 +5,7 @@ import 'package:raffl/pages/splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:raffl/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:raffl/widgets/utils.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //Waits until Firebase is initiated to load widgets
