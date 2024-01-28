@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
 
 class myTextStyles{
-  static const defaultText = TextStyle(fontSize: 20);
-  static const titleText = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  static final defaultText = TextStyle(
+      fontSize: 16
+  );
+  static final fadedText = TextStyle(
+      fontSize: 16,
+      color: secondaryColorFaded
+  );
+  static final titleText = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+    color: secondaryColor,
+  );
 }

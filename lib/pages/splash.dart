@@ -4,20 +4,22 @@ import 'package:raffl/styles/standard_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:raffl/widgets/auth_widget.dart';
 import 'package:raffl/widgets/register_widget.dart';
-import 'package:raffl/pages/home.dart';
+import 'package:raffl/pages/home_page.dart';
+import 'package:raffl/pages/auth_page.dart';
 
-class Splash extends StatefulWidget {
-  const Splash({super.key});
+/*
+This class is the splashscreen
+It is what the app initially opens to, and routes us to relevant pages
+ */
+class SplashPage extends StatefulWidget {
+  const SplashPage({super.key});
 
   @override
-  State<Splash> createState() => _SplashState();
+  State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashState extends State<Splash> {
+class _SplashPageState extends State<SplashPage> {
   @override
-  bool isLogin = true;
-
-
   Widget build(BuildContext context) {
 
     return Scaffold(
@@ -32,9 +34,10 @@ class _SplashState extends State<Splash> {
               return Center(child: Text('Error Occured')); //Error while signing in
             }
             else if(snapshot.hasData){ //If user is logged in
-              return Home();
+              return HomePage();
             }else{
-              return AuthWidget(onClickedSwapState: toggle, login: isLogin);
+              //TODO Move widget to seperate Authentication page?
+              return AuthPage();
             }
 
           }
@@ -43,11 +46,4 @@ class _SplashState extends State<Splash> {
     //If logged in this page should navigate us to the home screen
     //Otherwise this page should navigate us to the Login screen
   }
-  void toggle(){
-    print("TESTING");
-    setState(() {
-      isLogin = !isLogin;
-    });
-  }
-  //void toggle() => setState(() => isLogin = !isLogin);
 }
