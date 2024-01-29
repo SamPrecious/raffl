@@ -6,9 +6,6 @@ class AuthFunc {
 
   static Future loginUser(BuildContext context, String email, String password) async {
     //TODO Maybe add a loading indicator here
-    print(email);
-    print(password);
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,

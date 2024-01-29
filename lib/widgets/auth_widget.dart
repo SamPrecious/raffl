@@ -5,9 +5,10 @@ import 'package:email_validator/email_validator.dart';
 import 'package:raffl/functions/auth_func.dart';
 
 class AuthWidget extends StatefulWidget {
+  final Function(bool?) onResult; //Acts as callback to say if login/register was successful or not
   final bool login;
   final VoidCallback onClickedSwapState; //If the user clicked the 2nd button (register or login)
-  const AuthWidget({Key? key, required this.login, required this.onClickedSwapState}) : super(key: key);
+  const AuthWidget({Key? key, required this.onResult, required this.login, required this.onClickedSwapState}) : super(key: key);
 
   @override
   State<AuthWidget> createState() => _AuthWidgetState();
@@ -86,9 +87,11 @@ class _AuthWidgetState extends State<AuthWidget> {
                       ElevatedButton(onPressed: (){
                         if(widget.login){
                           AuthFunc.loginUser(context, emailController.text.trim(), passwordController.text.trim());
+                          widget.onResult.call(true);
                         }
                         else{
                           AuthFunc.registerUser(context, emailController.text.trim(), passwordController.text.trim());
+                          widget.onResult.call(true);
                         }
                         //print(emailController.text);
                         },
