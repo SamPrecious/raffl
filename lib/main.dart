@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:raffl/pages/home_page.dart';
-import 'package:raffl/pages/splash_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:raffl/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';

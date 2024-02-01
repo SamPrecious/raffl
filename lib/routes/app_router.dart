@@ -10,7 +10,8 @@ class AppRouter extends $AppRouter {
     AutoRoute(page: SplashRoute.page, initial: true), //Default page so set to initial
     AutoRoute(page: AuthRoute.page, keepHistory: false), //keepHistory false means this is removed froms tack when another entry added
     //The following routes are protected as they require Login access
-    AutoRoute(page: HomeRoute.page,guards: [AuthGuard()]), //, guards: [AuthGuard()]
-
+    AutoRoute(page: HomeRoute.page,guards: [AuthGuard()]),
+    AutoRoute(page: ProfileRoute.page,guards: [AuthGuard()]),
   ];
 }
+

@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:raffl/widgets/register_button_widget.dart';
-import 'package:raffl/widgets/register_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:raffl/firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:raffl/styles/standard_button.dart';
-import 'package:raffl/widgets/register_button_widget.dart';
 
 class RegisterWidget extends StatefulWidget {
   @override

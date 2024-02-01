@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../app_router.gr.dart';
 
 
-
+//TODO Moving authorisation checks to guard means load wheels no longer work, fix this
 class AuthGuard extends AutoRouteGuard {
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async{  //Async?

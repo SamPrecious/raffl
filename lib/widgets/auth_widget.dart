@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:raffl/controllers/user_data_controller.dart';
+import 'package:raffl/models/user_data_model.dart';
 import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/styles/text_styles.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:raffl/functions/auth_func.dart';
+import 'package:raffl/functions/authentication/access_auth.dart';
 
 class AuthWidget extends StatefulWidget {
   final Function(bool?) onResult; //Acts as callback to say if login/register was successful or not
@@ -18,6 +21,7 @@ class AuthWidget extends StatefulWidget {
 class _AuthWidgetState extends State<AuthWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final userHandler = Get.put(UserDataController());
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +90,13 @@ class _AuthWidgetState extends State<AuthWidget> {
                       const SizedBox(height: 20),
                       ElevatedButton(onPressed: (){
                         if(widget.login){
-                          AuthFunc.loginUser(context, emailController.text.trim(), passwordController.text.trim());
+                          AccessAuth.loginUser(context, emailController.text.trim(), passwordController.text.trim());
                           widget.onResult.call(true);
                         }
                         else{
-                          AuthFunc.registerUser(context, emailController.text.trim(), passwordController.text.trim());
+
+
+                          AccessAuth.registerUser(context, emailController.text.trim(), passwordController.text.trim());
                           widget.onResult.call(true);
                         }
                         //print(emailController.text);
