@@ -11,7 +11,7 @@ class ProfilePage extends StatefulWidget {
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
-
+//TODO Fetch user from User Data Model and use their UID to make sure it works?
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
