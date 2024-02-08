@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:raffl/models/user_data_model.dart';
+import 'package:raffl/repositorys/user_data_repository.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/standard_button.dart';
 
@@ -16,6 +18,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!; //Gets user information
+    Future<UserDataModel> userData = UserDataRepository().getUserDetails(user.uid);
+    final credits = UserDataRepository().getCredits(user.uid);
 
     return Scaffold(
         body: Padding(
@@ -28,6 +32,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(user.email!),
                   Text('UID: '),
                   Text(user.uid),
+                  Text('Credits: '),
+                  //Text(credits),
                   SizedBox(height: 10),
                   ElevatedButton.icon(
                     style: standardButton,

@@ -21,7 +21,7 @@ class AuthWidget extends StatefulWidget {
 class _AuthWidgetState extends State<AuthWidget> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final userHandler = Get.put(UserDataController());
+  //final userHandler = Get.put(UserDataController());
 
   @override
   Widget build(BuildContext context) {
