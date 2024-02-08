@@ -27,6 +27,8 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Center(
               child: Column(
                 children: [
+                  //TODO Add future builder to display credits on page
+                  //FutureBuilder(future: userData, builder: builder),
                   SizedBox(height: 120),
                   Text('User: '),
                   Text(user.email!),
