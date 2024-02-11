@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:raffl/controllers/user_data_controller.dart';
-import 'package:raffl/models/user_data_model.dart';
 import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/styles/text_styles.dart';
 import 'package:email_validator/email_validator.dart';

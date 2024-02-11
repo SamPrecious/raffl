@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/user_data_model.dart';
-import 'package:raffl/repositorys/user_data_repository.dart';
 
 //This class handles initial access authentication (i.e. sign in, register)
 class AccessAuth {
