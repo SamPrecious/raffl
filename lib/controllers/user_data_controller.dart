@@ -33,4 +33,9 @@ class UserDataController extends GetxController{
   updateUserData(UserDataModel userData) async{
     await userDataRepository.updateUserData(userData);
   }
+
+  incrementCredits(int newCredits) async{
+    await userDataRepository.incrementCredits(newCredits);
+  }
+
 }

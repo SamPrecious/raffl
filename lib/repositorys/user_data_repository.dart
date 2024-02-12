@@ -36,4 +36,10 @@ class UserDataRepository extends GetxController {
     await db.collection("UserData").doc(user.uid).update(userData.toFirestore());
   }
 
+  Future<void> incrementCredits(int newCredits) async {
+    //Increments field value by the new credits
+    await db.collection("UserData").doc(user.uid).update({"Credits": FieldValue.increment(newCredits)});
+
+  }
+
 }

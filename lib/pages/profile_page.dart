@@ -49,22 +49,27 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: TextFormField(
                               controller: controller.credits,
                               decoration: const InputDecoration(
-                                label: Text('0'),
+                                label: Text('Add Credits'),
                               ),
+                              keyboardType: TextInputType.number,
                             ),
                           ),
                           SizedBox(height: 10),
                           ElevatedButton.icon(
                             style: standardButton,
                             onPressed: () async{
-                              //TODO Update user credits
-                              final userData = UserDataModel(
-                                credits: 10, //TODO change to credits + value in input box
-                              );
-                              await controller.updateUserData(userData);
+                              await controller.incrementCredits(int.parse(controller.credits.text));
                               //Refreshes page to update it with new credits value
-                              //TODO Change to replace when credits updating is working
-                              AutoRouter.of(context).push(ProfileRoute());
+                              /* TODO
+                                  popAndPush prevents us to going to the old page with the old credits value
+                                  This is good, but we should also not update credits with local values
+                                  Change so credits update based on FireStore value
+                                  ALSO
+                                  Maybe replace the popAndPush method tomorrow to just refresh the widgets
+                                  That way we won't have a ghost of the previous screen
+                              */
+
+                              AutoRouter.of(context).popAndPush(ProfileRoute());
 
                             },
                             icon: Icon(Icons.credit_card, size: 32),
