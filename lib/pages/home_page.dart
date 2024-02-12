@@ -20,36 +20,42 @@ class _HomePageState extends State<HomePage> {
     final user = FirebaseAuth.instance.currentUser!; //Gets user information
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(32),
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(height: 120),
-              Text('User: '),
-              Text(user.email!),
-              SizedBox(height: 10),
-              ElevatedButton.icon(
-                style: standardButton,
-                onPressed: () {
-                  AutoRouter.of(context).push(ProfileRoute());
-                },
-                icon: Icon(Icons.person_rounded, size: 32),
-                label: const Text('Profile'),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(32),
+            child: Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 120),
+                  Text('User: '),
+                  Text(user.email!),
+                  SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    style: standardButton,
+                    onPressed: () {
+                      AutoRouter.of(context).push(ProfileRoute());
+                    },
+                    icon: Icon(Icons.person_rounded, size: 32),
+                    label: const Text('Profile'),
+                  ),
+                ],
               ),
-              SizedBox(height: 80),
-              ElevatedButton.icon(
-                style: standardButton,
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  AutoRouter.of(context).push(SplashRoute());
-                },
-                icon: Icon(Icons.logout, size: 32),
-                label: const Text('Log Out'),
-              ),
-            ],
+            )
           ),
-        )
+          BottomNavigationBar(
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite),
+                  label: 'Watching',
+                ),
+
+              ]),
+        ],
       )
 
     );

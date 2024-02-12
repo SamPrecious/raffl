@@ -84,6 +84,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             icon: Icon(Icons.home, size: 32),
                             label: const Text('Home'),
                           ),
+                          SizedBox(height: 80),
+                          ElevatedButton.icon(
+                            style: standardButton,
+                            onPressed: () {
+                              FirebaseAuth.instance.signOut();
+                              AutoRouter.of(context).push(SplashRoute());
+                            },
+                            icon: Icon(Icons.logout, size: 32),
+                            label: const Text('Log Out'),
+                          ),
+
                         ],
                       )
                       );
