@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser!; //Gets user information
     Future<UserDataModel> userData = UserDataRepository().getUserDetails(user.uid);
-    final credits = UserDataRepository().getCredits(user.uid);
+    //final credits = UserDataRepository().getCredits(user.uid);
     final controller = Get.put(UserDataController());
     return Scaffold(
         body: Padding(
@@ -57,10 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ElevatedButton.icon(
                             style: standardButton,
                             onPressed: () async{
-                              print("test");
                               //TODO Update user credits
                               final userData = UserDataModel(
-                                uid: user.uid,
                                 credits: 10, //TODO change to credits + value in input box
                               );
                               await controller.updateUserData(userData);

@@ -34,7 +34,6 @@ class AccessAuth {
     }
     final user = FirebaseAuth.instance.currentUser!; //Gets user information
     final userData = UserDataModel(
-      uid: user.uid,
       credits: 0,
     );
     //final userDataHandler = Get.put(UserDataHandler());

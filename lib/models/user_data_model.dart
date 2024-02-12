@@ -3,18 +3,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserDataModel {
-  final String uid;
   final int credits;
 
   const UserDataModel({
-    required this.uid,
     required this.credits,
   });
 
   //maps data to JSON format for FireStore
   toFirestore(){
     return{
-      "UID": uid,
       "Credits": credits,
     };
   }
@@ -23,7 +20,6 @@ class UserDataModel {
   factory UserDataModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!; //TODO Remove or Keep !?
     return UserDataModel(
-      uid: data["UID"],
       credits: data["Credits"],
     );
   }
