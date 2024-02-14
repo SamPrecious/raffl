@@ -32,11 +32,9 @@ class AccessAuth {
       print(e);
       showFlashError(context, e.message);
     }
-    final user = FirebaseAuth.instance.currentUser!; //Gets user information
     final userData = UserDataModel(
       credits: 0,
     );
-    //final userDataHandler = Get.put(UserDataHandler());
     //Creates data on FireStore with unique UID linked
     Get.put(UserDataController()).createUserData(userData);
   }

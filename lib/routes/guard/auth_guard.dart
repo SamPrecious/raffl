@@ -7,11 +7,15 @@ import '../app_router.gr.dart';
 //TODO Moving authorisation checks to guard means load wheels no longer work, fix this
 class AuthGuard extends AutoRouteGuard {
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) async{  //Async?
+  void onNavigation(NavigationResolver resolver, StackRouter router) async{ //TODO awaits for async
+    print("Testing current user");
+    //await FirebaseAuth.instance.signOut();
 
     //If user logged in, allow guarded route
     if(FirebaseAuth.instance.currentUser != null){
       print("Already logged in");
+      final curUser = FirebaseAuth.instance.currentUser;
+      print(curUser);
       resolver.next(true);
     }
     //If user NOT logged in, push AuthRoute and check for log ins

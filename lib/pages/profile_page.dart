@@ -21,7 +21,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!; //Gets user information
+    User user = FirebaseAuth.instance.currentUser!; //Gets user information
     Future<UserDataModel> userData = UserDataRepository().getUserDetails(user.uid);
     //final credits = UserDataRepository().getCredits(user.uid);
     final controller = Get.put(UserDataController());
@@ -87,9 +87,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           SizedBox(height: 80),
                           ElevatedButton.icon(
                             style: standardButton,
-                            onPressed: () {
-                              FirebaseAuth.instance.signOut();
-                              AutoRouter.of(context).push(SplashRoute());
+                            onPressed: () async{
+                              await FirebaseAuth.instance.signOut();
+                              final testUser = FirebaseAuth.instance.currentUser;
+                              AutoRouter.of(context).replace(SplashRoute());
                             },
                             icon: Icon(Icons.logout, size: 32),
                             label: const Text('Log Out'),

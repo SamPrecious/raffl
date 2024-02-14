@@ -7,11 +7,16 @@ import 'package:raffl/models/user_data_model.dart';
 class UserDataRepository extends GetxController {
   static UserDataRepository get instance => Get.find(); //Static instance of all getx controllers
   final db = FirebaseFirestore.instance;
-  final user = FirebaseAuth.instance.currentUser!;
+  /* TODO
+       Make the user accessible from the UserDataRepository rather than redefinining it in all classes
+       If not, nullify user if signed out
+  */
+  User user = FirebaseAuth.instance.currentUser!;
 
   createUserData(UserDataModel userData) async{
     //Sets userID to documentID, so we can retrieve documents linked to our users data
-
+    user = FirebaseAuth.instance.currentUser!;
+    print("Creating data for '$user.email");
     await db.collection("UserData").doc(user.uid).set(userData.toFirestore()).whenComplete(
           () => print("User creation successful"),
     ).catchError((error, stackTrace) {
