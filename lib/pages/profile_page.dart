@@ -89,8 +89,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: standardButton,
                             onPressed: () async{
                               await FirebaseAuth.instance.signOut();
-                              final testUser = FirebaseAuth.instance.currentUser;
-                              AutoRouter.of(context).replace(SplashRoute());
+                              //TODO replaceAll should do the same thing, but seems to cause issues, investigage
+                              await AutoRouter.of(context).pushAndPopUntil(
+                                const SplashRoute(),
+                                predicate: (_) => false,
+                              );
                             },
                             icon: Icon(Icons.logout, size: 32),
                             label: const Text('Log Out'),

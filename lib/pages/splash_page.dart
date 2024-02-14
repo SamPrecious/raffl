@@ -24,7 +24,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     // TODO Increase timer, currently only 100ms for ease of debugging
-    Timer(Duration(milliseconds: 100), () {
+    Timer(Duration(milliseconds: 10), () {
       AutoRouter.of(context).push(HomeRoute());
     });
     return MaterialApp(
