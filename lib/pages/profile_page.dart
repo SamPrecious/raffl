@@ -22,8 +22,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     User user = FirebaseAuth.instance.currentUser!; //Gets user information
-    Future<UserDataModel> userData = UserDataRepository().getUserDetails(user.uid);
-    //final credits = UserDataRepository().getCredits(user.uid);
     final controller = Get.put(UserDataController());
     return Scaffold(
         body: Padding(

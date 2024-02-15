@@ -14,7 +14,7 @@ Future<void> main() async {
       .listen((User? user) {
     if (user == null) {
       print('User is currently signed out!');
-    } else {
+  } else {
       print('User is signed in!');
     }
   });
