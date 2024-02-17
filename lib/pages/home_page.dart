@@ -27,38 +27,18 @@ class _HomePageState extends State<HomePage> {
     final controller = Get.put(UserDataController());
 
     return Scaffold(
-
+      resizeToAvoidBottomInset: false, //Stops trying to resize when keyboard appears
       body: Column(
         children: [
-          SizedBox(height: 50),
+          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: SearchAnchor(
-                builder: (BuildContext context, SearchController controller) {
-                  return SearchBar(
-                    controller: controller,
-                    onTap: () {
-                      controller.openView();
-                    },
-                    onChanged: (_){
-                      controller.openView();
-                    },
-                    leading: const Icon(Icons.search),
-                  );
-                  }, suggestionsBuilder: (BuildContext context, SearchController controller) {
-                  return List<ListTile>.generate(5, (int index) {
-                    final String item = 'item $index';
-                    return ListTile(
-                      title: Text(item),
-                      onTap: () {
-                        setState(() {
-                          controller.closeView(item);
-                        });
-                      }
-                    );
-                  });
-                  //Handles the suggestions from the search bar
-                }),
+              padding: const EdgeInsets.all(32.0),
+              child: SearchBar(
+                onSubmitted: (query){
+                  print("query retrieved $query");
+                },
+                leading: const Icon(Icons.search),
+              ),
           ),
           FutureBuilder(
               future: algoliaListingsController.searchListings("zUK"),

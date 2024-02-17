@@ -40,7 +40,8 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                 ]),
           ],
         )
-      )
+      ),
+      resizeToAvoidBottomInset: false  //Stops NavBar redrawing when opening keyboard
     );
   }
 }
