@@ -61,12 +61,14 @@ class _HomePageState extends State<HomePage> {
                 }),
           ),
           FutureBuilder(
-              future: algoliaListingsController.searchListings(""),
+              future: algoliaListingsController.searchListings("zUK"),
               builder: (context, snapshot){
                 if(snapshot.connectionState == ConnectionState.done) {
                   if(snapshot.hasData) {
                     List<AlgoliaObjectSnapshot> outputList = snapshot.data as List<AlgoliaObjectSnapshot>;
+                    print("------------------------");
                     print(outputList);
+                    print("------------------------");
                     int outputLength = outputList.length;
                     print("output length is $outputLength");
                     return Column(
@@ -102,6 +104,7 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton.icon(
                     style: standardButton,
                     onPressed: () {
+                      //ProfileRoute
                       AutoRouter.of(context).push(ProfileRoute());
                     },
                     icon: Icon(Icons.person_rounded, size: 32),
@@ -124,20 +127,6 @@ class _HomePageState extends State<HomePage> {
 
         ],
       ),
-      //TODO Abstract the navbar to a seperate widget so it can be called upon by all classes that use it
-
-      bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: 'Watching',
-            ),
-          ]),
-
     );
   }
 }
