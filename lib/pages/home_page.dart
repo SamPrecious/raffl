@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(32.0),
               child: SearchBar(
                 onSubmitted: (query){
-                  print("query retrieved $query");
+                  AutoRouter.of(context).push(SearchResultsRoute(searchInput: query));
                 },
                 leading: const Icon(Icons.search),
               ),

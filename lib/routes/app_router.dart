@@ -16,7 +16,8 @@ class AppRouter extends $AppRouter {
       guards: [AuthGuard()],
       children: [
         AutoRoute(page: HomeRoute.page),
-        AutoRoute(page: ProfileRoute.page)
+        AutoRoute(page: ProfileRoute.page),
+        AutoRoute(page: SearchResultsRoute.page)
       ]
     )
     //AutoRoute(page: ProfileRoute.page,guards: [AuthGuard()]),

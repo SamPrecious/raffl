@@ -16,7 +16,7 @@ class UserDataModel {
     };
   }
 
-  //Maps data from Firestore database to UserDataModel
+  //Maps data from Firestore JSON data to UserDataModel
   factory UserDataModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!; //TODO Remove or Keep !?
     return UserDataModel(
