@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:raffl/styles/colors.dart';
 
 class ListingResultWidget extends StatelessWidget {
   final String name;
@@ -9,15 +10,45 @@ class ListingResultWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: Container(
         height: 200,
-        color: Colors.blue[200],
+        decoration: BoxDecoration(
+          color: secondaryColor,
+          border: Border(
+            left: BorderSide(
+              width: 1,
+              color: Colors.black,
+            ),
+            right: BorderSide(
+              width: 1,
+              color: Colors.black,
+            ),
+              top: BorderSide(
+                width: 1,
+                color: Colors.black,
+              )
+          )
+        ),
         child: Row(
           children: [
-            Text(name),
+            Text(
+              name,
+              style: TextStyle(
+                color: primaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              )
+            ),
             SizedBox(width: 50),
-            Text(endDate.toString())
+            Text(
+                endDate.toString(),
+                style: TextStyle(
+                  color: primaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                )
+            ),
           ],
         ),
       ),
