@@ -1,30 +1,48 @@
 import 'package:algolia/algolia.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
-class SearchResultsModel {
+class ListingModel {
+  final String documentID;
   final String name;
   final int endDate;
+  final List<String>? tags;
 
-  const SearchResultsModel({
+  const ListingModel({
+    required this.documentID,
     required this.name,
     required this.endDate,
+    this.tags //Optional tags
   });
 
 
   //TODO - We don't need to retrieve tags BUT we want them to be queried with names, but nothing else
   //Maps data from Algolia JSON data to UserDataModel
-  factory SearchResultsModel.fromAlgolia(AlgoliaObjectSnapshot snapshot) { //SnapshotOptions? options <-Another argument you can add
-    print("Converting search results to data model");
-    print(snapshot);
-    return SearchResultsModel(
-        name: snapshot.data['Name'],
-        endDate: snapshot.data['EndDate']
+  factory ListingModel.fromAlgolia(AlgoliaObjectSnapshot snapshot) { //SnapshotOptions? options <-Another argument you can add
+    return ListingModel(
+      documentID: snapshot.objectID,
+      name: snapshot.data['Name'],
+      endDate: snapshot.data['EndDate']
+    );
+  }
+
+  factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) { //SnapshotOptions? options <-Another argument you can add
+    final data = snapshot.data()!;
+    return ListingModel(
+        documentID: snapshot.id,
+        name: data['Name'],
+        endDate: (data['EndDate'] as Timestamp).seconds,
+        tags: data['Tags']?.cast<String>()
     );
   }
 
   @override
   String toString() {
-    return '$name and date $endDate';
+    return '$documentID with name $name and date $endDate';
+  }
+
+  String getDocumentID() {
+    return documentID;
   }
 
   String getName(){
@@ -34,6 +52,11 @@ class SearchResultsModel {
   int getDate(){
     return endDate;
   }
+
+  List<String> getTags() {
+    return tags ?? []; //Returns empty array if tags is null
+  }
+
 
 }
 

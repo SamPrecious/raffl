@@ -111,29 +111,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                 }
-                /*
-                child: Column(
-                  children: [
-                    //TODO Add future builder to display credits on page
-                    //FutureBuilder(future: userData, builder: builder),
-                    SizedBox(height: 120),
-                    Text('User: '),
-                    Text(user.email!),
-                    Text('UID: '),
-                    Text(user.uid),
-                    Text('Credits: '),
-                    Text(credits.toString()),
-                    SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      style: standardButton,
-                      onPressed: () {
-                        AutoRouter.of(context).push(HomeRoute());
-                      },
-                      icon: Icon(Icons.home, size: 32),
-                      label: const Text('Home'),
-                    ),
-                  ],
-                ),*/
               ),
             )
         )

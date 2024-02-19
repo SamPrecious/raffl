@@ -52,6 +52,7 @@ class ListingResultWidget extends StatelessWidget {
           ],
         ),
       ),
+
     );
   }
 }

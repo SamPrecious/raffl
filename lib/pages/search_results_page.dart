@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:raffl/models/search_results_model.dart';
+import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
 import '../controllers/algolia_listings_controller.dart';
 
@@ -35,7 +36,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                   if(snapshot.connectionState == ConnectionState.done) {
                     if(snapshot.hasData) {
                       print("HAS DATA NOW");
-                      List<SearchResultsModel> outputList = snapshot.data as List<SearchResultsModel>;
+                      List<ListingModel> outputList = snapshot.data as List<ListingModel>;
                       print("------------------------");
                       outputList.forEach((result) =>
                       print(result.toString()));
@@ -51,14 +52,13 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                             child: ListView.builder(
                               itemCount: outputLength,
                               itemBuilder: (context, index){
-                                SearchResultsModel item = outputList[index];
+                                ListingModel item = outputList[index];
+                                String documentID = item.getDocumentID();
                                 String name = item.getName();
                                 int endDate = item.getDate();
-                                return ListingResultWidget(name: name,endDate: endDate);
-                                print("ITEM TO STRING");
-                                print(item.getName());
-                                return ListTile(
-                                  title: Text(item.toString()),
+                                return GestureDetector(
+                                  child: ListingResultWidget(name: name,endDate: endDate),
+                                  onTap: () => AutoRouter.of(context).push(ListingRoute(documentID: documentID))
                                 );
                               }
                             ),

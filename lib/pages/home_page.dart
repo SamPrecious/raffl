@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 leading: const Icon(Icons.search),
               ),
-          ),
+          ),/*
           FutureBuilder(
               future: algoliaListingsController.searchListings("zUK"),
               builder: (context, snapshot){
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                   return Center(child: Text("Error, no data found"));
                 }
 
-              }),
+              }),*/
           Padding(
             padding: EdgeInsets.all(32),
             child: Center(

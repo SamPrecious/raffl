@@ -11,6 +11,7 @@ class AlgoliaListingsController extends GetxController{
   searchListings(String searchQuery){ //String searchQuery
     return algoliaListingsRepository.searchListings(searchQuery);
   }
+
   getSearchResults(String searchQuery){
     print("Retrieving search results");
     return algoliaListingsRepository.getSearchResults(searchQuery);
