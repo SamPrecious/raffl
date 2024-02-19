@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:raffl/models/search_results_model.dart';
+import 'package:raffl/widgets/listing_result_widget.dart';
 import '../controllers/algolia_listings_controller.dart';
 
 @RoutePage()
@@ -45,16 +46,42 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                       return Column(
                         children: [
                           Text("Has Data"),
+                          SizedBox(
+                            height: 640,
+                            child: ListView.builder(
+                              itemCount: outputLength,
+                              itemBuilder: (context, index){
+                                SearchResultsModel item = outputList[index];
+                                String name = item.getName();
+                                int endDate = item.getDate();
+                                return ListingResultWidget(name: name,endDate: endDate);
+                                print("ITEM TO STRING");
+                                print(item.getName());
+                                return ListTile(
+                                  title: Text(item.toString()),
+                                );
+                              }
+                            ),
+                          ),
+
+                          /*
+                          Expanded( // Wrap ListView.builder in an Expanded widget
+                            child: ListView.builder(
+                              itemCount: outputLength,
+                              itemBuilder: (BuildContext context, int index) {
+                                SearchResultsModel item = outputList[index];
+                                return ListTile(
+                                  title: Text(item.toString()),
+                                );
+                              },
+                            ),
+                          ),*/
                         ],
                       );
                     }
                     else{
                       return Column(
                         children: [
-                          /*ListView.builder
-                            (itemBuilder: (BuildContext context, int index) {
-                              return null;
-                          },),*/
                           Text("No Data"),
                         ],
                       );

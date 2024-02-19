@@ -24,7 +24,15 @@ class SearchResultsModel {
 
   @override
   String toString() {
-    return 'SearchResultsModel: $name and date $endDate';
+    return '$name and date $endDate';
+  }
+
+  String getName(){
+    return '$name';
+  }
+
+  int getDate(){
+    return endDate;
   }
 
 }
