@@ -1,6 +1,6 @@
 import 'package:algolia/algolia.dart';
 import 'package:get/get.dart';
-import 'package:raffl/models/search_results_model.dart';
+import 'package:raffl/models/listing_model.dart';
 
 class AlgoliaListingsRepository extends GetxController {
   static AlgoliaListingsRepository get instance => Get.find();

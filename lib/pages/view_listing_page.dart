@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import '../controllers/listing_controller.dart';
 import 'package:get/get.dart';
 
-import '../models/search_results_model.dart';
+import '../models/listing_model.dart';
 
 
 @RoutePage()
-class ListingPage extends StatefulWidget {
+class ViewListingPage extends StatefulWidget {
   final String documentID;
-  const ListingPage({super.key, required this.documentID});
+  const ViewListingPage({super.key, required this.documentID});
 
   @override
-  State<ListingPage> createState() => _ListingPageState();
+  State<ViewListingPage> createState() => _ViewListingPageState();
 }
 
 
 //widget.documentID
-class _ListingPageState extends State<ListingPage> {
+class _ViewListingPageState extends State<ViewListingPage> {
   @override
   Widget build(BuildContext context) {
 

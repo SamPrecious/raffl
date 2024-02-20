@@ -2,7 +2,7 @@ import 'package:algolia/algolia.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:raffl/models/search_results_model.dart';
+import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
 import '../controllers/algolia_listings_controller.dart';
@@ -58,7 +58,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                 int endDate = item.getDate();
                                 return GestureDetector(
                                   child: ListingResultWidget(name: name,endDate: endDate),
-                                  onTap: () => AutoRouter.of(context).push(ListingRoute(documentID: documentID))
+                                  onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: documentID))
                                 );
                               }
                             ),

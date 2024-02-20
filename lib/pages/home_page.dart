@@ -100,6 +100,15 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.settings, size: 32),
                     label: const Text('Test'),
                   ),
+                  SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    style: standardButton,
+                    onPressed: () {
+                      AutoRouter.of(context).push(CreateListingRoute());
+                    },
+                    icon: Icon(Icons.create, size: 32),
+                    label: const Text('Create Listing'),
+                  ),
                 ],
               ),
             )

@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class ListingModel {
-  final String documentID;
+  final String? documentID;
   final String name;
   final int endDate;
   final List<String>? tags;
 
   const ListingModel({
-    required this.documentID,
+    this.documentID,
     required this.name,
     required this.endDate,
     this.tags //Optional tags
@@ -26,6 +26,14 @@ class ListingModel {
     );
   }
 
+  toFirestore(){
+    return{
+      "Name": name,
+      "EndDate": Timestamp.fromMillisecondsSinceEpoch(endDate),
+      "Tags": tags
+    };
+  }
+
   factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!;
     return ListingModel(
@@ -38,11 +46,11 @@ class ListingModel {
 
   @override
   String toString() {
-    return '$documentID with name $name and date $endDate';
+    return '${documentID ?? 'No ID'} with name $name and date $endDate';
   }
 
   String getDocumentID() {
-    return documentID;
+    return documentID ?? 'No ID';
   }
 
   String getName(){
