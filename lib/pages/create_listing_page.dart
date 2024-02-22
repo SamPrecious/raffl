@@ -24,6 +24,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
   double distanceToField = 0;
   final listingNameController = TextEditingController();
   final listingEndController = TextEditingController();
+
   final listingPriceController = TextEditingController();
   TextfieldTagsController listingTagsController = TextfieldTagsController();
   String? imageUrl;
@@ -48,6 +49,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
 
   @override
   Widget build(BuildContext context) {
+    listingEndController.text = '1 day';
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -80,7 +82,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                   style: myTextStyles.defaultText,
                 ),
               DropdownButtonFormField<String>(
-                value: '1 day', // Set the initial value
+                value: listingEndController.text, // Set the initial value
                 onChanged: (String? newValue) {
                   if (newValue != null) {
                     listingEndController.text = newValue; // Update the controller value
@@ -221,6 +223,20 @@ class _CreateListingPageState extends State<CreateListingPage> {
                 SizedBox(height: 10),
                 ElevatedButton.icon(
                   style: standardButton,
+                  onPressed: () {
+
+                    int timeIncrement = int.parse(listingEndController.text[0]);
+                    DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
+
+                    print('Modifying time by: ');
+                    print('New date is $newTime');
+                  },
+                  icon: Icon(Icons.add, size: 32),
+                  label: const Text('Date Time'),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton.icon(
+                  style: standardButton,
                   onPressed: () async{
 
                     //exit function if no image TODO update function for all fields
@@ -229,13 +245,17 @@ class _CreateListingPageState extends State<CreateListingPage> {
                       print("Upload Image (URL Null)");
                       return;
                     }
+                    int timeIncrement = int.parse(listingEndController.text[0]);
+                    DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
+                    int timestampInSeconds = newTime.millisecondsSinceEpoch;
 
                     final listing = ListingModel(
                       name: listingNameController.text,
                       hostID: FirebaseAuth.instance.currentUser!.uid,
-                      endDate: 10000, //todo TEMP
+                      endDate: timestampInSeconds, //todo TEMP
                       tags: listingTagsController.getTags,
-                      primaryImage: imageUrl!
+                      primaryImage: imageUrl!,
+                      ticketPrice: int.parse(listingPriceController.text)
                     );
                     print("Creating Listing");
                     Get.put(ListingController()).createListing(listing);

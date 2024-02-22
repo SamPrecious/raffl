@@ -10,6 +10,7 @@ class ListingModel {
   final List<String>? tags;
   final String primaryImage;
   final String? description;
+  final int? ticketPrice;
 
   const ListingModel({
     this.documentID,
@@ -19,6 +20,7 @@ class ListingModel {
     this.tags,
     required this.primaryImage,
     this.description,
+    this.ticketPrice,
   });
 
 
@@ -41,6 +43,7 @@ class ListingModel {
       "Tags": tags,
       "PrimaryImage": primaryImage,
       "Description": description,
+      "TicketPrice": ticketPrice,
     };
   }
 
@@ -53,6 +56,7 @@ class ListingModel {
       endDate: (data['EndDate'] as Timestamp).seconds,
       tags: data['Tags']?.cast<String>(),
       primaryImage: data['PrimaryImage'],
+      ticketPrice: data['TicketPrice']
     );
   }
 
@@ -74,6 +78,10 @@ class ListingModel {
 
   String getPrimaryImageURL(){
     return '$primaryImage';
+  }
+
+  int? getTicketPrice(){
+    return ticketPrice;
   }
 
   String getDescription(){

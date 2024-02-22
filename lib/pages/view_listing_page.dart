@@ -46,6 +46,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                         leading: Image.network(listing.getPrimaryImageURL()),
                       ),
                       SizedBox(height: 10),
+                      Text('Ticket Price: '+ listing.getTicketPrice().toString()),
                       //TODO make this main page 'view_listing_page' BUT have subpages/routes for different implementation based on who owns
                       if (listing.getHostID().toString() == FirebaseAuth.instance.currentUser!.uid)
                         Text('I OWN THIS')
