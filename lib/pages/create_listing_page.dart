@@ -235,7 +235,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                       hostID: FirebaseAuth.instance.currentUser!.uid,
                       endDate: 10000, //todo TEMP
                       tags: listingTagsController.getTags,
-                      primaryImage: imageUrl
+                      primaryImage: imageUrl!
                     );
                     print("Creating Listing");
                     Get.put(ListingController()).createListing(listing);

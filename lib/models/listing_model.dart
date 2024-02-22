@@ -8,7 +8,7 @@ class ListingModel {
   final String name;
   final int endDate;
   final List<String>? tags;
-  final String? primaryImage;
+  final String primaryImage;
 
   const ListingModel({
     this.documentID,
@@ -16,7 +16,7 @@ class ListingModel {
     required this.name,
     required this.endDate,
     this.tags,
-    this.primaryImage
+    required this.primaryImage
   });
 
 
@@ -26,7 +26,8 @@ class ListingModel {
     return ListingModel(
       documentID: snapshot.objectID,
       name: snapshot.data['Name'],
-      endDate: snapshot.data['EndDate']
+      endDate: snapshot.data['EndDate'],
+      primaryImage: snapshot.data['PrimaryImage']
     );
   }
 

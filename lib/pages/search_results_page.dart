@@ -56,8 +56,10 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                 String documentID = item.getDocumentID();
                                 String name = item.getName();
                                 int endDate = item.getDate();
+                                String imageUrl = item.getPrimaryImageURL();
+                                print("IMAGE URL IS $imageUrl");
                                 return GestureDetector(
-                                  child: ListingResultWidget(name: name,endDate: endDate),
+                                  child: ListingResultWidget(name: name,endDate: endDate, primaryImageUrl: imageUrl),
                                   onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: documentID))
                                 );
                               }

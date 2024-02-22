@@ -4,8 +4,9 @@ import 'package:raffl/styles/colors.dart';
 class ListingResultWidget extends StatelessWidget {
   final String name;
   final int endDate;
+  final String primaryImageUrl;
 
-  const ListingResultWidget({Key? key, required this.name, required this.endDate}) : super(key: key);
+  const ListingResultWidget({Key? key, required this.name, required this.endDate, required this.primaryImageUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context){
@@ -49,6 +50,9 @@ class ListingResultWidget extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 )
             ),
+            SizedBox(width: 20),
+            Image.network(primaryImageUrl),
+
           ],
         ),
       ),
