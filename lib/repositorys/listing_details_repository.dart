@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:raffl/models/listing_model.dart';
 
 
-class ListingRepository extends GetxController {
-  static ListingRepository get instance => Get.find();
+class ListingDetailsRepository extends GetxController {
+  static ListingDetailsRepository get instance => Get.find();
   final db = FirebaseFirestore.instance;
 
   createListing(ListingModel listingData) async{

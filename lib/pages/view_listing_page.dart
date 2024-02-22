@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../controllers/listing_controller.dart';
 import 'package:get/get.dart';
@@ -37,7 +38,19 @@ class _ViewListingPageState extends State<ViewListingPage> {
                       SizedBox(height: 120),
                       Text('Listing Details: '+ listing.toString()),
                       SizedBox(height: 10),
-                      Text('Tags: '+ listing.getTags().toString()),
+                      Text('Image URL : '+listing.getPrimaryImageURL()),
+                      SizedBox(height: 10),
+                      ListTile(
+                        title: Text(listing.getName()),
+                        subtitle: Text(listing.getTags().toString()),
+                        leading: Image.network(listing.getPrimaryImageURL()),
+                      ),
+                      SizedBox(height: 10),
+                      //TODO make this main page 'view_listing_page' BUT have subpages/routes for different implementation based on who owns
+                      if (listing.getHostID().toString() == FirebaseAuth.instance.currentUser!.uid)
+                        Text('I OWN THIS')
+                      else
+                        Text('I DO NOT OWN THIS')
 
                     ],
                   )

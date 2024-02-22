@@ -1,21 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:raffl/models/listing_model.dart';
+import 'package:raffl/repositorys/listing_image_repository.dart';
 import '../models/user_data_model.dart';
-import '../repositorys/listing_repository.dart';
+import '../repositorys/listing_details_repository.dart';
 import 'package:get/get.dart';
 
 
 class ListingController extends GetxController{
 
-  final listingRepository = Get.put(ListingRepository());
+  final listingDetailsRepository = Get.put(ListingDetailsRepository());
+  final listingImageRepository = Get.put(ListingImageRepository());
 
   Future<void> createListing(ListingModel listing) async{
-    await listingRepository.createListing(listing);
+    await listingDetailsRepository.createListing(listing);
+  }
+
+  Future<String> uploadImage(XFile file, String fileName) async{
+    String imageUrl = await listingImageRepository.uploadImage(file, fileName);
+    return imageUrl;
   }
 
   getListing(String documentID){
-    return listingRepository.getListing(documentID);
+    return listingDetailsRepository.getListing(documentID);
   }
 
 }

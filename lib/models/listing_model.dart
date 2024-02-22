@@ -4,15 +4,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListingModel {
   final String? documentID;
+  final String? hostID;
   final String name;
   final int endDate;
   final List<String>? tags;
+  final String? primaryImage;
 
   const ListingModel({
     this.documentID,
+    this.hostID,
     required this.name,
     required this.endDate,
-    this.tags //Optional tags
+    this.tags,
+    this.primaryImage
   });
 
 
@@ -29,18 +33,22 @@ class ListingModel {
   toFirestore(){
     return{
       "Name": name,
+      "HostID": hostID,
       "EndDate": Timestamp.fromMillisecondsSinceEpoch(endDate),
-      "Tags": tags
+      "Tags": tags,
+      "PrimaryImage": primaryImage,
     };
   }
 
   factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!;
     return ListingModel(
-        documentID: snapshot.id,
-        name: data['Name'],
-        endDate: (data['EndDate'] as Timestamp).seconds,
-        tags: data['Tags']?.cast<String>()
+      documentID: snapshot.id,
+      name: data['Name'],
+      hostID: data['HostID'],
+      endDate: (data['EndDate'] as Timestamp).seconds,
+      tags: data['Tags']?.cast<String>(),
+      primaryImage: data['PrimaryImage'],
     );
   }
 
@@ -49,12 +57,19 @@ class ListingModel {
     return '${documentID ?? 'No ID'} with name $name and date $endDate';
   }
 
+  String getHostID() {
+    return hostID ?? 'No ID';
+  }
   String getDocumentID() {
     return documentID ?? 'No ID';
   }
 
   String getName(){
     return '$name';
+  }
+
+  String getPrimaryImageURL(){
+    return '$primaryImage';
   }
 
   int getDate(){
