@@ -9,6 +9,7 @@ class ListingModel {
   final int endDate;
   final List<String>? tags;
   final String primaryImage;
+  final String? description;
 
   const ListingModel({
     this.documentID,
@@ -16,7 +17,8 @@ class ListingModel {
     required this.name,
     required this.endDate,
     this.tags,
-    required this.primaryImage
+    required this.primaryImage,
+    this.description,
   });
 
 
@@ -38,6 +40,7 @@ class ListingModel {
       "EndDate": Timestamp.fromMillisecondsSinceEpoch(endDate),
       "Tags": tags,
       "PrimaryImage": primaryImage,
+      "Description": description,
     };
   }
 
@@ -59,10 +62,10 @@ class ListingModel {
   }
 
   String getHostID() {
-    return hostID ?? 'No ID';
+    return hostID ?? 'No Owner ID';
   }
   String getDocumentID() {
-    return documentID ?? 'No ID';
+    return documentID ?? 'No Document ID';
   }
 
   String getName(){
@@ -71,6 +74,10 @@ class ListingModel {
 
   String getPrimaryImageURL(){
     return '$primaryImage';
+  }
+
+  String getDescription(){
+    return description ?? "No Description";
   }
 
   int getDate(){
