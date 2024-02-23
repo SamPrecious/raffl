@@ -24,27 +24,31 @@ class UserDataRepository extends GetxController {
     });
   }
 
-  //TODO
   Future<int> getCredits(String uid) async {
-    final snapshot = await db.collection("UserData").where(FieldPath.documentId, isEqualTo: uid).get();
-    final userCredits = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.credits;
+    final snapshot = await db.collection("UserData")
+        .where(FieldPath.documentId, isEqualTo: uid).get();
+    final userCredits = snapshot.docs.map((e) =>
+        UserDataModel.fromFirestore(e)).single.credits;
     return(userCredits);
   }
 
   Future<UserDataModel> getUserDetails(String uid) async {
-    final snapshot = await db.collection("UserData").where(FieldPath.documentId, isEqualTo: uid).get();
-    final userData = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single;
+    final snapshot = await db.collection("UserData")
+        .where(FieldPath.documentId, isEqualTo: uid).get();
+    final userData = snapshot.docs.map((e) =>
+        UserDataModel.fromFirestore(e)).single;
     return userData;
   }
 
   Future<void> updateUserData(UserDataModel userData) async {
-    await db.collection("UserData").doc(user.uid).update(userData.toFirestore());
+    await db.collection("UserData").doc(user.uid)
+        .update(userData.toFirestore());
   }
 
   Future<void> incrementCredits(int newCredits) async {
     //Increments field value by the new credits
-    await db.collection("UserData").doc(user.uid).update({"Credits": FieldValue.increment(newCredits)});
-
+    await db.collection("UserData").doc(user.uid)
+        .update({"Credits": FieldValue.increment(newCredits)});
   }
 
 }

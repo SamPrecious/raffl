@@ -5,6 +5,7 @@ import '../controllers/listing_controller.dart';
 import 'package:get/get.dart';
 
 import '../models/listing_model.dart';
+import '../styles/standard_button.dart';
 
 
 @RoutePage()
@@ -52,6 +53,17 @@ class _ViewListingPageState extends State<ViewListingPage> {
                         Text('I OWN THIS')
                       else
                         Text('I DO NOT OWN THIS')
+                      ,
+                      ElevatedButton.icon(
+                        style: standardButton,
+                        onPressed: () async{
+                          print('Buying new ticket: ');
+                          await controller.updateTickets(listing.getDocumentID(),1);
+
+                        },
+                        icon: Icon(Icons.airplane_ticket, size: 32),
+                        label: const Text('Buy Ticket'),
+                      ),
 
                     ],
                   )

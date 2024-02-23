@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:raffl/models/listing_model.dart';
 
@@ -8,15 +9,63 @@ class ListingDetailsRepository extends GetxController {
   final db = FirebaseFirestore.instance;
 
   createListing(ListingModel listingData) async{
-    //Sets userID to documentID, so we can retrieve documents linked to our users data
-
-    print("Creating new listing");
     await db.collection("Listings").doc().set(listingData.toFirestore()).whenComplete(
           () => print("Listing creation successful"),
     ).catchError((error, stackTrace) {
       throw Exception(error.toString());
     });
   }
+
+
+
+
+  //Adds tickets for given user
+  buyTickets(String documentID, int ticketAmount) async {
+    //TODO Check if user has any tickets, if so, update, if not create new
+    String uid = FirebaseAuth.instance.currentUser!.uid;
+    int ticketNum = await getTickets(documentID);
+    if(ticketNum != 0){
+      updateTicketNum(documentID, ticketAmount, uid);
+    }
+    else{
+      createTicketNum(documentID, ticketAmount, uid);
+    }
+    /*
+    Unlikely for ticket amount to change between updating documents
+    AND
+    Low consequence if this happens, so to save requests, just update current val
+     */
+    return(ticketNum + ticketAmount);
+  }
+
+  createTicketNum(String documentID, int ticketAmount, String uid) async {
+    await db.collection("Listings").doc(documentID)
+        .collection("Tickets").doc(uid).set({'TicketNum': ticketAmount}).whenComplete(
+          () => print("ticket num creation successful"),
+    ).catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+  }
+
+  updateTicketNum(String documentID, int ticketAmount, String uid) async {
+    await db.collection("Listings").doc(documentID)
+        .collection("Tickets").doc(uid)
+        .update({"TicketNum": FieldValue.increment(ticketAmount)});
+  }
+
+
+
+  getTickets(String documentID) async {
+    final snapshot = await db.collection("Listings").doc(documentID)
+        .collection("Tickets").doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    int ticketNum = 0;
+    if(snapshot.exists){
+      ticketNum = snapshot.data()!['TicketNum'];
+    }
+    return ticketNum;
+  }
+
 
   Future<ListingModel> getListing(String documentID) async {
     print("Retrieving listing with ID: $documentID");

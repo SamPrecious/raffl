@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class ListingImageRepository extends GetxController {
-  static ListingImageRepository get instance => Get.find();
+class ImageRepository extends GetxController {
+  static ImageRepository get instance => Get.find();
   //final storage = FirebaseStorage.instance;
   final imageRepositoryRef = FirebaseStorage.instance.ref().child('images');
 
