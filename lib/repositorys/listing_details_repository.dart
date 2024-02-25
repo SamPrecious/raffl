@@ -39,6 +39,7 @@ class ListingDetailsRepository extends GetxController {
   }
 
   createTicketNum(String documentID, int ticketAmount, String uid) async {
+    //TODO New user interested, so increment interested by 1 as well
     await db.collection("Listings").doc(documentID)
         .collection("Tickets").doc(uid).set({'TicketNum': ticketAmount}).whenComplete(
           () => print("ticket num creation successful"),
