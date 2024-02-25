@@ -35,10 +35,13 @@ class _ViewListingPageState extends State<ViewListingPage> {
                     children: [
                       AspectRatio(
                           aspectRatio: 4 / 3,
-                          child: Image.network(listing.getPrimaryImageURL())
+                          child: Image.network(
+                            listing.getPrimaryImageURL(),
+                            fit: BoxFit.cover,
+                          )
                       ),
                       //FutureBuilder(future: userData, builder: builder),
-                      SizedBox(height: 120),
+                      SizedBox(height: 20),
                       Text('Listing Details: ' + listing.toString()),
                       SizedBox(height: 10),
                       Text('Image URL : ' + listing.getPrimaryImageURL()),
