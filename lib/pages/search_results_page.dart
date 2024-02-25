@@ -29,73 +29,95 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           children: [
             SizedBox(height: 50),
             Text(widget.searchInput),
-            FutureBuilder(
-              //                future: algoliaListingsController.searchListings(widget.searchInput),
-                future: algoliaListingsController.getSearchResults(widget.searchInput),
-                builder: (context, snapshot){
-                  if(snapshot.connectionState == ConnectionState.done) {
-                    if(snapshot.hasData) {
-                      print("HAS DATA NOW");
-                      List<ListingModel> outputList = snapshot.data as List<ListingModel>;
-                      print("------------------------");
-                      outputList.forEach((result) =>
-                      print(result.toString()));
-                      print(outputList);
-                      print("------------------------");
-                      int outputLength = outputList.length;
-                      print("output length is $outputLength");
-                      return Column(
-                        children: [
-                          Text("Has Data"),
-                          SizedBox(
-                            height: 640,
-                            child: ListView.builder(
-                              itemCount: outputLength,
-                              itemBuilder: (context, index){
-                                ListingModel item = outputList[index];
-                                String documentID = item.getDocumentID();
-                                String name = item.getName();
-                                int endDate = item.getDate();
-                                String imageUrl = item.getPrimaryImageURL();
-                                print("IMAGE URL IS $imageUrl");
-                                return GestureDetector(
-                                  child: ListingResultWidget(name: name,endDate: endDate, primaryImageUrl: imageUrl),
-                                  onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: documentID))
-                                );
-                              }
+            Expanded(
+              child: FutureBuilder(
+                //                future: algoliaListingsController.searchListings(widget.searchInput),
+                  future: algoliaListingsController.getSearchResults(widget.searchInput),
+                  builder: (context, snapshot){
+                    if(snapshot.connectionState == ConnectionState.done) {
+                      if(snapshot.hasData) {
+                        List<ListingModel> outputList = snapshot.data as List<ListingModel>;
+                        outputList.forEach((result) =>
+                        print(result.toString()));
+                        print(outputList);
+                        int outputLength = outputList.length;
+                        print("output length is $outputLength");
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: Container(
+                            clipBehavior: Clip.hardEdge,
+                            //Using foregroundDecoration prevents content overlapping borders
+                            foregroundDecoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                left: BorderSide(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                                right: BorderSide(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                              ),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
                             ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                            ),
+              
+
+                                child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    itemCount: outputLength,
+                                    itemBuilder: (context, index){
+                                      ListingModel item = outputList[index];
+                                      String documentID = item.getDocumentID();
+                                      String name = item.getName();
+                                      int endDate = item.getDate();
+                                      String imageUrl = item.getPrimaryImageURL();
+                                      return GestureDetector(
+                                        //Constructs 'ListingResultWidget' for each separate listing
+                                          child: ListingResultWidget(
+                                                  name: name,
+                                                  endDate: endDate,
+                                                  primaryImageUrl: imageUrl
+              
+                                          ),
+                                          onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: documentID))
+                                      );
+                                    }
+                                ),
+
                           ),
-
-                          /*
-                          Expanded( // Wrap ListView.builder in an Expanded widget
-                            child: ListView.builder(
-                              itemCount: outputLength,
-                              itemBuilder: (BuildContext context, int index) {
-                                SearchResultsModel item = outputList[index];
-                                return ListTile(
-                                  title: Text(item.toString()),
-                                );
-                              },
-                            ),
-                          ),*/
-                        ],
-                      );
+                        );
+              
+              
+                      }
+                      else{
+                        return Column(
+                          children: [
+                            Text("No Data"),
+                          ],
+                        );
+                      }
+              
+                    }else if(snapshot.hasError){
+                      return Center(child: Text(snapshot.error.toString()));
+                    }else{
+                      return Center(child: Text("Error, no data found"));
                     }
-                    else{
-                      return Column(
-                        children: [
-                          Text("No Data"),
-                        ],
-                      );
-                    }
-
-                  }else if(snapshot.hasError){
-                    return Center(child: Text(snapshot.error.toString()));
-                  }else{
-                    return Center(child: Text("Error, no data found"));
-                  }
-
-                }),
+              
+                  }),
+            ),
           ]
         ),
       )
