@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
-import 'package:raffl/styles/colors.dart';
 
 class ListingResultWidget extends StatelessWidget {
   final String name;
@@ -16,11 +15,12 @@ class ListingResultWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double containerHeight = 200;
+    final double containerHeight = 180;
     final double topContainerHeight = containerHeight * 0.8;
     final double lineHeight =
         containerHeight * 0.0075; //Lines take up width of 0.02
     final double bottomContainerHeight = containerHeight * 0.1850;
+
 
     return Container(
         height: containerHeight, //Height of each individual widget
@@ -34,12 +34,12 @@ class ListingResultWidget extends StatelessWidget {
                 //Image widget taking up 35% width
                 Flexible(
                   fit: FlexFit.tight,
-                  flex: 35,
+                  flex: 45,
                   child: Container(
                     color: Colors.blue,
                     constraints: BoxConstraints(
-                      minWidth: 35.0,
-                      maxWidth: 35.0,
+                      minWidth: 45.0,
+                      maxWidth: 45.0,
                       minHeight: topContainerHeight,
                       maxHeight: topContainerHeight,
                     ),
@@ -49,12 +49,12 @@ class ListingResultWidget extends StatelessWidget {
                 //Descriptive widget taking up 65% width
                 Flexible(
                   fit: FlexFit.tight, // change this from loose to tight
-                  flex: 65,
+                  flex: 55,
                   child: Container(
                     color: secondaryColor,
                     constraints: BoxConstraints(
-                      minWidth: 65.0,
-                      maxWidth: 65.0,
+                      minWidth: 55.0,
+                      maxWidth: 55.0,
                       minHeight: topContainerHeight,
                       maxHeight: topContainerHeight,
                     ),

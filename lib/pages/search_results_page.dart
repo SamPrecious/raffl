@@ -19,6 +19,8 @@ class SearchResultsPage extends StatefulWidget {
 
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
+
+
   @override
   Widget build(BuildContext context) {
     AlgoliaListingsController algoliaListingsController = Get.put(AlgoliaListingsController());

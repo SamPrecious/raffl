@@ -7,22 +7,21 @@ import 'app_router.gr.dart';
 class AppRouter extends $AppRouter {
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: SplashRoute.page, initial: true), //Default page so set to initial
-    AutoRoute(page: AuthRoute.page, keepHistory: false), //keepHistory false means this is removed froms tack when another entry added
-    //The following routes are protected as they require Login access
-    //AutoRoute(page: HomeRoute.page,guards: [AuthGuard()]),
-    AutoRoute(
-      page: AuthenticatedRoutes.page,
-      guards: [AuthGuard()],
-      children: [
-        AutoRoute(page: HomeRoute.page),
-        AutoRoute(page: ProfileRoute.page),
-        AutoRoute(page: SearchResultsRoute.page),
-        AutoRoute(page: ViewListingRoute.page),
-        AutoRoute(page: CreateListingRoute.page)
-      ]
-    )
-    //AutoRoute(page: ProfileRoute.page,guards: [AuthGuard()]),
-  ];
+        AutoRoute(page: SplashRoute.page, initial: true),
+        //Default page so set to initial
+        AutoRoute(page: AuthRoute.page, keepHistory: false),
+        //keepHistory false means this is removed froms tack when another entry added
+        //The following routes are protected as they require Login access
+        //AutoRoute(page: HomeRoute.page,guards: [AuthGuard()]),
+        AutoRoute(page: AuthenticatedRoutes.page, guards: [
+          AuthGuard()
+        ], children: [
+          AutoRoute(page: HomeRoute.page),
+          AutoRoute(page: ProfileRoute.page),
+          AutoRoute(page: SearchResultsRoute.page),
+          AutoRoute(page: ViewListingRoute.page),
+          AutoRoute(page: CreateListingRoute.page)
+        ])
+        //AutoRoute(page: ProfileRoute.page,guards: [AuthGuard()]),
+      ];
 }
-
