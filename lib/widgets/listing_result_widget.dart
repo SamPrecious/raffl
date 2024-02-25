@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
+import 'package:raffl/styles/colors.dart';
 
 class ListingResultWidget extends StatelessWidget {
   final String name;
@@ -50,7 +51,7 @@ class ListingResultWidget extends StatelessWidget {
                       fit: FlexFit.tight, // change this from loose to tight
                       flex: 65,
                       child: Container(
-                        color: Colors.grey,
+                        color: secondaryColor,
                         constraints: BoxConstraints(
                           minWidth: 65.0,
                           maxWidth: 65.0,
@@ -82,20 +83,22 @@ class ListingResultWidget extends StatelessWidget {
                           fit: FlexFit.tight, // change this from loose to tight
                           flex: 75,
                           child: Container(
-                            color: Colors.grey,
+                            color: secondaryColor,
                             constraints: BoxConstraints(
                               minWidth: 75.0,
                               maxWidth: 75.0,
                               minHeight: bottomContainerHeight,
                               maxHeight: bottomContainerHeight,
                             ),
-                            child: Text(
-                                name,
-                                style: TextStyle(
-                                  color: primaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                )
+                            child: Center(
+                              child: Text(
+                                  name,
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                              ),
                             ),
                           ),
                         ),
