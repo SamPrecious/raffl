@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
-import 'package:raffl/styles/text_styles.dart';
-import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
 import 'package:raffl/widgets/listing_result_timer_widget.dart';
 
 class ListingResultWidget extends StatelessWidget {
@@ -61,7 +59,8 @@ class ListingResultWidget extends StatelessWidget {
                               color: primaryColor,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                            )),
+                            )
+                        ),
                       ),
                     ), //Descriptive stuff
                   ),

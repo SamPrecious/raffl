@@ -36,50 +36,155 @@ class _ViewListingPageState extends State<ViewListingPage> {
                 ListingModel listing = snapshot.data as ListingModel;
                 int endTime = listing.getDate();
                 print(listing.toString());
+                double itemSpacing = 6.0;
                 //UserDataModel userData = snapshot.data as UserDataModel;
                 if (snapshot.hasData) {
-                  return (Column(
-                    children: [
-                      TitleHeaderWidget(title: 'Listing Details'),
-                      AspectRatio(
-                          aspectRatio: 4 / 3,
-                          child: Image.network(
-                            listing.getPrimaryImageURL(),
-                            fit: BoxFit.cover,
-                          )),
-                      SizedBox(height: 10),
-                      Text('Ticket Price: ' +
-                          listing.getTicketPrice().toString()),
-                      //TODO make this main page 'view_listing_page' BUT have subpages/routes for different implementation based on who owns
-                      if (listing.getHostID().toString() ==
-                          FirebaseAuth.instance.currentUser!.uid)
-                        Text('I OWN THIS')
-                      else
-                        Text('I DO NOT OWN THIS'),
-                      ElevatedButton.icon(
-                        style: standardButton,
-                        onPressed: () async {
-                          print('Buying new ticket: ');
-                          await controller.updateTickets(
-                              listing.getDocumentID(), 1);
-                        },
-                        icon: Icon(Icons.airplane_ticket, size: 32),
-                        label: const Text('Buy Ticket'),
-                      ),
-                      SizedBox(height: 20),
-                      DefaultTextStyle(
-                        style: TextStyle(
-                          color: secondaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  return DefaultTextStyle(
+                    style: TextStyle(
+                      color: secondaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    child: (Column(
+                      children: [
+                        TitleHeaderWidget(title: 'Listing Details'),
+                        AspectRatio(
+                            aspectRatio: 4 / 3,
+                            child: Image.network(
+                              listing.getPrimaryImageURL(),
+                              fit: BoxFit.cover,
+                            )),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 10, right: 10),
+                            child: ListView(
+                              scrollDirection: Axis.vertical,
+                              //padding: EdgeInsets.only(top: 200, bottom: 200),
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(listing.getName(),
+                                      style: TextStyle(
+                                        color: secondaryColor,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                ),
+                                Divider(
+                                  color: secondaryColor,
+                                  thickness: 1.0,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Ticket Price:'),
+                                    Text('£' +
+                                        listing.getTicketPrice().toString()),
+                                  ],
+                                ),
+                                SizedBox(height: itemSpacing),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Tickets Owned:'),
+                                    Text('TODO'),
+                                  ],
+                                ),
+                                SizedBox(height: itemSpacing),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    //Wrapped buttons in containers to make height uniform
+                                    Container(
+                                      width: 150,
+                                      height: 50,
+                                      child: ElevatedButton.icon(
+                                        style: standardButton,
+                                        onPressed: () {
+                                          // Your code here
+                                        },
+                                        icon: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 0),
+                                          // adjust the padding as needed
+                                          child: Icon(Icons.watch_later),
+                                        ),
+                                        label: const Text('Watch'),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 150,
+                                      height: 50,
+                                      child: ElevatedButton(
+                                        style: standardButton,
+                                        onPressed: () async {
+                                          await controller.updateTickets(
+                                              listing.getDocumentID(), 1);
+                                        },
+                                        child: const Text('Buy Tickets'),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: itemSpacing),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Ending in:"),
+                                    CustomCountdownTimer(
+                                      endTime: endTime,
+                                    ),
+                                  ],
+                                ),
+                                Divider(
+                                  color: secondaryColor,
+                                  thickness: 1.0,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Tickets Sold:'),
+                                    Text('TODO'),
+                                  ],
+                                ),
+                                SizedBox(height: itemSpacing),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Watching:'),
+                                    Text('TODO'),
+                                  ],
+                                ),
+                                SizedBox(height: itemSpacing),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('Interested:'),
+                                    Text('TODO'),
+                                  ],
+                                ),
+                                Divider(
+                                  color: secondaryColor,
+                                  thickness: 1.0,
+                                ),
+                                Text(
+                                    "Description here: tmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmp")
+                              ],
+                            ),
+                          ),
                         ),
-                        child: CustomCountdownTimer(
-                          endTime: endTime,
-                        ),
-                      ),
-                      //Text('ends in '+ endDate),
-                    ],
-                  ));
+
+                        //TODO make this main page 'view_listing_page' BUT have subpages/routes for different implementation based on who owns
+                      ],
+                    )),
+                  );
                 } else if (snapshot.hasError) {
                   return Center(child: Text(snapshot.error.toString()));
                 } else {

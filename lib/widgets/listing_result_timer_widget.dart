@@ -42,7 +42,7 @@ class _ListingResultTimerWidgetState extends State<ListingResultTimerWidget> {
           child: DefaultTextStyle(
             style: TextStyle(
               color: primaryColor,
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
             child: CustomCountdownTimer(

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/styles/standard_button.dart';
@@ -22,6 +23,7 @@ class TitleHeaderWidget extends StatelessWidget {
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 print("back");
+                AutoRouter.of(context).pop();
                 // Add any other actions you want to perform when the button is tapped
               },
             ),
