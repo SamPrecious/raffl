@@ -89,7 +89,6 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                   ],
                                 ),
                                 SizedBox(height: itemSpacing),
-                                  ],
                                 if (listing.getHostID().toString() != FirebaseAuth.instance.currentUser!.uid) ...[
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
