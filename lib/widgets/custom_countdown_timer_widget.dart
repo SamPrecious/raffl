@@ -7,7 +7,7 @@ class CustomCountdownTimer extends StatelessWidget {
   final ValueChanged<bool>? lessThanHour;
   CustomCountdownTimer({required this.endTime, this.lessThanHour});
   /*TODO
-     Must add value to listen to tell us when timer ends, so we can refresh the page outside    
+     Must add value to listen to tell us when timer ends, so we can refresh the page outside
    */
   @override
   Widget build(BuildContext context) {
@@ -15,6 +15,9 @@ class CustomCountdownTimer extends StatelessWidget {
       endTime: endTime,
       widgetBuilder: (_, endTime) {
         if(endTime == null) {
+          if(lessThanHour != null && lessThanHour != true){
+            lessThanHour!(true); //Tells owner that there is less than an hour left
+          }
           return Text('Time\'s up!');
         } else {
           if(endTime.days != null){
@@ -23,15 +26,19 @@ class CustomCountdownTimer extends StatelessWidget {
           else if(endTime.hours != null){
             return Text('${endTime.hours}h${endTime.min != 0 ? ', ${endTime.min}m' : ''}');
           }
-          else if(endTime.min != null){
+          else{
             if(lessThanHour != null && lessThanHour != true){
               lessThanHour!(true); //Tells owner that there is less than an hour left
             }
-            return Text('${endTime.min}m${endTime.sec != 0 ? ', ${endTime.sec}s' : ''}');
+            if(endTime.min != null){
+              return Text('${endTime.min}m${endTime.sec != 0 ? ', ${endTime.sec}s' : ''}');
+            }
+            else{
+              //TODO ADD HERE:
+              return Text('${endTime.sec}s');
+            }
           }
-          else{
-            return Text('${endTime.sec}s');
-          }
+
         }
       },
     );

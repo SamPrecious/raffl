@@ -21,9 +21,11 @@ class _ListingResultTimerWidgetState extends State<ListingResultTimerWidget> {
     //Changes widget to red colour if we have less than an hour left
     if (isLessThanHour) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          containerColor = Colors.red;
-        });
+        if (mounted) {  // Add this check
+          setState(() {
+            containerColor = Colors.red;
+          });
+        }
       });
     }
   }
