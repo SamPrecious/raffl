@@ -1,6 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:raffl/widgets/CustomCountdownTimer.dart';
+import 'package:raffl/widgets/title_header_widget.dart';
 import '../controllers/listing_controller.dart';
 import 'package:get/get.dart';
 
@@ -22,6 +25,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ListingController());
+
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
@@ -29,27 +33,19 @@ class _ViewListingPageState extends State<ViewListingPage> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 ListingModel listing = snapshot.data as ListingModel;
+                int endTime = listing.getDate();
+                print(listing.toString());
                 //UserDataModel userData = snapshot.data as UserDataModel;
                 if (snapshot.hasData) {
                   return (Column(
                     children: [
+                      TitleHeaderWidget(title: 'Listing Details'),
                       AspectRatio(
                           aspectRatio: 4 / 3,
                           child: Image.network(
                             listing.getPrimaryImageURL(),
                             fit: BoxFit.cover,
                           )
-                      ),
-                      //FutureBuilder(future: userData, builder: builder),
-                      SizedBox(height: 20),
-                      Text('Listing Details: ' + listing.toString()),
-                      SizedBox(height: 10),
-                      Text('Image URL : ' + listing.getPrimaryImageURL()),
-                      SizedBox(height: 10),
-                      ListTile(
-                        title: Text(listing.getName()),
-                        subtitle: Text(listing.getTags().toString()),
-                        leading: Image.network(listing.getPrimaryImageURL()),
                       ),
                       SizedBox(height: 10),
                       Text('Ticket Price: ' +
@@ -70,6 +66,11 @@ class _ViewListingPageState extends State<ViewListingPage> {
                         icon: Icon(Icons.airplane_ticket, size: 32),
                         label: const Text('Buy Ticket'),
                       ),
+                      SizedBox(height:20),
+                      CustomCountdownTimer(
+                        endTime: endTime,
+                      ),
+                      //Text('ends in '+ endDate),
                     ],
                   ));
                 } else if (snapshot.hasError) {

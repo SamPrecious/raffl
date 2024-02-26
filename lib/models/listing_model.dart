@@ -53,7 +53,7 @@ class ListingModel {
       documentID: snapshot.id,
       name: data['Name'],
       hostID: data['HostID'],
-      endDate: (data['EndDate'] as Timestamp).seconds,
+      endDate: (data['EndDate'] as Timestamp).millisecondsSinceEpoch,
       tags: data['Tags']?.cast<String>(),
       primaryImage: data['PrimaryImage'],
       ticketPrice: data['TicketPrice']
@@ -89,6 +89,7 @@ class ListingModel {
   }
 
   int getDate(){
+    print("Returning date: $endDate");
     return endDate;
   }
 

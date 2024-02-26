@@ -23,8 +23,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     User user = FirebaseAuth.instance.currentUser!; //Gets user information
-    final algoliaListingsController = Get.put(AlgoliaListingsController());
-    final controller = Get.put(UserDataController());
 
     return Scaffold(
       resizeToAvoidBottomInset: false, //Stops trying to resize when keyboard appears

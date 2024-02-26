@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
+import 'package:raffl/widgets/CustomCountdownTimer.dart';
 
 class ListingResultWidget extends StatelessWidget {
   final String name;
@@ -20,7 +21,6 @@ class ListingResultWidget extends StatelessWidget {
     final double lineHeight =
         containerHeight * 0.0075; //Lines take up width of 0.02
     final double bottomContainerHeight = containerHeight * 0.1850;
-
 
     return Container(
         height: containerHeight, //Height of each individual widget
@@ -130,14 +130,17 @@ class ListingResultWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 4.0, right: 4.0),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
+                        child: CustomCountdownTimer(
+                          endTime: endDate,
+                        ),
+                        /*Text(
                             endDate.toString(),
                             style: TextStyle(
                               color: primaryColor,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             )
-                        ),
+                        ),*/
                       ),
                     ),
                   ),
