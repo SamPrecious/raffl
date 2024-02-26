@@ -47,7 +47,12 @@ class _ViewListingPageState extends State<ViewListingPage> {
                     ),
                     child: (Column(
                       children: [
-                        TitleHeaderWidget(title: 'Listing Details'),
+                        //Change the title of the page based on if we own it or not
+                        if (listing.getHostID().toString() == FirebaseAuth.instance.currentUser!.uid) ...[
+                          TitleHeaderWidget(title: 'My Listing'),
+                        ] else ...[
+                          TitleHeaderWidget(title: 'Listing Details'),
+                        ],
                         AspectRatio(
                             aspectRatio: 4 / 3,
                             child: Image.network(
@@ -84,51 +89,55 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                   ],
                                 ),
                                 SizedBox(height: itemSpacing),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Tickets Owned:'),
-                                    Text('TODO'),
                                   ],
-                                ),
-                                SizedBox(height: itemSpacing),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    //Wrapped buttons in containers to make height uniform
-                                    Container(
-                                      width: 150,
-                                      height: 50,
-                                      child: ElevatedButton.icon(
-                                        style: standardButton,
-                                        onPressed: () {
-                                          // Your code here
-                                        },
-                                        icon: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 0),
-                                          // adjust the padding as needed
-                                          child: Icon(Icons.watch_later),
+                                if (listing.getHostID().toString() != FirebaseAuth.instance.currentUser!.uid) ...[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Tickets Owned:'),
+                                      Text('TODO'),
+                                    ],
+                                  ),
+                                  SizedBox(height: itemSpacing),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      //Wrapped buttons in containers to make height uniform
+                                      Container(
+                                        width: 150,
+                                        height: 50,
+                                        child: ElevatedButton.icon(
+                                          style: standardButton,
+                                          onPressed: () {
+                                            // Your code here
+                                          },
+                                          icon: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 0),
+                                            // adjust the padding as needed
+                                            child: Icon(Icons.watch_later),
+                                          ),
+                                          label: const Text('Watch'),
                                         ),
-                                        label: const Text('Watch'),
                                       ),
-                                    ),
-                                    Container(
-                                      width: 150,
-                                      height: 50,
-                                      child: ElevatedButton(
-                                        style: standardButton,
-                                        onPressed: () async {
-                                          await controller.updateTickets(
-                                              listing.getDocumentID(), 1);
-                                        },
-                                        child: const Text('Buy Tickets'),
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                      Container(
+                                        width: 150,
+                                        height: 50,
+                                        child: ElevatedButton(
+                                          style: standardButton,
+                                          onPressed: () async {
+                                            await controller.updateTickets(
+                                                listing.getDocumentID(), 1);
+                                          },
+                                          child: const Text('Buy Tickets'),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ], // Add your condition here
+                                  //Only display this if we are NOT the owner, as owner can't buy ticket for their own item
+
                                 SizedBox(height: itemSpacing),
                                 Row(
                                   mainAxisAlignment:
