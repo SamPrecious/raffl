@@ -2,7 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-import 'package:raffl/widgets/CustomCountdownTimer.dart';
+import 'package:raffl/styles/colors.dart';
+import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
 import 'package:raffl/widgets/title_header_widget.dart';
 import '../controllers/listing_controller.dart';
 import 'package:get/get.dart';
@@ -45,8 +46,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                           child: Image.network(
                             listing.getPrimaryImageURL(),
                             fit: BoxFit.cover,
-                          )
-                      ),
+                          )),
                       SizedBox(height: 10),
                       Text('Ticket Price: ' +
                           listing.getTicketPrice().toString()),
@@ -66,9 +66,16 @@ class _ViewListingPageState extends State<ViewListingPage> {
                         icon: Icon(Icons.airplane_ticket, size: 32),
                         label: const Text('Buy Ticket'),
                       ),
-                      SizedBox(height:20),
-                      CustomCountdownTimer(
-                        endTime: endTime,
+                      SizedBox(height: 20),
+                      DefaultTextStyle(
+                        style: TextStyle(
+                          color: secondaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        child: CustomCountdownTimer(
+                          endTime: endTime,
+                        ),
                       ),
                       //Text('ends in '+ endDate),
                     ],

@@ -4,8 +4,8 @@ import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 class CustomCountdownTimer extends StatelessWidget {
   final int endTime;
-
-  CustomCountdownTimer({required this.endTime});
+  final ValueChanged<bool>? lessThanHour;
+  CustomCountdownTimer({required this.endTime, this.lessThanHour});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +22,9 @@ class CustomCountdownTimer extends StatelessWidget {
             return Text('${endTime.hours}h${endTime.min != 0 ? ', ${endTime.min}m' : ''}');
           }
           else if(endTime.min != null){
+            if(lessThanHour != null && lessThanHour != true){
+              lessThanHour!(true); //Tells owner that there is less than an hour left
+            }
             return Text('${endTime.min}m${endTime.sec != 0 ? ', ${endTime.sec}s' : ''}');
           }
           else{

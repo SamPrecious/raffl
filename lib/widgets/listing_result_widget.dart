@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
-import 'package:raffl/widgets/CustomCountdownTimer.dart';
+import 'package:raffl/styles/text_styles.dart';
+import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
+import 'package:raffl/widgets/listing_result_timer_widget.dart';
 
 class ListingResultWidget extends StatelessWidget {
   final String name;
@@ -38,8 +40,6 @@ class ListingResultWidget extends StatelessWidget {
                   child: Container(
                     color: Colors.blue,
                     constraints: BoxConstraints(
-                      minWidth: 45.0,
-                      maxWidth: 45.0,
                       minHeight: topContainerHeight,
                       maxHeight: topContainerHeight,
                     ),
@@ -52,12 +52,6 @@ class ListingResultWidget extends StatelessWidget {
                   flex: 55,
                   child: Container(
                     color: secondaryColor,
-                    constraints: BoxConstraints(
-                      minWidth: 55.0,
-                      maxWidth: 55.0,
-                      minHeight: topContainerHeight,
-                      maxHeight: topContainerHeight,
-                    ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 4.0, right: 4.0),
                       child: Align(
@@ -94,12 +88,6 @@ class ListingResultWidget extends StatelessWidget {
                   flex: 75,
                   child: Container(
                     color: secondaryColor,
-                    constraints: BoxConstraints(
-                      minWidth: 75.0,
-                      maxWidth: 75.0,
-                      minHeight: bottomContainerHeight,
-                      maxHeight: bottomContainerHeight,
-                    ),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 4.0, right: 4.0),
                       child: Align(
@@ -118,32 +106,7 @@ class ListingResultWidget extends StatelessWidget {
                 Flexible(
                   fit: FlexFit.tight, // change this from loose to tight
                   flex: 25,
-                  child: Container(
-                    color: Colors.red,
-                    constraints: BoxConstraints(
-                      minWidth: 25.0,
-                      maxWidth: 25.0,
-                      minHeight: bottomContainerHeight,
-                      maxHeight: bottomContainerHeight,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomCountdownTimer(
-                          endTime: endDate,
-                        ),
-                        /*Text(
-                            endDate.toString(),
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            )
-                        ),*/
-                      ),
-                    ),
-                  ),
+                  child: ListingResultTimerWidget(endTime: endDate),
                 ),
               ])),
           Flexible(
