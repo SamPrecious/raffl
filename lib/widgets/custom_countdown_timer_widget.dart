@@ -6,7 +6,9 @@ class CustomCountdownTimer extends StatelessWidget {
   final int endTime;
   final ValueChanged<bool>? lessThanHour;
   CustomCountdownTimer({required this.endTime, this.lessThanHour});
-
+  /*TODO
+     Must add value to listen to tell us when timer ends, so we can refresh the page outside    
+   */
   @override
   Widget build(BuildContext context) {
     return CountdownTimer(
