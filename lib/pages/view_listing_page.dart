@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:raffl/controllers/notification_controller.dart';
+import 'package:raffl/models/notification_data_model.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
 import 'package:raffl/widgets/title_header_widget.dart';
@@ -137,7 +139,22 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                             await controller.updateTickets(
                                                 listing.getDocumentID(), 1);
                                             ticketsOwned.value += 1;
+                                            /*
+                                              By storing the notification name as a timestamp, we:
+                                                  Save storage on extra value
+                                                  Make sorting easier
+                                                  Have a unique ID
+                                             */
+                                            String notifTimestampName = DateTime.now().millisecondsSinceEpoch.toString();
                                             //TODO add notification/inbox value upon buying tickets
+                                            NotificationDataModel tmpNotif = NotificationDataModel(
+                                              id: notifTimestampName,
+                                              listingID: listing.getDocumentID(),
+                                              notificationName: listing.getName(),
+                                              imageUrl: listing.getPrimaryImageURL(),
+                                              description: 'Bought [IMPLEMENT] tickets',
+                                            );
+                                            NotificationController().createNotification(tmpNotif);
 
                                           },
                                           child: const Text('Buy Tickets'),

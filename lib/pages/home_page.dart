@@ -97,23 +97,6 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton.icon(
                     style: standardButton,
                     onPressed: () {
-                      //searchListings("test");
-                      NotificationDataModel tmpNotif = NotificationDataModel(
-                        id: '1',
-                        listingID: '123',
-                        notificationName: 'Test Notification',
-                        imageUrl: 'https://example.com/image.jpg',
-                        description: 'This is a test notification.',
-                      );
-                      NotificationController().createNotification(tmpNotif);
-                    },
-                    icon: Icon(Icons.settings, size: 32),
-                    label: const Text('Test'),
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton.icon(
-                    style: standardButton,
-                    onPressed: () {
                       AutoRouter.of(context).push(CreateListingRoute());
                     },
                     icon: Icon(Icons.create, size: 32),
