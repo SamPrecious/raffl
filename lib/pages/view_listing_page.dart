@@ -137,6 +137,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                             await controller.updateTickets(
                                                 listing.getDocumentID(), 1);
                                             ticketsOwned.value += 1;
+                                            //TODO add notification/inbox value upon buying tickets
+
                                           },
                                           child: const Text('Buy Tickets'),
                                         ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:raffl/models/notification_data_model.dart';
 import 'package:raffl/models/user_data_model.dart';
 
 
@@ -16,9 +17,23 @@ class UserDataRepository extends GetxController {
   createUserData(UserDataModel userData) async{
     //Sets userID to documentID, so we can retrieve documents linked to our users data
     user = FirebaseAuth.instance.currentUser!;
-    print("Creating data for '$user.email");
-    await db.collection("UserData").doc(user.uid).set(userData.toFirestore()).whenComplete(
+    DocumentReference userDataDocument = db.collection("UserData").doc(user.uid);
+    await userDataDocument.set(userData.toFirestore()).whenComplete(
           () => print("User creation successful"),
+    ).catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+    //Creates us an empty Notifications sub collection
+    await userDataDocument.collection("Notifications").doc().set({});
+
+  }
+
+  //Notifications are a subcollection within userData
+  createNotification(NotificationDataModel notificationData) async{
+    user = FirebaseAuth.instance.currentUser!;
+    await db.collection("UserData").doc(user.uid).collection("Notifications")
+        .doc(notificationData.getId()).set(notificationData.toFirestore()).whenComplete(
+          () => print("Notification created"),
     ).catchError((error, stackTrace) {
       throw Exception(error.toString());
     });
@@ -40,10 +55,11 @@ class UserDataRepository extends GetxController {
     return userData;
   }
 
+  /*
   Future<void> updateUserData(UserDataModel userData) async {
     await db.collection("UserData").doc(user.uid)
         .update(userData.toFirestore());
-  }
+  }*/
 
   Future<void> incrementCredits(int newCredits) async {
     //Increments field value by the new credits

@@ -18,6 +18,8 @@ class UserDataController extends GetxController{
     await userDataRepository.createUserData(user);
   }
 
+
+
   getUserData(){
     final uid = FirebaseAuth.instance.currentUser!.uid; //Gets user information
     //Fetches user details based on uid
@@ -30,9 +32,10 @@ class UserDataController extends GetxController{
     return userDataRepository.getCredits(uid);
   }
 
+  /*
   updateUserData(UserDataModel userData) async{
     await userDataRepository.updateUserData(userData);
-  }
+  }*/
 
   incrementCredits(int newCredits) async{
     await userDataRepository.incrementCredits(newCredits);

@@ -34,8 +34,10 @@ class AccessAuth {
     }
     final userData = UserDataModel(
       credits: 0,
+      //notifications: [],
     );
     //Creates data on FireStore with unique UID linked
+    //TODO Utilise Get controller with Get.find<UserDataController> which avoids us passing the same value around OR remove usage
     Get.put(UserDataController()).createUserData(userData);
   }
 }

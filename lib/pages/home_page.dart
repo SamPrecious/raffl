@@ -3,7 +3,9 @@ import 'package:algolia/algolia.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:raffl/controllers/notification_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
+import 'package:raffl/models/notification_data_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/standard_button.dart';
 import '../controllers/algolia_listings_controller.dart';
@@ -88,12 +90,22 @@ class _HomePageState extends State<HomePage> {
                     icon: Icon(Icons.person_rounded, size: 32),
                     label: const Text('Profile'),
                   ),
+                  /*
+                  UserDataController()).createUserData(userData)
+                   */
                   SizedBox(height: 10),
                   ElevatedButton.icon(
                     style: standardButton,
                     onPressed: () {
                       //searchListings("test");
-                      print("testing");
+                      NotificationDataModel tmpNotif = NotificationDataModel(
+                        id: '1',
+                        listingID: '123',
+                        notificationName: 'Test Notification',
+                        imageUrl: 'https://example.com/image.jpg',
+                        description: 'This is a test notification.',
+                      );
+                      NotificationController().createNotification(tmpNotif);
                     },
                     icon: Icon(Icons.settings, size: 32),
                     label: const Text('Test'),
