@@ -32,12 +32,13 @@ class _ViewListingPageState extends State<ViewListingPage> {
         child: FutureBuilder(
             future: controller.getListing(widget.documentID),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.connectionState == ConnectionState.done)  {
                 ListingModel listing = snapshot.data as ListingModel;
                 int endTime = listing.getDate();
                 print(listing.toString());
                 double itemSpacing = 6.0;
-                //UserDataModel userData = snapshot.data as UserDataModel;
+                final ValueNotifier<int> ticketsOwned = ValueNotifier<int>(listing.getTicketsOwned());
+              //UserDataModel userData = snapshot.data as UserDataModel;
                 if (snapshot.hasData) {
                   return DefaultTextStyle(
                     style: TextStyle(
@@ -94,7 +95,14 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('Tickets Owned:'),
-                                      Text('TODO'),
+                                      ValueListenableBuilder
+                                        (valueListenable: ticketsOwned,
+                                          builder: (context, value, child){
+                                            return Text(value.toString());
+                                          },
+                                      ),
+                                      //Text(ticketsOwned.toString()),
+                                      //controller.getTickets(listing.getDocumentID())
                                     ],
                                   ),
                                   SizedBox(height: itemSpacing),
@@ -128,10 +136,12 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                           onPressed: () async {
                                             await controller.updateTickets(
                                                 listing.getDocumentID(), 1);
+                                            ticketsOwned.value += 1;
                                           },
                                           child: const Text('Buy Tickets'),
                                         ),
-                                      )
+                                      ),
+
                                     ],
                                   ),
                                 ], // Add your condition here

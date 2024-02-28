@@ -11,6 +11,7 @@ class ListingModel {
   final String primaryImage;
   final String? description;
   final int? ticketPrice;
+  final int? ticketsOwned;
 
   const ListingModel({
     this.documentID,
@@ -21,6 +22,7 @@ class ListingModel {
     required this.primaryImage,
     this.description,
     this.ticketPrice,
+    this.ticketsOwned
   });
 
 
@@ -47,8 +49,9 @@ class ListingModel {
     };
   }
 
-  factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot) { //SnapshotOptions? options <-Another argument you can add
+  factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, int ticketsOwned) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!;
+    print("data is $data");
     return ListingModel(
       documentID: snapshot.id,
       name: data['Name'],
@@ -56,7 +59,8 @@ class ListingModel {
       endDate: (data['EndDate'] as Timestamp).millisecondsSinceEpoch,
       tags: data['Tags']?.cast<String>(),
       primaryImage: data['PrimaryImage'],
-      ticketPrice: data['TicketPrice']
+      ticketPrice: data['TicketPrice'],
+      ticketsOwned: ticketsOwned,
     );
   }
 
@@ -67,6 +71,10 @@ class ListingModel {
 
   String getHostID() {
     return hostID ?? 'No Owner ID';
+  }
+
+  int getTicketsOwned() {
+    return ticketsOwned ?? 0;
   }
   String getDocumentID() {
     return documentID ?? 'No Document ID';

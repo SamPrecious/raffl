@@ -26,6 +26,10 @@ class ListingController extends GetxController{
     return listingDetailsRepository.getListing(documentID);
   }
 
+  getTickets(String documentID) async{
+    return await listingDetailsRepository.getTickets(documentID);
+  }
+
   updateTickets(String documentID, int ticketAmount) async{
     await listingDetailsRepository.buyTickets(documentID, ticketAmount);
   }

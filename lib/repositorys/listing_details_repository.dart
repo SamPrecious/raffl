@@ -16,9 +16,6 @@ class ListingDetailsRepository extends GetxController {
     });
   }
 
-
-
-
   //Adds tickets for given user
   buyTickets(String documentID, int ticketAmount) async {
     //TODO Check if user has any tickets, if so, update, if not create new
@@ -72,8 +69,12 @@ class ListingDetailsRepository extends GetxController {
     print("Retrieving listing with ID: $documentID");
     final snapshot = await db.collection("Listings").where(FieldPath.documentId, isEqualTo: documentID).get();
     print("Documents found: ${snapshot.docs.length}");
-    final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e)).single;
+    print("Snapshot is $snapshot");
+    int ticketsOwned = await getTickets(documentID);
+    final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, ticketsOwned)).single;
     print("Listing found");
+
+
     return listing;
   }
 
