@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:raffl/models/notification_data_model.dart';
+import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/repositorys/notification_repository.dart';
 
 import '../models/user_data_model.dart';
@@ -15,7 +15,11 @@ class NotificationController extends GetxController{
   final notificationRepository = Get.put(NotificationRepository());
 
 
-  Future<void> createNotification(NotificationDataModel notification) async{
+  Future<void> createNotification(NotificationModel notification) async{
     await notificationRepository.createNotification(notification);
+  }
+
+  getNotifications(){
+    return notificationRepository.getNotifications();
   }
 }

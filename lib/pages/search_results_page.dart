@@ -26,10 +26,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
     AlgoliaListingsController algoliaListingsController = Get.put(AlgoliaListingsController());
 
     return Scaffold(
-      body: Center(
+      body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 50),
             Text(widget.searchInput),
             Expanded(
               child: FutureBuilder(
@@ -39,11 +38,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     if(snapshot.connectionState == ConnectionState.done) {
                       if(snapshot.hasData) {
                         List<ListingModel> outputList = snapshot.data as List<ListingModel>;
-                        outputList.forEach((result) =>
-                        print(result.toString()));
-                        print(outputList);
                         int outputLength = outputList.length;
-                        print("output length is $outputLength");
                         return Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: Container(

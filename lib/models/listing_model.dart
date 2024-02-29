@@ -26,6 +26,7 @@ class ListingModel {
   });
 
 
+
   //TODO - We don't need to retrieve tags BUT we want them to be queried with names, but nothing else
   //Maps data from Algolia JSON data to UserDataModel
   factory ListingModel.fromAlgolia(AlgoliaObjectSnapshot snapshot) { //SnapshotOptions? options <-Another argument you can add
@@ -48,6 +49,7 @@ class ListingModel {
       "TicketPrice": ticketPrice,
     };
   }
+
 
   factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, int ticketsOwned) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!;

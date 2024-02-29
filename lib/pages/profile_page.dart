@@ -78,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ElevatedButton.icon(
                               style: standardButton,
                               onPressed: () {
-                                AutoRouter.of(context).push(HomeRoute());
+                                AutoRouter.of(context).pop();
                               },
                               icon: Icon(Icons.home, size: 32),
                               label: const Text('Home'),

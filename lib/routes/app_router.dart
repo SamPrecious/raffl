@@ -20,7 +20,8 @@ class AppRouter extends $AppRouter {
           AutoRoute(page: ProfileRoute.page),
           AutoRoute(page: SearchResultsRoute.page),
           AutoRoute(page: ViewListingRoute.page),
-          AutoRoute(page: CreateListingRoute.page)
+          AutoRoute(page: CreateListingRoute.page),
+          AutoRoute(page: InboxRoute.page)
         ])
         //AutoRoute(page: ProfileRoute.page,guards: [AuthGuard()]),
       ];

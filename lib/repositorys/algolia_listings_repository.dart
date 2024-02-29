@@ -20,12 +20,9 @@ class AlgoliaListingsRepository extends GetxController {
 
 
   Future<List<ListingModel>> getSearchResults(String searchQuery) async {
-    print("getting search results");
     final query = algolia.instance.index('listings_index').query(searchQuery);
     final snapshot = await query.getObjects();
-    print("Snapshot captured");
     final searchResults = snapshot.hits.map((e) => ListingModel.fromAlgolia(e)).toList();
-    print("Search results converted");
     return searchResults;
   }
 

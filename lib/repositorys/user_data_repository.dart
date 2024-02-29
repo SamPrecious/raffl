@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:raffl/models/notification_data_model.dart';
+import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/models/user_data_model.dart';
 
 
@@ -29,7 +29,7 @@ class UserDataRepository extends GetxController {
   }
 
   //Notifications are a subcollection within userData
-  createNotification(NotificationDataModel notificationData) async{
+  createNotification(NotificationModel notificationData) async{
     user = FirebaseAuth.instance.currentUser!;
     await db.collection("UserData").doc(user.uid).collection("Notifications")
         .doc(notificationData.getId()).set(notificationData.toFirestore()).whenComplete(

@@ -17,7 +17,7 @@ class AuthenticatedPages extends StatefulWidget {
 }
 
 class _AuthenticatedPagesState extends State<AuthenticatedPages> {
-
+  int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     //return const AutoRouter();
@@ -33,7 +33,10 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                 backgroundColor: secondaryColor,
                 selectedItemColor: tertiaryColor,
                 unselectedItemColor: primaryColor,
+                currentIndex: currentIndex,
                 onTap: (index) {
+                  currentIndex = index;
+                  setState(() {}); //Rebuilds navbar for current index TODO Make this update when subpages are selected
                   final currentRouteName = AutoRouter.of(context).topRoute.name;
                   switch(index) {
                     case 0:
@@ -48,7 +51,10 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                       print("wins");
                       break;
                     case 3:
-                      //AutoRouter.of(context).push(HomeRoute()); TODO inboxroute
+                      //AutoRouter.of(context).push(HomeRoute()); TODO inbox route
+                      if(currentRouteName != InboxRoute.name){
+                        AutoRouter.of(context).push(InboxRoute());
+                      }
                       break;
                     case 4:
                       print("Selling");
@@ -84,5 +90,11 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
         resizeToAvoidBottomInset:
             false //Stops NavBar redrawing when opening keyboard
         );
+  }
+  //Clears bottom navbar content if on unrelated page
+  void clearBottomNavbar() {
+    setState((){
+      currentIndex = -1;
+    });
   }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:raffl/controllers/notification_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
-import 'package:raffl/models/notification_data_model.dart';
+import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/standard_button.dart';
 import '../controllers/algolia_listings_controller.dart';
@@ -39,39 +39,7 @@ class _HomePageState extends State<HomePage> {
                 },
                 leading: const Icon(Icons.search),
               ),
-          ),/*
-          FutureBuilder(
-              future: algoliaListingsController.searchListings("zUK"),
-              builder: (context, snapshot){
-                if(snapshot.connectionState == ConnectionState.done) {
-                  if(snapshot.hasData) {
-                    List<AlgoliaObjectSnapshot> outputList = snapshot.data as List<AlgoliaObjectSnapshot>;
-                    print("------------------------");
-                    print(outputList);
-                    print("------------------------");
-                    int outputLength = outputList.length;
-                    print("output length is $outputLength");
-                    return Column(
-                      children: [
-                        Text("Has Data"),
-                      ],
-                    );
-                  }
-                  else{
-                    return Column(
-                      children: [
-                        Text("No Data"),
-                      ],
-                    );
-                  }
-
-                }else if(snapshot.hasError){
-                  return Center(child: Text(snapshot.error.toString()));
-                }else{
-                  return Center(child: Text("Error, no data found"));
-                }
-
-              }),*/
+          ),
           Padding(
             padding: EdgeInsets.all(32),
             child: Center(
@@ -85,6 +53,8 @@ class _HomePageState extends State<HomePage> {
                     style: standardButton,
                     onPressed: () {
                       //ProfileRoute
+                      //AutoRoute.of(context).pa
+                      //clearBottomNavbar();
                       AutoRouter.of(context).push(ProfileRoute());
                     },
                     icon: Icon(Icons.person_rounded, size: 32),
@@ -106,9 +76,11 @@ class _HomePageState extends State<HomePage> {
               ),
             )
           ),
-
         ],
       ),
     );
   }
+
 }
+
+
