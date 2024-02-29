@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:raffl/controllers/notification_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
+import 'package:raffl/widgets/notification_widget.dart';
 import 'package:raffl/widgets/title_header_widget.dart';
+
+import '../routes/app_router.gr.dart';
 
 @RoutePage()
 class InboxPage extends StatelessWidget {
@@ -29,20 +32,34 @@ class InboxPage extends StatelessWidget {
                 List<NotificationModel> outputList =
                     snapshot.data as List<NotificationModel>;
                 int outputLength = outputList.length;
-                return ListView.builder(
-                    itemCount: outputLength,
-                    itemBuilder: (context, index) {
-                      NotificationModel notification = outputList[index];
-                      String notifID = notification.getNotificationID();
-                      String listingID = notification.getListingID();
-                      String notifName = notification.getName();
-                      String imageUrl = notification.getImageUrl();
-                      String notifDesc = notification.getDescription();
-                      return ListingResultWidget(
-                          name: notifName,
-                          endDate: int.parse(notifID),
-                          primaryImageUrl: imageUrl);
-                    });
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListView.builder(
+                      itemCount: outputLength,
+                      itemBuilder: (context, index) {
+                        NotificationModel notification = outputList[index];
+                        String notifID = notification.getNotificationID();
+                        String listingID = notification.getListingID();
+                        String notifName = notification.getName();
+                        String imageUrl = notification.getImageUrl();
+                        String notifDesc = notification.getDescription();
+                        return GestureDetector(
+                          child: NotificationWidget(
+                            notifID: notifID,
+                            listingID: listingID,
+                            notifName: notifName,
+                            imageUrl: imageUrl,
+                            notifDesc: notifDesc,
+                          ),
+                            onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: listingID))
+
+                        );
+                        return ListingResultWidget(
+                            name: notifName,
+                            endDate: int.parse(notifID),
+                            primaryImageUrl: imageUrl);
+                      }),
+                );
               } else {
                 return Column(
                   children: [
