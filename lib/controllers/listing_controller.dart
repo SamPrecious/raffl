@@ -15,6 +15,9 @@ class ListingController extends GetxController{
 
   Future<void> createListing(ListingModel listing) async{
     await listingDetailsRepository.createListing(listing);
+    //TODO Create cloud function when listing is created. Verify that this is the place to put it
+    //TODO Add listing to user profile when created as well. Faster requests at the cost of duplicating data
+    
   }
 
   Future<String> uploadImage(XFile file, String fileName) async{
