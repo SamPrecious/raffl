@@ -246,7 +246,8 @@ class _CreateListingPageState extends State<CreateListingPage> {
                       return;
                     }
                     int timeIncrement = int.parse(listingEndController.text[0]);
-                    DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
+                    //todo changed days in future to minutes to make testing easier, will go back on this later
+                    DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));
                     int timestampInSeconds = newTime.millisecondsSinceEpoch;
 
                     final listing = ListingModel(
