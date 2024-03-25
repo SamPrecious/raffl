@@ -108,11 +108,11 @@ exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (re
     }
 });
 
-//Creates a notification in the UserData document
+//Create a new notification for the user under 'Notificaitons' collection AND send push notification to user
 async function createNotification(db: admin.firestore.Firestore,userId: string, description: string, image: string, listingId: string, listingName: string){
     const userDataDocument = db.collection('UserData').doc(userId);
-
-    const newNotification = {
+    
+    const notificationEntry = {
         ListingName: listingName,
         ListingID: listingId,
         Image: image,
@@ -120,11 +120,45 @@ async function createNotification(db: admin.firestore.Firestore,userId: string, 
     }
     //Get the current time in milliseconds to set the notification document ID
     const currentTimeInMilliseconds = Date.now().toString();
-    userDataDocument.collection('Notifications').doc(currentTimeInMilliseconds).set(newNotification).then(() => {
+    userDataDocument.collection('Notifications').doc(currentTimeInMilliseconds).set(notificationEntry).then(() => {
         console.log('New notification successfully written!');
     }).catch((error) => {
         console.error('Error writing new notification: ', error);
     });
+    
+    //Retrieve users notification token for push notifications:
+    const userDoc = await userDataDocument.get();
+    const notificationToken = userDoc.data()?.NotificationToken;
+    if(notificationToken){
+        console.log("Preparing push notification");
+        const pushNotification = {
+            notification: {
+                title: listingName,
+                body: description,
+            },
+            apns: { //Apple handles images differently
+                payload: {
+                    aps: {
+                        alert: {
+                            title: listingName,
+                            body: description,
+                        },
+                        'mutable-content': 1,
+                    },
+                    'media-url': image,
+                },
+            },
+            android: {
+                notification: {
+                    imageUrl: image
+                }
+            },
+            token: notificationToken
+        };
+        //Send push notification to device
+        await admin.messaging().send(pushNotification);
+        console.log("push notification sent");
+    }
 }
 
 exports.listingCreated = onDocumentCreated({document: "Listings/{docId}",region: "europe-west2"}, async (event) => {

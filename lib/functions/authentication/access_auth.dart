@@ -15,7 +15,7 @@ class AccessAuth {
         email: email,
         password: password,
       );
-      await PushNotificationController().initNotifications();
+      await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
     } on FirebaseAuthException catch (e) {
       print(e);
       showFlashError(context, e.message);
