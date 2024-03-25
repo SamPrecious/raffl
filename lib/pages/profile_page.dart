@@ -24,6 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     User user = FirebaseAuth.instance.currentUser!; //Gets user information
     final controller = Get.put(UserDataController());
+
     return Scaffold(
         body: SafeArea(
           child: Center(

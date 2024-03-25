@@ -91,8 +91,6 @@ class _AuthWidgetState extends State<AuthWidget> {
                           widget.onResult.call(true);
                         }
                         else{
-
-
                           AccessAuth.registerUser(context, emailController.text.trim(), passwordController.text.trim());
                           widget.onResult.call(true);
                         }

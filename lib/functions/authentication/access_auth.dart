@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:raffl/controllers/push_notification_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/user_data_model.dart';
 
@@ -14,6 +15,7 @@ class AccessAuth {
         email: email,
         password: password,
       );
+      await PushNotificationController().initNotifications();
     } on FirebaseAuthException catch (e) {
       print(e);
       showFlashError(context, e.message);
@@ -39,6 +41,12 @@ class AccessAuth {
     //Creates data on FireStore with unique UID linked
     //TODO Utilise Get controller with Get.find<UserDataController> which avoids us passing the same value around OR remove usage
     Get.put(UserDataController()).createUserData(userData);
+    try{
+      await PushNotificationController().initNotifications();
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      showFlashError(context, e.message);
+    }
   }
 }
 

@@ -60,7 +60,12 @@ class UserDataRepository extends GetxController {
     await db.collection("UserData").doc(user.uid)
         .update(userData.toFirestore());
   }*/
-
+  Future<void> updateNotificationToken(String notificationToken) async{
+    //user = FirebaseAuth.instance.currentUser!; //We have just signed in/registered so make sure uid matches
+    print("UPDATING USER WITH UID: ${user.uid}");
+    await db.collection("UserData").doc(user.uid)
+        .update({"NotificationToken": notificationToken});
+  }
   Future<void> incrementCredits(int newCredits) async {
     //Increments field value by the new credits
     await db.collection("UserData").doc(user.uid)

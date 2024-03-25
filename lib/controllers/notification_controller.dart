@@ -7,7 +7,7 @@ import '../models/user_data_model.dart';
 import '../repositorys/user_data_repository.dart';
 import 'package:get/get.dart';
 
-
+//This handles the notifications repository NOT the notification triggers
 class NotificationController extends GetxController{
 
   static NotificationController get instance => Get.find();

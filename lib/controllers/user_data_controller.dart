@@ -18,8 +18,6 @@ class UserDataController extends GetxController{
     await userDataRepository.createUserData(user);
   }
 
-
-
   getUserData(){
     final uid = FirebaseAuth.instance.currentUser!.uid; //Gets user information
     //Fetches user details based on uid
@@ -32,6 +30,9 @@ class UserDataController extends GetxController{
     return userDataRepository.getCredits(uid);
   }
 
+  updateNotificationToken(String notificationToken){
+    return userDataRepository.updateNotificationToken(notificationToken);
+  }
   /*
   updateUserData(UserDataModel userData) async{
     await userDataRepository.updateUserData(userData);
