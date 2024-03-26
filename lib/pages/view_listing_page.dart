@@ -6,12 +6,18 @@ import 'package:raffl/controllers/notification_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
+import 'package:raffl/widgets/label_value_pair_widget.dart';
 import 'package:raffl/widgets/title_header_widget.dart';
 import '../controllers/listing_controller.dart';
 import 'package:get/get.dart';
-
 import '../models/listing_model.dart';
 import '../styles/standard_button.dart';
+
+enum PageType {
+  sold,
+  unsold,
+  unfinished,
+}
 
 @RoutePage()
 class ViewListingPage extends StatefulWidget {
@@ -28,19 +34,37 @@ class _ViewListingPageState extends State<ViewListingPage> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ListingController());
-
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
             future: controller.getListing(widget.documentID),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done)  {
+              if (snapshot.connectionState == ConnectionState.done) {
+                String uid = FirebaseAuth.instance.currentUser!.uid;
                 ListingModel listing = snapshot.data as ListingModel;
                 int endTime = listing.getDate();
-                print(listing.toString());
+                PageType pageType = PageType.unfinished;
+                bool isWinner = false;
+                if (endTime < DateTime.now().millisecondsSinceEpoch) {
+                  //Listing is finished so is either sold or unsold
+                  //If the listing has a winner associated, the item has sold
+                  final winnerId = listing.getWinnerID();
+                  if (winnerId == "invalid") {
+                    pageType = PageType.unsold;
+                  } else {
+                    pageType = PageType.sold;
+                    if (winnerId == uid) {
+                      isWinner = true;
+                    }
+                  }
+                }
+                print("Pagetype is: ${pageType}");
+                print("Winner status: ${isWinner}");
                 double itemSpacing = 6.0;
-                final ValueNotifier<int> ticketsOwned = ValueNotifier<int>(listing.getTicketsOwned());
-              //UserDataModel userData = snapshot.data as UserDataModel;
+                final ValueNotifier<int> ticketsOwned =
+                    ValueNotifier<int>(listing.getTicketsOwned());
+                bool userIsHost = (listing.getHostID().toString() ==
+                    FirebaseAuth.instance.currentUser!.uid);
                 if (snapshot.hasData) {
                   return DefaultTextStyle(
                     style: TextStyle(
@@ -51,7 +75,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                     child: (Column(
                       children: [
                         //Change the title of the page based on if we own it or not
-                        if (listing.getHostID().toString() == FirebaseAuth.instance.currentUser!.uid) ...[
+                        if (userIsHost) ...[
                           TitleHeaderWidget(title: 'My Listing'),
                         ] else ...[
                           TitleHeaderWidget(title: 'Listing Details'),
@@ -82,26 +106,24 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                   color: secondaryColor,
                                   thickness: 1.0,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Ticket Price:'),
-                                    Text('£' +
-                                        listing.getTicketPrice().toString()),
-                                  ],
-                                ),
+                                LabelValuePairWidget(
+                                    label: 'Ticket Price:',
+                                    value: '£' +
+                                        listing.getTicketPrice().toString(),
+                                    itemSpacing: itemSpacing),
+
                                 SizedBox(height: itemSpacing),
-                                if (listing.getHostID().toString() != FirebaseAuth.instance.currentUser!.uid) ...[
+                                if (!userIsHost) ...[
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('Tickets Owned:'),
-                                      ValueListenableBuilder
-                                        (valueListenable: ticketsOwned,
-                                          builder: (context, value, child){
-                                            return Text(value.toString());
-                                          },
+                                      ValueListenableBuilder(
+                                        valueListenable: ticketsOwned,
+                                        builder: (context, value, child) {
+                                          return Text(value.toString());
+                                        },
                                       ),
                                       //Text(ticketsOwned.toString()),
                                       //controller.getTickets(listing.getDocumentID())
@@ -110,7 +132,9 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                   SizedBox(height: itemSpacing),
                                   Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        pageType == PageType.unfinished
+                                            ? MainAxisAlignment.spaceBetween
+                                            : MainAxisAlignment.center,
                                     children: [
                                       //Wrapped buttons in containers to make height uniform
                                       Container(
@@ -130,6 +154,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                           label: const Text('Watch'),
                                         ),
                                       ),
+                                      if (pageType == PageType.unfinished) ...[ //Only let us buy tickets if listing is unfinished
                                       Container(
                                         width: 150,
                                         height: 50,
@@ -145,68 +170,80 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                   Make sorting easier
                                                   Have a unique ID
                                              */
-                                            String notifTimestampName = DateTime.now().millisecondsSinceEpoch.toString();
-                                            //TODO add notification/inbox value upon buying tickets
-                                            NotificationModel tmpNotif = NotificationModel(
+                                            String notifTimestampName =
+                                                DateTime.now()
+                                                    .millisecondsSinceEpoch
+                                                    .toString();
+                                            NotificationModel tmpNotif =
+                                                NotificationModel(
                                               id: notifTimestampName,
-                                              listingID: listing.getDocumentID(),
-                                              notificationName: listing.getName(),
-                                              imageUrl: listing.getPrimaryImageURL(),
-                                              description: 'Bought [IMPLEMENT] tickets',
+                                              listingID:
+                                                  listing.getDocumentID(),
+                                              notificationName:
+                                                  listing.getName(),
+                                              imageUrl:
+                                                  listing.getPrimaryImageURL(),
+                                              description:
+                                                  'Bought [IMPLEMENT] tickets',
                                             );
-                                            NotificationController().createNotification(tmpNotif);
-
+                                            NotificationController()
+                                                .createNotification(tmpNotif);
                                           },
                                           child: const Text('Buy Tickets'),
                                         ),
                                       ),
-
+                                      ],
                                     ],
                                   ),
-                                ], // Add your condition here
-                                  //Only display this if we are NOT the owner, as owner can't buy ticket for their own item
+                                ],
+                                // Add your condition here
+                                //Only display this if we are NOT the owner, as owner can't buy ticket for their own item
 
                                 SizedBox(height: itemSpacing),
+
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  pageType == PageType.unfinished
+                                      ? MainAxisAlignment.spaceBetween
+                                      : MainAxisAlignment.center,
                                   children: [
-                                    Text("Ending in:"),
-                                    CustomCountdownTimer(
-                                      endTime: endTime,
-                                    ),
+                                    if (pageType == PageType.unfinished) ...[
+                                      Text("Ending in:"),
+                                      CustomCountdownTimer(
+                                        endTime: endTime,
+                                      ),
+                                    ]else if(isWinner)...[
+                                      Text(
+                                        "Congratulations, you won!\nPlease enter your shipping details",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ]else if(!isWinner && !userIsHost)...[
+                                      Text(
+                                        "Sorry, you didn't win.\nBetter luck next time!",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+
                                   ],
                                 ),
                                 Divider(
                                   color: secondaryColor,
                                   thickness: 1.0,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Tickets Sold:'),
-                                    Text('TODO'),
-                                  ],
-                                ),
+                                LabelValuePairWidget(
+                                    label: 'Tickets Sold:',
+                                    value: 'TODO',
+                                    itemSpacing: itemSpacing),
                                 SizedBox(height: itemSpacing),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Watching:'),
-                                    Text('TODO'),
-                                  ],
-                                ),
+                                LabelValuePairWidget(
+                                    label: 'Watching:',
+                                    value: 'TODO',
+                                    itemSpacing: itemSpacing),
                                 SizedBox(height: itemSpacing),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text('Interested:'),
-                                    Text('TODO'),
-                                  ],
-                                ),
+                                LabelValuePairWidget(
+                                    label: 'Interested:',
+                                    value: 'TODO',
+                                    itemSpacing: itemSpacing),
                                 Divider(
                                   color: secondaryColor,
                                   thickness: 1.0,

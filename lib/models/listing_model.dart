@@ -12,6 +12,7 @@ class ListingModel {
   final String? description;
   final int? ticketPrice;
   final int? ticketsOwned;
+  final String? winner;
 
   const ListingModel({
     this.documentID,
@@ -22,7 +23,8 @@ class ListingModel {
     required this.primaryImage,
     this.description,
     this.ticketPrice,
-    this.ticketsOwned
+    this.ticketsOwned,
+    this.winner,
   });
 
 
@@ -63,6 +65,7 @@ class ListingModel {
       primaryImage: data['PrimaryImage'],
       ticketPrice: data['TicketPrice'],
       ticketsOwned: ticketsOwned,
+      winner: data['Winner'],
     );
   }
 
@@ -71,6 +74,9 @@ class ListingModel {
     return '${documentID ?? 'No ID'} with name $name and date $endDate';
   }
 
+  String getWinnerID(){
+    return winner ?? "invalid";
+  }
   String getHostID() {
     return hostID ?? 'No Owner ID';
   }
