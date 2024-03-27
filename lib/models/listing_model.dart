@@ -11,8 +11,11 @@ class ListingModel {
   final String primaryImage;
   final String? description;
   final int? ticketPrice;
-  final int? ticketsOwned;
+  final int? ticketsOwned; //Tickets owned by current user
   final String? winner;
+  final int? ticketsSold;
+  final int? usersWatching;
+  final int? usersInterested;
 
   const ListingModel({
     this.documentID,
@@ -25,6 +28,9 @@ class ListingModel {
     this.ticketPrice,
     this.ticketsOwned,
     this.winner,
+    this.ticketsSold,
+    this.usersWatching,
+    this.usersInterested,
   });
 
 
@@ -49,6 +55,9 @@ class ListingModel {
       "PrimaryImage": primaryImage,
       "Description": description,
       "TicketPrice": ticketPrice,
+      "TicketsSold": ticketsSold,
+      "UsersWatching": usersWatching,
+      "UsersInterested": usersInterested,
     };
   }
 
