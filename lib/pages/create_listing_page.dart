@@ -9,6 +9,7 @@ import 'package:textfield_tags/textfield_tags.dart';
 import 'package:image_picker/image_picker.dart';
 import '../controllers/listing_controller.dart';
 import '../models/listing_model.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 
@@ -30,9 +31,8 @@ class _CreateListingPageState extends State<CreateListingPage> {
   TextfieldTagsController listingTagsController = TextfieldTagsController();
   final formKey = GlobalKey<FormState>();
   String? imageUrl;
-  bool isUploading =
-      false; //When uploading image, this is temporarily set to true until it is fully uploaded
-
+  bool isUploading = false; //When uploading image, this is temporarily set to true until it is fully uploaded
+  String endDay = '1 day'; //default
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -49,11 +49,11 @@ class _CreateListingPageState extends State<CreateListingPage> {
   void initState() {
     super.initState();
     listingTagsController = TextfieldTagsController();
+    listingEndController.text = '1 day';
   }
 
   @override
   Widget build(BuildContext context) {
-    listingEndController.text = '1 day';
     return Scaffold(
         body: SafeArea(
           child: Center(
@@ -241,28 +241,46 @@ class _CreateListingPageState extends State<CreateListingPage> {
                         SizedBox(height: 10),
                         GestureDetector(
                           onTap: () async {
-                            ImagePicker imagePicker = ImagePicker();
-                            //TODO allow user to select gallery OR camera
-                            XFile? file = await imagePicker.pickImage(
-                                source: ImageSource.camera);
+                            var imageSource = await showModalBottomSheet<ImageSource>(
+                              context: context,
+                              builder: (context) => Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ListTile(
+                                    leading: Icon(Icons.camera),
+                                    title: Text("Camera"),
+                                    onTap: () => Navigator.pop(context, ImageSource.camera),
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.photo_album),
+                                    title: Text("Gallery"),
+                                    onTap: () => Navigator.pop(context, ImageSource.gallery),
+                                  )
+                                ],
+                              ),
+                            );
+                            if(imageSource != null){
+                              ImagePicker imagePicker = ImagePicker();
+                              //Crops image to 4:3 with relatively low resolution for faster loading and cheaper storage
+                              XFile? file = await imagePicker.pickImage(source: imageSource, maxWidth: 800.0, maxHeight: 600.0);
+                              if (file == null) return; //exit function if no image
+                              String uniqueFileName =
+                              DateTime.now().millisecondsSinceEpoch.toString();
+                              setState(() {
+                                isUploading =
+                                true; //Image is in process of uploading
+                              });
+                              imageUrl = await Get.put(ListingController())
+                                  .uploadImage(file, uniqueFileName);
+                              setState(() {
+                                isUploading = false; //Image has uploaded
+                              });
+                            }
 
-                            if (file == null) return; //exit function if no image
-                            String uniqueFileName =
-                                DateTime.now().millisecondsSinceEpoch.toString();
-                            setState(() {
-                              isUploading =
-                                  true; //Image is in process of uploading
-                            });
-                            imageUrl = await Get.put(ListingController())
-                                .uploadImage(file, uniqueFileName);
-                            setState(() {
-                              isUploading = false; //Image has uploaded
-                            });
-                            //TODO refresh the page with the image we just uploaded
                           },
                           child: Container(
-                            height: 200,
-                            width: 200,
+                            height: 180, //4:3 dimensions
+                            width: 240,
                             child: isUploading
                                 ? Center(child: CircularProgressIndicator())
                                 : //If image is uploading, we have initial circular loading bar
@@ -338,14 +356,11 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 );
                                 return;
                               }
-                              int timeIncrement =
-                              int.parse(listingEndController.text[0]);
+                              int timeIncrement = int.parse(listingEndController.text[0]);
                               //TODO changed days in future to minutes to make testing easier, will go back on this later
-                              DateTime newTime = new DateTime.now()
-                                  .add(Duration(minutes: timeIncrement));
-                              int timestampInSeconds =
-                                  newTime.millisecondsSinceEpoch;
-
+                              DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));
+                              int timestampInSeconds = newTime.millisecondsSinceEpoch;
+                              print("Creating listing with timestamp: ${timestampInSeconds}");
                               final listing = ListingModel(
                                 name: listingNameController.text,
                                 hostID: FirebaseAuth.instance.currentUser!.uid,

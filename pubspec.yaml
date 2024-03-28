@@ -32,7 +32,7 @@ dependencies:
   textfield_tags: ^2.0.2
   email_validator: ^2.1.17
   auto_route: ^7.8.4
-
+  image_cropper: ^4.0.1
   flutter:
     sdk: flutter
 

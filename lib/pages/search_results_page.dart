@@ -73,6 +73,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
               
 
                                 child: ListView.builder(
+                                    cacheExtent: 9999, //Having a relatively large cache gives us longer before reloading images
                                     padding: EdgeInsets.zero,
                                     itemCount: outputLength,
                                     itemBuilder: (context, index){

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/listing_result_timer_widget.dart';
 
-class ListingResultWidget extends StatelessWidget {
+class ListingResultWidget extends StatelessWidget  {
   final String name;
   final int endDate;
   final String primaryImageUrl;
