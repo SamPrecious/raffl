@@ -121,8 +121,8 @@ class ListingModel {
     return ticketsSold ?? 0;
   }
 
-  int? getUsersWatching(){
-    return usersWatching;
+  int getUsersWatching(){
+    return usersWatching ?? 0;
   }
 
   int getUsersInterested(){

@@ -26,6 +26,29 @@ class UserDataRepository extends GetxController {
 
   }
 
+  addOrRemoveWatch(String listingID) async{
+    user = FirebaseAuth.instance.currentUser!;
+    bool userIsWatching = await isUserWatching(listingID);
+    if(userIsWatching){
+      await db.collection("UserData").doc(user.uid).update({"Watching": FieldValue.arrayRemove([listingID])});
+    }
+    else{
+      await db.collection("UserData").doc(user.uid).update({"Watching": FieldValue.arrayUnion([listingID])});
+    }
+    userIsWatching = !userIsWatching; //Reverse this as we have now done the opposite
+    return userIsWatching;
+
+  }
+
+  isUserWatching(String listingID) async{
+    DocumentSnapshot userDoc = await db.collection("UserData").doc(user.uid).get();
+    List<dynamic> watching = userDoc.get('Watching');
+    if(watching.contains(listingID)){
+      return true;
+    }
+    return false;
+  }
+
   //Notifications are a subcollection within userData
   createNotification(NotificationModel notificationData) async{
     user = FirebaseAuth.instance.currentUser!;

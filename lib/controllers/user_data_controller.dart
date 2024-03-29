@@ -30,13 +30,19 @@ class UserDataController extends GetxController{
     return userDataRepository.getCredits(uid);
   }
 
-  updateNotificationToken(String notificationToken){
-    return userDataRepository.updateNotificationToken(notificationToken);
+  updateNotificationToken(String notificationToken) async{
+    return await userDataRepository.updateNotificationToken(notificationToken);
   }
-  /*
-  updateUserData(UserDataModel userData) async{
-    await userDataRepository.updateUserData(userData);
-  }*/
+
+  addOrRemoveWatch(String listingID) async{
+    bool userIsWatching = await userDataRepository.addOrRemoveWatch(listingID);
+    return userIsWatching;
+  }
+
+  isUserWatching(String listingID) async{
+    bool userIsWatching = await userDataRepository.isUserWatching(listingID);
+    return userIsWatching;
+  }
 
   incrementCredits(int newCredits) async{
     await userDataRepository.incrementCredits(newCredits);

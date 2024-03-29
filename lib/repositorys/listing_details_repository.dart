@@ -39,6 +39,20 @@ class ListingDetailsRepository extends GetxController {
     });
   }
 
+  modifyWatchers(String documentID, bool userIsWatching) async {
+    int toAdd = 1;
+    print("To inc or not to inc");
+    if(!userIsWatching){
+      //If user is no longer watching, remove 1
+      toAdd = -1;
+      print("Decrementing UserWatching");
+    }
+    await db.collection("Listings").doc(documentID).update({"UsersWatching": FieldValue.increment(toAdd)})
+        .catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+  }
+
   updateTicketsSold(String documentID, int ticketAmount) async{
     await db.collection("Listings").doc(documentID).update({"TicketsSold": FieldValue.increment(ticketAmount)})
         .catchError((error, stackTrace) {

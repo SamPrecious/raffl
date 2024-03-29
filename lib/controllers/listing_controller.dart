@@ -41,4 +41,8 @@ class ListingController extends GetxController{
     await listingDetailsRepository.incrementViews(documentID);
   }
 
+  modifyWatchers(String documentID, bool userIsWatching) async{
+    await listingDetailsRepository.modifyWatchers(documentID, userIsWatching);
+  }
+
 }

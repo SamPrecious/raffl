@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:raffl/controllers/notification_controller.dart';
+import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
@@ -32,17 +33,24 @@ class ViewListingPage extends StatefulWidget {
 
 //widget.documentID
 class _ViewListingPageState extends State<ViewListingPage> {
-  final controller = Get.put(ListingController());
+  final listingController = Get.put(ListingController());
+  final userDataController = Get.put(UserDataController());
+  ValueNotifier<bool> userIsWatching = ValueNotifier<bool>(false);
   bool userIsHost = false;
-
   @override
   void initState() {
     super.initState();
-    controller.getListing(widget.documentID).then((listing) async {
+    listingController.getListing(widget.documentID).then((listing) async {
       userIsHost = (listing.getHostID().toString() == FirebaseAuth.instance.currentUser!.uid);
+      String listingDocumentID = listing.getDocumentID();
       if (!userIsHost) {
         //await controller.updateTickets(listing.getDocumentID(), 1);
-        await controller.incrementViews(listing.getDocumentID());      }
+        await listingController.incrementViews(listingDocumentID);
+
+        setState(() async {
+          userIsWatching.value = await userDataController.isUserWatching(listing.getDocumentID());
+        });
+      }
     });
   }
 
@@ -51,7 +59,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
-            future: controller.getListing(widget.documentID),
+            future: listingController.getListing(widget.documentID),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -78,6 +86,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                 final ValueNotifier<int> ticketsOwned = ValueNotifier<int>(listing.getTicketsOwned());
                 final ValueNotifier<int> ticketsSold = ValueNotifier<int>(listing.getTicketsSold());
                 final ValueNotifier<int> usersInterested = ValueNotifier<int>(listing.getUsersInterested());
+                final ValueNotifier<int> usersWatching = ValueNotifier<int>(listing.getUsersWatching());
+                print("User is watching ${userIsWatching}");
                 if (snapshot.hasData) {
 
                   return DefaultTextStyle(
@@ -142,18 +152,33 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                       Container(
                                         width: 150,
                                         height: 50,
-                                        child: ElevatedButton.icon(
-                                          style: standardButton,
-                                          onPressed: () {
-                                            // Your code here
-                                          },
-                                          icon: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 0),
-                                            // adjust the padding as needed
-                                            child: Icon(Icons.watch_later),
-                                          ),
-                                          label: const Text('Watch'),
+                                        child: ValueListenableBuilder( //Use this so we can modify the button when user watches/unwatches
+                                          valueListenable: userIsWatching,
+                                          builder: (context, value, child){
+                                            return ElevatedButton.icon(
+                                              style: standardButton,
+                                              onPressed: () async{
+                                                //We get watching status directly from database, rather than local page value, in-case it has changed (i.e. user clicked watch on another device)
+                                                userIsWatching.value = await userDataController.addOrRemoveWatch(listing.getDocumentID());
+                                                if(userIsWatching.value) {
+                                                  usersWatching.value += 1;
+                                                }else{
+                                                  usersWatching.value -= 1;
+                                                }
+                                                await listingController.modifyWatchers(listing.getDocumentID(), userIsWatching.value);
+
+                                              },
+                                              icon: Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                    vertical: 0),
+                                                // adjust the padding as needed
+                                                child: value ?
+                                                Image.asset('assets/icons/watch_black.png'):
+                                                Image.asset('assets/icons/watch_white.png'),
+                                              ),
+                                              label: const Text('Watch'),
+                                            );
+                                          }
                                         ),
                                       ),
                                       if (pageType == PageType.unfinished) ...[ //Only let us buy tickets if listing is unfinished
@@ -163,8 +188,11 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                         child: ElevatedButton(
                                           style: standardButton,
                                           onPressed: () async {
-                                            await controller.updateTickets(
-                                                listing.getDocumentID(), 1);
+                                            try {
+                                              await listingController.updateTickets(listing.getDocumentID(), 1);
+                                            } catch (e) {
+                                              print('Failed to update tickets: $e');
+                                            }
                                             print("Tickets owned: {$ticketsOwned.value}");
                                             if(ticketsOwned.value == 0){ //If this is our users first ticket, then UsersInterested is updated by 1. Reflect this in page
                                               usersInterested.value += 1;
@@ -243,9 +271,9 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                     label: 'Tickets Sold:',
                                     value: ticketsSold,
                                     itemSpacing: itemSpacing),
-                                LabelValuePairWidget(
+                                LabelValueListenablePairWidget(
                                     label: 'Watching:',
-                                    value: listing.getUsersWatching().toString(),
+                                    value: usersWatching,
                                     itemSpacing: itemSpacing),
                                 LabelValueListenablePairWidget(
                                     label: 'Users Interested:',

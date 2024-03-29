@@ -62,14 +62,14 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
 
                   }
                 },
-                items: const <BottomNavigationBarItem>[
+                items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_rounded),
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
                     //TODO Change to custom binoculars icon
-                    icon: Icon(Icons.watch_later),
+                    icon: Image.asset('assets/icons/watch_white.png', width: 24, height: 24),
                     label: 'Watching',
                   ),
                   BottomNavigationBarItem(
