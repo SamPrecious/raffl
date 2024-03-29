@@ -16,6 +16,7 @@ class ListingModel {
   final int? ticketsSold;
   final int? usersWatching;
   final int? usersInterested;
+  final int? views;
 
   const ListingModel({
     this.documentID,
@@ -31,6 +32,7 @@ class ListingModel {
     this.ticketsSold,
     this.usersWatching,
     this.usersInterested,
+    this.views,
   });
 
 
@@ -58,6 +60,7 @@ class ListingModel {
       "TicketsSold": ticketsSold,
       "UsersWatching": usersWatching,
       "UsersInterested": usersInterested,
+      "Views:": views,
     };
   }
 
@@ -75,6 +78,11 @@ class ListingModel {
       ticketPrice: data['TicketPrice'],
       ticketsOwned: ticketsOwned,
       winner: data['Winner'],
+      description: data['Description'],
+      ticketsSold: data['TicketsSold'],
+      usersWatching: data['UsersWatching'],
+      usersInterested: data['UsersInterested'],
+      views: data['Views'],
     );
   }
 
@@ -109,7 +117,19 @@ class ListingModel {
     return ticketPrice;
   }
 
+  int getTicketsSold(){
+    return ticketsSold ?? 0;
+  }
+
+  int? getUsersWatching(){
+    return usersWatching;
+  }
+
+  int getUsersInterested(){
+    return usersInterested ?? 0;
+  }
   String getDescription(){
+    print("Description is: ${description}");
     return description ?? "No Description";
   }
 

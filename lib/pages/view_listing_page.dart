@@ -6,6 +6,7 @@ import 'package:raffl/controllers/notification_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
+import 'package:raffl/widgets/label_value_listenable_pair_widget.dart';
 import 'package:raffl/widgets/label_value_pair_widget.dart';
 import 'package:raffl/widgets/title_header_widget.dart';
 import '../controllers/listing_controller.dart';
@@ -31,9 +32,22 @@ class ViewListingPage extends StatefulWidget {
 
 //widget.documentID
 class _ViewListingPageState extends State<ViewListingPage> {
+  final controller = Get.put(ListingController());
+  bool userIsHost = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.getListing(widget.documentID).then((listing) async {
+      userIsHost = (listing.getHostID().toString() == FirebaseAuth.instance.currentUser!.uid);
+      if (!userIsHost) {
+        //await controller.updateTickets(listing.getDocumentID(), 1);
+        await controller.incrementViews(listing.getDocumentID());      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ListingController());
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
@@ -61,11 +75,11 @@ class _ViewListingPageState extends State<ViewListingPage> {
                 print("Pagetype is: ${pageType}");
                 print("Winner status: ${isWinner}");
                 double itemSpacing = 6.0;
-                final ValueNotifier<int> ticketsOwned =
-                    ValueNotifier<int>(listing.getTicketsOwned());
-                bool userIsHost = (listing.getHostID().toString() ==
-                    FirebaseAuth.instance.currentUser!.uid);
+                final ValueNotifier<int> ticketsOwned = ValueNotifier<int>(listing.getTicketsOwned());
+                final ValueNotifier<int> ticketsSold = ValueNotifier<int>(listing.getTicketsSold());
+                final ValueNotifier<int> usersInterested = ValueNotifier<int>(listing.getUsersInterested());
                 if (snapshot.hasData) {
+
                   return DefaultTextStyle(
                     style: TextStyle(
                       color: secondaryColor,
@@ -114,22 +128,10 @@ class _ViewListingPageState extends State<ViewListingPage> {
 
                                 SizedBox(height: itemSpacing),
                                 if (!userIsHost) ...[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('Tickets Owned:'),
-                                      ValueListenableBuilder(
-                                        valueListenable: ticketsOwned,
-                                        builder: (context, value, child) {
-                                          return Text(value.toString());
-                                        },
-                                      ),
-                                      //Text(ticketsOwned.toString()),
-                                      //controller.getTickets(listing.getDocumentID())
-                                    ],
-                                  ),
-                                  SizedBox(height: itemSpacing),
+                                  LabelValueListenablePairWidget(
+                                      label: 'Tickets Owned:',
+                                      value: ticketsOwned,
+                                      itemSpacing: itemSpacing),
                                   Row(
                                     mainAxisAlignment:
                                         pageType == PageType.unfinished
@@ -163,7 +165,14 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                           onPressed: () async {
                                             await controller.updateTickets(
                                                 listing.getDocumentID(), 1);
+                                            print("Tickets owned: {$ticketsOwned.value}");
+                                            if(ticketsOwned.value == 0){ //If this is our users first ticket, then UsersInterested is updated by 1. Reflect this in page
+                                              usersInterested.value += 1;
+                                              print("Incrementing users interested");
+                                            }
                                             ticketsOwned.value += 1;
+                                            ticketsSold.value += 1;
+
                                             /*
                                               By storing the notification name as a timestamp, we:
                                                   Save storage on extra value
@@ -230,26 +239,23 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                   color: secondaryColor,
                                   thickness: 1.0,
                                 ),
-                                LabelValuePairWidget(
+                                LabelValueListenablePairWidget(
                                     label: 'Tickets Sold:',
-                                    value: 'TODO',
+                                    value: ticketsSold,
                                     itemSpacing: itemSpacing),
-                                SizedBox(height: itemSpacing),
                                 LabelValuePairWidget(
                                     label: 'Watching:',
-                                    value: 'TODO',
+                                    value: listing.getUsersWatching().toString(),
                                     itemSpacing: itemSpacing),
-                                SizedBox(height: itemSpacing),
-                                LabelValuePairWidget(
-                                    label: 'Interested:',
-                                    value: 'TODO',
+                                LabelValueListenablePairWidget(
+                                    label: 'Users Interested:',
+                                    value: usersInterested,
                                     itemSpacing: itemSpacing),
                                 Divider(
                                   color: secondaryColor,
                                   thickness: 1.0,
                                 ),
-                                Text(
-                                    "Description here: tmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmptmp")
+                                Text(listing.getDescription()),
                               ],
                             ),
                           ),

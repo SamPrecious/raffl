@@ -27,20 +27,36 @@ class ListingDetailsRepository extends GetxController {
     else{
       createTicketNum(documentID, ticketAmount, uid);
     }
-    /*
-    Unlikely for ticket amount to change between updating documents
-    AND
-    Low consequence if this happens, so to save requests, just update current val
-     */
+    updateTicketsSold(documentID, ticketAmount);
+
     return(ticketNum + ticketAmount);
   }
 
+  incrementViews(String documentID) async {
+    await db.collection("Listings").doc(documentID).update({"Views": FieldValue.increment(1)})
+        .catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+  }
+
+  updateTicketsSold(String documentID, int ticketAmount) async{
+    await db.collection("Listings").doc(documentID).update({"TicketsSold": FieldValue.increment(ticketAmount)})
+        .catchError((error, stackTrace) {
+          throw Exception(error.toString());
+        });
+  }
+
   createTicketNum(String documentID, int ticketAmount, String uid) async {
-    //TODO New user interested, so increment interested by 1 as well
     await db.collection("Listings").doc(documentID)
         .collection("Tickets").doc(uid).set({'TicketNum': ticketAmount}).whenComplete(
           () => print("ticket num creation successful"),
     ).catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+    //New user has bought a ticket, thus, users interested increments by 1
+    print("Updating users interested");
+    await db.collection("Listings").doc(documentID).update({"UsersInterested": FieldValue.increment(1)})
+        .catchError((error, stackTrace) {
       throw Exception(error.toString());
     });
   }

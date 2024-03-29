@@ -371,6 +371,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 ticketsSold: 0,
                                 usersWatching: 0,
                                 usersInterested: 0,
+                                views: 0,
                                 description: descriptionController.text,
                               );
                               print("Creating Listing");

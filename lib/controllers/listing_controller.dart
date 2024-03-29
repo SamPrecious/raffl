@@ -37,4 +37,8 @@ class ListingController extends GetxController{
     await listingDetailsRepository.buyTickets(documentID, ticketAmount);
   }
 
+  incrementViews(String documentID) async{
+    await listingDetailsRepository.incrementViews(documentID);
+  }
+
 }

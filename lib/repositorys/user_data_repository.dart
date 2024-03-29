@@ -23,8 +23,6 @@ class UserDataRepository extends GetxController {
     ).catchError((error, stackTrace) {
       throw Exception(error.toString());
     });
-    //Creates us an empty Notifications sub collection
-    await userDataDocument.collection("Notifications").doc().set({});
 
   }
 
