@@ -25,7 +25,7 @@ class ListingDetailsRepository extends GetxController {
     return FirebaseFirestore.instance.runTransaction((transaction) async {
       int ticketNum = await getTickets(documentID);
       if(ticketNum != 0){
-        updateTicketNum(documentID, ticketAmount, uid);
+        updateTicketNum(transaction, documentID, ticketAmount, uid);
       }
       else{
         createTicketNum(transaction, documentID, ticketAmount, uid);
@@ -67,10 +67,9 @@ class ListingDetailsRepository extends GetxController {
     await transaction.update(listingDoc, {'UsersInterested': FieldValue.increment(1)});
   }
 
-  updateTicketNum(String documentID, int ticketAmount, String uid) async {
-    await db.collection("Listings").doc(documentID)
-        .collection("Tickets").doc(uid)
-        .update({"TicketNum": FieldValue.increment(ticketAmount)});
+  updateTicketNum(Transaction transaction, String documentID, int ticketAmount, String uid) async {
+    final listingDoc = FirebaseFirestore.instance.collection('Listings').doc(documentID).collection("Tickets").doc(uid);
+    await transaction.update(listingDoc, {"TicketNum": FieldValue.increment(ticketAmount)});
   }
 
 

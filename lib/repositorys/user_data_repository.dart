@@ -32,10 +32,8 @@ class UserDataRepository extends GetxController {
 
   addOrRemoveWatch(String listingID) async {
     user = FirebaseAuth.instance.currentUser!;
-    print("entering this fuck forsaken fuck function");
 
     int userIsWatching = await isUserWatching(listingID);
-    print("exiting this fuck forsaken fuck function");
     bool userIsWatchingBool = false;
 
     if (userIsWatching == 1) {
@@ -62,20 +60,15 @@ class UserDataRepository extends GetxController {
         await db.collection("UserData").doc(user.uid).get();
     if (userDoc.exists) {
       var data = userDoc.data();
-      print("im a fat fuck");
       if (data is Map<String, dynamic>) {
-        print("Im an ugly fat fuck");
 
         if (!data.containsKey('Watching')) {
           return 2;
         } else {
-          print("IT CONTAINS WATCHING YOU FAT FUCK");
           List<dynamic> watching = userDoc.get('Watching');
           if (watching.contains(listingID)) {
-            print("WE are excavating this cunt now");
             return 1;
           }
-          print("Nevermind we are adding the bitch");
           return 0;
         }
       }
