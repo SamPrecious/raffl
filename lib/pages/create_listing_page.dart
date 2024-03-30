@@ -357,8 +357,8 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 return;
                               }
                               int timeIncrement = int.parse(listingEndController.text[0]);
-                              //TODO change days back to minutes when debugging workflow
-                              DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
+                              //TODO changed days in future to minutes to make testing easier, will go back on this later
+                              DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));
                               int timestampInSeconds = newTime.millisecondsSinceEpoch;
                               print("Creating listing with timestamp: ${timestampInSeconds}");
                               final listing = ListingModel(
@@ -379,9 +379,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                               AutoRouter.of(context).pop();
                             }else{
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    content: Text('ERROR')),
+                                const SnackBar(content: Text('ERROR')),
                               );
                             }
                           },

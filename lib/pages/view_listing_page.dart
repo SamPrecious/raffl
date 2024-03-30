@@ -188,96 +188,43 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                         child: ElevatedButton(
                                           style: standardButton,
                                           onPressed: () async {
-                                            TextEditingController ticketNum = TextEditingController();
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext dialogContext) {
-                                                final inputKey = GlobalKey<FormState>();
-                                                return AlertDialog(
-                                                  title: Text('Buy Tickets'),
-                                                  content: Form(
-                                                    key: inputKey,
-                                                    child: TextFormField(
-                                                      controller: ticketNum,
-                                                      decoration: InputDecoration(hintText: 'Enter number of tickets'
-                                                      ),
-                                                      keyboardType: TextInputType.numberWithOptions(decimal: false),
-                                                      validator: (value) {
-                                                        int? number = int.tryParse(value!);
-                                                        if (number == null || number <= 0) {
-                                                          return 'Please enter a valid number of tickets';
-                                                        }else if(false){
-                                                          //Check the user has enough money
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  actions: [
-                                                    TextButton(
-                                                      child: Text('Cancel'),
-                                                      onPressed: () {
-                                                        Navigator.of(dialogContext).pop();
-                                                      },
-                                                    ),
-                                                    TextButton(
-                                                      child: Text('Buy'),
-                                                      onPressed: () async {
+                                            try {
+                                              await listingController.updateTickets(listing.getDocumentID(), 1);
+                                            } catch (e) {
+                                              print('Failed to update tickets: $e');
+                                            }
+                                            print("Tickets owned: {$ticketsOwned.value}");
+                                            if(ticketsOwned.value == 0){ //If this is our users first ticket, then UsersInterested is updated by 1. Reflect this in page
+                                              usersInterested.value += 1;
+                                              print("Incrementing users interested");
+                                            }
+                                            ticketsOwned.value += 1;
+                                            ticketsSold.value += 1;
 
-                                                        if(inputKey.currentState!.validate()){
-                                                          int number = int.parse(ticketNum.text);
-                                                          try {
-                                                            await listingController.buyTickets(listing.getDocumentID(), number);
-                                                          } catch (e) {
-                                                            print('Failed to update tickets: $e');
-                                                          }
-                                                          print("Tickets owned: {$ticketsOwned.value}");
-                                                          if(ticketsOwned.value == 0){ //If this is our users first ticket, then UsersInterested is updated by 1. Reflect this in page
-                                                            usersInterested.value += 1;
-                                                            print("Incrementing users interested");
-                                                          }
-                                                          ticketsOwned.value += number;
-                                                          ticketsSold.value += number;
-                                                          /*
+                                            /*
                                               By storing the notification name as a timestamp, we:
                                                   Save storage on extra value
                                                   Make sorting easier
                                                   Have a unique ID
                                              */
-                                                          String notifTimestampName =
-                                                          DateTime.now()
-                                                              .millisecondsSinceEpoch
-                                                              .toString();
-                                                          NotificationModel tmpNotif =
-                                                          NotificationModel(
-                                                            id: notifTimestampName,
-                                                            listingID:
-                                                            listing.getDocumentID(),
-                                                            notificationName:
-                                                            listing.getName(),
-                                                            imageUrl:
-                                                            listing.getPrimaryImageURL(),
-                                                            description:
-                                                            'Bought ${number} tickets',
-                                                          );
-                                                          NotificationController()
-                                                              .createNotification(tmpNotif);
-                                                          Navigator.of(dialogContext).pop();
-                                                        }else{
-                                                          //TODO fix snackbar to appear above keyboard
-                                                          ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text('Please enter a valid number'))
-                                                          );
-                                                          print("ERROR");
-                                                        }
-                                                      },
-                                                    ),
-                                                  ],
-
-                                                );
-                                              },
+                                            String notifTimestampName =
+                                                DateTime.now()
+                                                    .millisecondsSinceEpoch
+                                                    .toString();
+                                            NotificationModel tmpNotif =
+                                                NotificationModel(
+                                              id: notifTimestampName,
+                                              listingID:
+                                                  listing.getDocumentID(),
+                                              notificationName:
+                                                  listing.getName(),
+                                              imageUrl:
+                                                  listing.getPrimaryImageURL(),
+                                              description:
+                                                  'Bought [IMPLEMENT] tickets',
                                             );
-
+                                            NotificationController()
+                                                .createNotification(tmpNotif);
                                           },
                                           child: const Text('Buy Tickets'),
                                         ),
@@ -358,6 +305,6 @@ class _ViewListingPageState extends State<ViewListingPage> {
               }
             }),
       ),
-        resizeToAvoidBottomInset: false);
+    );
   }
 }

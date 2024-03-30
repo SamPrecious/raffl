@@ -40,11 +40,7 @@ class UserDataController extends GetxController{
   }
 
   isUserWatching(String listingID) async{
-    bool userIsWatching = false;
-    int isUserWatching = await userDataRepository.isUserWatching(listingID);
-    if(isUserWatching == 1){
-      userIsWatching = true;
-    }
+    bool userIsWatching = await userDataRepository.isUserWatching(listingID);
     return userIsWatching;
   }
 
