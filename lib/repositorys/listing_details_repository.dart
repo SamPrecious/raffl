@@ -20,16 +20,18 @@ class ListingDetailsRepository extends GetxController {
   buyTickets(String documentID, int ticketAmount) async {
     //TODO Check if user has any tickets, if so, update, if not create new
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    int ticketNum = await getTickets(documentID);
-    if(ticketNum != 0){
-      updateTicketNum(documentID, ticketAmount, uid);
-    }
-    else{
-      createTicketNum(documentID, ticketAmount, uid);
-    }
-    updateTicketsSold(documentID, ticketAmount);
 
-    return(ticketNum + ticketAmount);
+    //We make the transaction atomic so it is all or nothing
+    return FirebaseFirestore.instance.runTransaction((transaction) async {
+      int ticketNum = await getTickets(documentID);
+      if(ticketNum != 0){
+        updateTicketNum(documentID, ticketAmount, uid);
+      }
+      else{
+        createTicketNum(transaction, documentID, ticketAmount, uid);
+      }
+      updateTicketsSold(transaction, documentID, ticketAmount);
+    });
   }
 
   incrementViews(String documentID) async {
@@ -53,26 +55,16 @@ class ListingDetailsRepository extends GetxController {
     });
   }
 
-  updateTicketsSold(String documentID, int ticketAmount) async{
-    await db.collection("Listings").doc(documentID).update({"TicketsSold": FieldValue.increment(ticketAmount)})
-        .catchError((error, stackTrace) {
-          throw Exception(error.toString());
-        });
+  updateTicketsSold(Transaction transaction, String documentID, int ticketAmount) async{
+    final listingDoc = FirebaseFirestore.instance.collection('Listings').doc(documentID);
+    await transaction.update(listingDoc, {"TicketsSold": FieldValue.increment(ticketAmount)});
   }
 
-  createTicketNum(String documentID, int ticketAmount, String uid) async {
-    await db.collection("Listings").doc(documentID)
-        .collection("Tickets").doc(uid).set({'TicketNum': ticketAmount}).whenComplete(
-          () => print("ticket num creation successful"),
-    ).catchError((error, stackTrace) {
-      throw Exception(error.toString());
-    });
-    //New user has bought a ticket, thus, users interested increments by 1
-    print("Updating users interested");
-    await db.collection("Listings").doc(documentID).update({"UsersInterested": FieldValue.increment(1)})
-        .catchError((error, stackTrace) {
-      throw Exception(error.toString());
-    });
+  createTicketNum(Transaction transaction, String documentID, int ticketAmount, String uid) async {
+    final listingDoc = FirebaseFirestore.instance.collection('Listings').doc(documentID);
+    await transaction.set(listingDoc.collection('Tickets').doc(uid), {'TicketNum': ticketAmount});
+    //New user has bought a ticket, which means they are interested and thus this counter goes up
+    await transaction.update(listingDoc, {'UsersInterested': FieldValue.increment(1)});
   }
 
   updateTicketNum(String documentID, int ticketAmount, String uid) async {
