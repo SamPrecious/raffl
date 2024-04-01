@@ -15,6 +15,8 @@ class UserDataRepository extends GetxController {
   */
   User user = FirebaseAuth.instance.currentUser!;
 
+
+
   createUserData(UserDataModel userData) async {
     //Sets userID to documentID, so we can retrieve documents linked to our users data
     user = FirebaseAuth.instance.currentUser!;
@@ -120,7 +122,7 @@ class UserDataRepository extends GetxController {
   }*/
   Future<void> updateNotificationToken(String notificationToken) async {
     //user = FirebaseAuth.instance.currentUser!; //We have just signed in/registered so make sure uid matches
-    print("UPDATING USER WITH UID: ${user.uid}");
+    user = FirebaseAuth.instance.currentUser!;
     await db
         .collection("UserData")
         .doc(user.uid)
@@ -129,9 +131,27 @@ class UserDataRepository extends GetxController {
 
   Future<void> incrementCredits(int newCredits) async {
     //Increments field value by the new credits
+    user = FirebaseAuth.instance.currentUser!;
     await db
         .collection("UserData")
         .doc(user.uid)
         .update({"Credits": FieldValue.increment(newCredits)});
+  }
+
+  Future<bool> subtractCredits(Transaction transaction, int cost) async {
+    user = FirebaseAuth.instance.currentUser!;
+
+    final userDoc = FirebaseFirestore.instance.collection("UserData").doc(user.uid);
+    DocumentSnapshot userSnapshot = await transaction.get(userDoc);
+    Map<String, dynamic> data = userSnapshot.data() as Map<String, dynamic>;
+    int currentCredits = data["Credits"] ?? 0;
+    if(currentCredits - cost >= 0){
+      //if user can afford it, do this
+      print("Subtracting funds by ${-cost}");
+      await transaction.update(userDoc, {"Credits": FieldValue.increment(-cost)});
+      return true;
+    }
+    return false;
+
   }
 }

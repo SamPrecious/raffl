@@ -1,5 +1,7 @@
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:raffl/models/address_model.dart';
+import 'package:raffl/models/shipping_details_model.dart';
 
 
 class ListingModel {
@@ -17,6 +19,9 @@ class ListingModel {
   final int? usersWatching;
   final int? usersInterested;
   final int? views;
+  final AddressModel? address;
+  final ShippingDetailsModel? shippingDetails;
+  final bool? itemReceived;
 
   const ListingModel({
     this.documentID,
@@ -33,6 +38,9 @@ class ListingModel {
     this.usersWatching,
     this.usersInterested,
     this.views,
+    this.address,
+    this.shippingDetails,
+    this.itemReceived,
   });
 
 
@@ -67,7 +75,6 @@ class ListingModel {
 
   factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, int ticketsOwned) { //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!;
-    print("data is $data");
     return ListingModel(
       documentID: snapshot.id,
       name: data['Name'],
@@ -83,12 +90,35 @@ class ListingModel {
       usersWatching: data['UsersWatching'],
       usersInterested: data['UsersInterested'],
       views: data['Views'],
+      address: data['Address'] != null ? AddressModel.fromFirestore(data['Address']) : null,
+      shippingDetails: data['ShippingDetails'] != null ? ShippingDetailsModel.fromFirestore(data['ShippingDetails']) : null,
+      itemReceived: data['ItemReceived'],
     );
+  }
+
+  bool hasAddress() {
+    return address != null; //Return true if has address, false otherwise
+  }
+
+  bool hasShippingDetails(){
+    return shippingDetails != null; //todo
+  }
+
+  bool hasBeenReceived(){
+    return itemReceived ?? false;
   }
 
   @override
   String toString() {
     return '${documentID ?? 'No ID'} with name $name and date $endDate';
+  }
+
+  AddressModel? getAddress(){
+    return address;
+  }
+
+  ShippingDetailsModel? getShippingDetails(){
+    return shippingDetails;
   }
 
   String getWinnerID(){
@@ -113,8 +143,8 @@ class ListingModel {
     return '$primaryImage';
   }
 
-  int? getTicketPrice(){
-    return ticketPrice;
+  int getTicketPrice(){
+    return ticketPrice ?? 0;
   }
 
   int getTicketsSold(){

@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:raffl/models/address_model.dart';
 import 'package:raffl/models/listing_model.dart';
+import 'package:raffl/models/shipping_details_model.dart';
+import 'package:raffl/repositorys/user_data_repository.dart';
 
 
-class ListingDetailsRepository extends GetxController {
-  static ListingDetailsRepository get instance => Get.find();
+class ListingRepository extends GetxController {
+  static ListingRepository get instance => Get.find();
   final db = FirebaseFirestore.instance;
 
   createListing(ListingModel listingData) async{
@@ -16,21 +19,66 @@ class ListingDetailsRepository extends GetxController {
     });
   }
 
+  addAddress(String listingID, AddressModel address) async{
+
+    await db.collection("Listings").doc(listingID).update({"Address": address.toFirestore()})
+        .catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+  }
+
+  markReceieved(String listingID) async{
+    await db.collection("Listings").doc(listingID).update({"ItemReceived": true})
+        .catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+  }
+
+  addShippingDetails(String listingID, ShippingDetailsModel shippingDetails) async{
+    await db.collection("Listings").doc(listingID).update({"ShippingDetails": shippingDetails.toFirestore()})
+        .catchError((error, stackTrace) {
+      throw Exception(error.toString());
+    });
+  }
+
+  getAddress(String listingID) async{
+    final snapshot = await db.collection("Listings").doc(listingID).get();
+    final address = snapshot.data()?['Address'];
+    if (address != null) {
+      print("Non-model: ${address}");
+      final addressModel = AddressModel.fromFirestore(address);
+      print("Address model: {$addressModel}");
+      return addressModel;
+    }
+  }
+
+
+
   //Adds tickets for given user
-  buyTickets(String documentID, int ticketAmount) async {
+  buyTickets(String documentID, int ticketAmount, int ticketPrice) async {
     //TODO Check if user has any tickets, if so, update, if not create new
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     //We make the transaction atomic so it is all or nothing
     return FirebaseFirestore.instance.runTransaction((transaction) async {
-      int ticketNum = await getTickets(documentID);
-      if(ticketNum != 0){
-        updateTicketNum(transaction, documentID, ticketAmount, uid);
+      final userDataRepository = Get.put(UserDataRepository());
+      bool transactionSuccess = await userDataRepository.subtractCredits(transaction, (ticketAmount * ticketPrice));
+      if(transactionSuccess){
+        print("Transaction successful, withdrawing now");
+        int ticketNum = await getTickets(documentID);
+        if(ticketNum != 0){
+          updateTicketNum(transaction, documentID, ticketAmount, uid);
+        }
+        else{
+          createTicketNum(transaction, documentID, ticketAmount, uid);
+        }
+        updateTicketsSold(transaction, documentID, ticketAmount);
+        return true;
+      }else{
+        print("Transaction unsuccessful, update funds");
       }
-      else{
-        createTicketNum(transaction, documentID, ticketAmount, uid);
-      }
-      updateTicketsSold(transaction, documentID, ticketAmount);
+      return false;
+
     });
   }
 

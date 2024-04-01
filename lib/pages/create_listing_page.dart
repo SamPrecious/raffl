@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/styles/text_styles.dart';
+import 'package:raffl/widgets/mandatory_input_widget.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:image_picker/image_picker.dart';
 import '../controllers/listing_controller.dart';
@@ -74,28 +75,17 @@ class _CreateListingPageState extends State<CreateListingPage> {
                           style: myTextStyles.titleText,
                         ),
                         SizedBox(height: 20),
-                        Text(
-                          "Name",
-                          style: myTextStyles.defaultText,
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'This field cannot be empty';
-                            }
-                            return null;
-                          },
-                          controller: listingNameController,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(),
-                          ),
+                        MandatoryInputWidget(
+                          label: "Name",
+                          textEditingController: listingNameController,
                         ),
                         SizedBox(height: 10),
-                        //TODO - Turn into dropdown with 1, 3 and 7 days
-                        Text(
-                          "End Date",
-                          style: myTextStyles.defaultText,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "End Date",
+                            style: myTextStyles.defaultText,
+                          ),
                         ),
                         DropdownButtonFormField<String>(
                           value: listingEndController.text,
@@ -116,9 +106,12 @@ class _CreateListingPageState extends State<CreateListingPage> {
                         ),
                         SizedBox(height: 10),
                         //TODO - Turn into some sort of text field that can add items to list. Max at 4 tags? Char limit of 8?
-                        Text(
-                          "Tags",
-                          style: myTextStyles.defaultText,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Tags",
+                            style: myTextStyles.defaultText,
+                          ),
                         ),
                         TextFieldTags(
                           textfieldTagsController: listingTagsController,
@@ -218,25 +211,10 @@ class _CreateListingPageState extends State<CreateListingPage> {
                           },
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          "Description",
-                          style: myTextStyles.defaultText,
-                        ),
-                        TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'This field cannot be empty';
-                            }
-                            return null;
-                          },
-                          scrollPadding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          controller: descriptionController,
+                        MandatoryInputWidget(
+                          label: "Description",
+                          textEditingController: descriptionController,
                           maxLines: 4,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(),
-                          ),
                         ),
                         SizedBox(height: 10),
                         GestureDetector(
@@ -328,23 +306,11 @@ class _CreateListingPageState extends State<CreateListingPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Text(
-                          "Ticket price",
-                          style: myTextStyles.defaultText,
+                        MandatoryInputWidget(
+                          label: "Ticket Price",
+                          textEditingController: listingPriceController,
+                          textInputType: TextInputType.number,
                         ),
-                        TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'This field cannot be empty';
-                              }
-                              return null;
-                            },
-                            controller: listingPriceController,
-                            decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.all(8),
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number),
                         SizedBox(height: 10),
                         ElevatedButton.icon(
                           style: standardButton,
