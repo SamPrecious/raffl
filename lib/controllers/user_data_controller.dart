@@ -52,4 +52,9 @@ class UserDataController extends GetxController{
     await userDataRepository.incrementCredits(newCredits);
   }
 
+  //Gives credits to seller when item is received
+  awardCredits(String userID, int newCredits) async{
+    await userDataRepository.awardCredits(userID, newCredits);
+  }
+
 }

@@ -15,8 +15,13 @@ class NotificationController extends GetxController{
   final notificationRepository = Get.put(NotificationRepository());
 
 
-  Future<void> createNotification(NotificationModel notification) async{
-    await notificationRepository.createNotification(notification);
+  Future<void> createNotification(NotificationModel notification, [String? userID]) async {
+    if(userID != null){
+      await notificationRepository.createNotification(notification, userID);
+    }
+    else{
+      await notificationRepository.createNotification(notification);
+    }
   }
 
   getNotifications(){

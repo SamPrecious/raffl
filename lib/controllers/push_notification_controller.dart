@@ -10,7 +10,7 @@ class PushNotificationController {
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
     await UserDataController().updateNotificationToken(deviceToken!);
   }
-
+  
 }
 
 Future<void> handleBackgroundMessage(RemoteMessage message) async {

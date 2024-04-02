@@ -10,8 +10,11 @@ class NotificationRepository extends GetxController {
   final db = FirebaseFirestore.instance;
 
   //Notifications are a subcollection within userData
-  createNotification(NotificationModel notificationData) async{
-    await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).collection("Notifications")
+  createNotification(NotificationModel notificationData, [String? userID]) async {
+    String uid = userID ?? FirebaseAuth.instance.currentUser!.uid; //If user ID not provided, create for current user
+    print("Creating notification for ${uid}");
+
+    await db.collection("UserData").doc(uid).collection("Notifications")
         .doc(notificationData.getId()).set(notificationData.toFirestore()).whenComplete(
           () => print("Notification created"),
     ).catchError((error, stackTrace) {

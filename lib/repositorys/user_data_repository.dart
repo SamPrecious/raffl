@@ -137,7 +137,13 @@ class UserDataRepository extends GetxController {
         .doc(user.uid)
         .update({"Credits": FieldValue.increment(newCredits)});
   }
-
+  Future<void> awardCredits(String userID, int newCredits) async {
+    //Increments field value by the new credits
+    await db
+        .collection("UserData")
+        .doc(userID)
+        .update({"Credits": FieldValue.increment(newCredits)});
+  }
   Future<bool> subtractCredits(Transaction transaction, int cost) async {
     user = FirebaseAuth.instance.currentUser!;
 

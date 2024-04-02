@@ -7,6 +7,7 @@ import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/address_model.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/models/shipping_details_model.dart';
+import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/address_widget.dart';
 import 'package:raffl/widgets/custom_countdown_timer_widget.dart';
@@ -353,9 +354,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                       .now()
                                                                       .millisecondsSinceEpoch
                                                                       .toString();
-                                                                  NotificationModel
-                                                                  tmpNotif =
-                                                                  NotificationModel(
+                                                                  NotificationModel boughtNotification = NotificationModel(
                                                                     id: notifTimestampName,
                                                                     listingID: listing
                                                                         .getDocumentID(),
@@ -369,7 +368,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                   );
                                                                   NotificationController()
                                                                       .createNotification(
-                                                                      tmpNotif);
+                                                                      boughtNotification);
                                                                   Navigator.of(
                                                                       dialogContext)
                                                                       .pop();
@@ -483,6 +482,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                         Navigator.of(
                                                                             dialogContext)
                                                                             .pop();
+                                                                        AutoRouter.of(context).popAndPush(ViewListingRoute(documentID: listing.getDocumentID()));
+
                                                                         //TODO refresh page AND send notification
                                                                       }
 
@@ -529,25 +530,33 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                             'Confirm'),
                                                                         style: standardButton,
                                                                         onPressed: () async {
+                                                                          Get.put(ListingController()).markReceived(listing.getDocumentID());
                                                                           Navigator.of(
                                                                               dialogContext)
                                                                               .pop();
-                                                                          Get.put(ListingController()).markReceived(listing.getDocumentID());
-                                                                          //TODO give seller money, refresh page and send notification
+                                                                          String hostID = listing.getHostID();
+                                                                          Get.put(UserDataController()).awardCredits(hostID, ticketsSold.value * listing.getTicketPrice());
 
-                                                                          /*
-                                                                        final shippingDetails = ShippingDetailsModel(
-                                                                                      courier: courierController.text ?? "",
-                                                                                      trackingNumber: trackerController.text ?? "",
 
-                                                                                    );
-                                                                                    Get.put(ListingController()).addShippingDetails(listing.getDocumentID(), shippingDetails);
-                                                                                    //TODO refresh page AND send notification
+                                                                          String notifTimestampName = DateTime.now().millisecondsSinceEpoch.toString();
+                                                                          NotificationModel boughtNotification = NotificationModel(
+                                                                            id: notifTimestampName,
+                                                                            listingID: listing
+                                                                                .getDocumentID(),
+                                                                            notificationName:
+                                                                            listing
+                                                                                .getName(),
+                                                                            imageUrl: listing
+                                                                                .getPrimaryImageURL(),
+                                                                            description:
+                                                                            'Item received. You have been awarded £${ticketsSold.value * listing.getTicketPrice()} credits',
+                                                                          );
+                                                                          NotificationController().createNotification(boughtNotification, hostID);
+                                                                          //TODO send push notification to user
 
-                                                                                    Navigator.of(
-                                                                                        dialogContext)
-                                                                                        .pop();
-                                                                         */
+
+
+                                                                          AutoRouter.of(context).popAndPush(ViewListingRoute(documentID: listing.getDocumentID()));
 
                                                                         },
                                                                       ),
@@ -642,6 +651,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                         Navigator.of(
                                                                             dialogContext)
                                                                             .pop();
+                                                                        AutoRouter.of(context).popAndPush(ViewListingRoute(documentID: listing.getDocumentID()));
+
 
                                                                       },
                                                                     ),
