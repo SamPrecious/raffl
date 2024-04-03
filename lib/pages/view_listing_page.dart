@@ -480,6 +480,17 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                         );
                                                                         Get.put(ListingController()).addAddress(listing.getDocumentID(), address);
 
+                                                                        String notifTimestampName = DateTime.now().millisecondsSinceEpoch.toString();
+                                                                        NotificationModel addressReceivedNotification = NotificationModel(
+                                                                          id: notifTimestampName,
+                                                                          listingID: listing.getDocumentID(),
+                                                                          notificationName: listing.getName(),
+                                                                          imageUrl: listing.getPrimaryImageURL(),
+                                                                          description: 'Winner address received, please ship now',
+                                                                        );
+                                                                        String hostID = listing.getHostID();
+
+                                                                        await pushNotificationController.sendPushNotification(hostID, addressReceivedNotification);
 
                                                                         Navigator.of(
                                                                             dialogContext)
@@ -647,11 +658,24 @@ class _ViewListingPageState extends State<ViewListingPage> {
 
                                                                         );
                                                                         Get.put(ListingController()).addShippingDetails(listing.getDocumentID(), shippingDetails);
-                                                                        //TODO refresh page AND send notification
+
+                                                                        String notifTimestampName = DateTime.now().millisecondsSinceEpoch.toString();
+                                                                        NotificationModel addressReceivedNotification = NotificationModel(
+                                                                          id: notifTimestampName,
+                                                                          listingID: listing.getDocumentID(),
+                                                                          notificationName: listing.getName(),
+                                                                          imageUrl: listing.getPrimaryImageURL(),
+                                                                          description: 'Your item has been shipped and should be with you shortly',
+                                                                        );
+                                                                        String winnerID = listing.getWinnerID();
+
+                                                                        await pushNotificationController.sendPushNotification(winnerID, addressReceivedNotification);
+
 
                                                                         Navigator.of(
                                                                             dialogContext)
                                                                             .pop();
+
                                                                         AutoRouter.of(context).popAndPush(ViewListingRoute(documentID: listing.getDocumentID()));
 
 
