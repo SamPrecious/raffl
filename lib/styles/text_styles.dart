@@ -9,6 +9,10 @@ class myTextStyles{
       fontSize: 16,
       color: secondaryColorFaded
   );
+  static final fadedTextSmall = TextStyle(
+      fontSize: 14,
+      color: secondaryColorFaded
+  );
   static final titleText = TextStyle(
     fontSize: 30,
     fontWeight: FontWeight.bold,

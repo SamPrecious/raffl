@@ -29,6 +29,6 @@ class InboxRepository extends GetxController {
         .collection("Notifications").get();
     final notifications = snapshot.docs.map((e) =>
         NotificationModel.fromFirestore(e)).toList();
-    return notifications;
+    return notifications.reversed.toList(); //By doing reversed we are getting dates from most to least recent
   }
 }

@@ -43,6 +43,8 @@ dependencies:
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.3
   firebase_ui_auth: ^1.7.0
+  intl: ^0.18.1
+
 
 
   algolia: ^1.1.2

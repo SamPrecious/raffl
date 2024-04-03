@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:raffl/controllers/inbox_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
-import 'package:raffl/widgets/notification_widget.dart';
+import 'package:raffl/widgets/inbox_widget.dart';
 import 'package:raffl/widgets/title_header_widget.dart';
 
 import '../routes/app_router.gr.dart';
@@ -44,12 +44,12 @@ class InboxPage extends StatelessWidget {
                         String imageUrl = notification.getImageUrl();
                         String notifDesc = notification.getDescription();
                         return GestureDetector(
-                          child: NotificationWidget(
-                            notifID: notifID,
+                          child: InboxWidget(
+                            inboxID: notifID,
                             listingID: listingID,
-                            notifName: notifName,
+                            inboxName: notifName,
                             imageUrl: imageUrl,
-                            notifDesc: notifDesc,
+                            inboxDesc: notifDesc,
                           ),
                             onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: listingID))
 
