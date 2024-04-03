@@ -3,7 +3,7 @@ import 'package:algolia/algolia.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:raffl/controllers/notification_controller.dart';
+import 'package:raffl/controllers/inbox_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';

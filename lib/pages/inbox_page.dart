@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:raffl/controllers/notification_controller.dart';
+import 'package:raffl/controllers/inbox_controller.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
 import 'package:raffl/widgets/notification_widget.dart';
@@ -11,10 +11,10 @@ import '../routes/app_router.gr.dart';
 
 @RoutePage()
 class InboxPage extends StatelessWidget {
-  final NotificationController notificationController;
+  final InboxController notificationController;
 
   InboxPage({Key? key})
-      : notificationController = Get.put(NotificationController()),
+      : notificationController = Get.put(InboxController()),
         super(key: key);
 
   @override
@@ -25,7 +25,7 @@ class InboxPage extends StatelessWidget {
       TitleHeaderWidget(title: 'Inbox'),
       Expanded(
         child: FutureBuilder(
-          future: notificationController.getNotifications(),
+          future: notificationController.getInboxEntries(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {

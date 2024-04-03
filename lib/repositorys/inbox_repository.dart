@@ -5,12 +5,12 @@ import 'package:raffl/models/notification_model.dart';
 
 
 
-class NotificationRepository extends GetxController {
-  static NotificationRepository get instance => Get.find(); //Static instance of all getx controllers
+class InboxRepository extends GetxController {
+  static InboxRepository get instance => Get.find(); //Static instance of all getx controllers
   final db = FirebaseFirestore.instance;
 
   //Notifications are a subcollection within userData
-  createNotification(NotificationModel notificationData, [String? userID]) async {
+  createInboxEntry(NotificationModel notificationData, [String? userID]) async {
     String uid = userID ?? FirebaseAuth.instance.currentUser!.uid; //If user ID not provided, create for current user
     print("Creating notification for ${uid}");
 
@@ -23,7 +23,7 @@ class NotificationRepository extends GetxController {
   }
 
   //Returns all notifications for current user
-  Future<List<NotificationModel>> getNotifications() async {
+  Future<List<NotificationModel>> getInboxEntries() async {
     final snapshot = await db.collection("UserData")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("Notifications").get();
@@ -31,13 +31,4 @@ class NotificationRepository extends GetxController {
         NotificationModel.fromFirestore(e)).toList();
     return notifications;
   }
-  /*
-  Future<UserDataModel> getUserDetails(String uid) async {
-    final snapshot = await db.collection("UserData")
-        .where(FieldPath.documentId, isEqualTo: uid).get();
-    final userData = snapshot.docs.map((e) =>
-        UserDataModel.fromFirestore(e)).single;
-    return userData;
-  }
-   */
 }

@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-import 'package:raffl/controllers/notification_controller.dart';
+import 'package:raffl/controllers/inbox_controller.dart';
 import 'package:raffl/controllers/push_notification_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/address_model.dart';
@@ -368,8 +368,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                     description:
                                                                     'Bought ${number} tickets',
                                                                   );
-                                                                  NotificationController()
-                                                                      .createNotification(
+                                                                  InboxController()
+                                                                      .createInboxEntry(
                                                                       boughtNotification);
                                                                   Navigator.of(
                                                                       dialogContext)
