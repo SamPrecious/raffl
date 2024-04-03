@@ -1,28 +1,28 @@
-//import * as functionsV1 from 'firebase-functions/v1';
-//import * as functionsV2 from 'firebase-functions/v2';
-//import * as functions from "firebase-functions";
 import * as admin from 'firebase-admin';
 admin.initializeApp();
-//const db = admin.firestore();
+
 import {
-    //onDocumentWritten,
     onDocumentCreated,
-    //onDocumentUpdated,
-    //onDocumentDeleted,
   } from "firebase-functions/v2/firestore";
 
 // Dependencies for task queue functions.
 const {onTaskDispatched} = require("firebase-functions/v2/tasks");
-const {onRequest} = require("firebase-functions/v2/https");
+//const {onRequest} = require("firebase-functions/v2/https");
 const {getFunctions} = require("firebase-admin/functions");
+const {onCall} = require("firebase-functions/v2/https");
 
 // Dependencies for image backup.
 const {GoogleAuth} = require("google-auth-library");
 let auth = new GoogleAuth({
     scopes: 'https://www.googleapis.com/auth/cloud-platform',
-  });
+});
   
 
+
+
+
+  
+/*
 //Queues the select winner task for the endDate of our raffle auction
 exports.enqueueSelectedWinner = onRequest({region: "europe-west2"},
     async (request: any, response: any) => {
@@ -42,7 +42,7 @@ exports.enqueueSelectedWinner = onRequest({region: "europe-west2"},
         console.log("Payload sent");
         response.sendStatus(200);
     }
-);
+);*/
 
 //This function is automatically invoked when a listing timestamp ends, and will select a winner at random
 exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (request: any) => {
@@ -62,16 +62,10 @@ exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (re
     if (listingData) {
         listingName = listingData.Name;
         image = listingData.PrimaryImage;
-        //LISTINGID
     } else {
         console.log('No data in document!');
     }
 
-    //const testD = request.id; // Access the payload as a string
-    
-    //console.log("ID is ->", testD);
-    //await listingDocument.update({Winner: "testVal"})
-        
     const ticketsCollection = listingDocument.collection('Tickets');
     const ticketsSnapshot = await ticketsCollection.get();
     let nonWinningUsers = new Set<string>(); //Array of our users who are interested (watching or have tickets) but did not win
@@ -160,7 +154,21 @@ async function createNotification(db: admin.firestore.Firestore,userId: string, 
         console.log("push notification sent");
     }
 }
+exports.addPushNotification = onCall({region: "europe-west2"}, (request : any) => {
+    // Message text passed from the client.
+    //const text = request.data.text;
+    // Authentication / user information is automatically added to the request.
+    //const uid = request.auth.uid;
+    //const name = request.auth.token.name || null;
+    //const picture = request.auth.token.picture || null;
+    //const email = request.auth.token.email || null;
+    const db = admin.firestore();
+    console.log("Message recieved loud and clear");
+    console.log(request.data)
 
+    createNotification(db, request.data.userID, request.data.description, request.data.imageUrl, request.data.listingID, request.data.notificationName);
+
+});
 exports.listingCreated = onDocumentCreated({document: "Listings/{docId}",region: "europe-west2"}, async (event) => {
     const snapshot = event.data;
     
@@ -205,50 +213,7 @@ exports.queuedTask = onTaskDispatched({region: "europe-west2"},
     }
 );
 
-/*
-exports.listingCreated = onDocumentCreated({document: "Listings/{docId}",region: "europe-west2"}, async (event) => {
-    console.log("-------------------------------------------------------");
-    const snapshot = event.data;
-    
-    if (!snapshot) {
-        console.log("No data associated with the event");
-        return;
-    }
-
-    console.log("Document Creation Noticed");
-
-    // Get the 'EndDate' field from the document
-    const endDate = snapshot.get('EndDate');
-    if (!endDate) {
-        console.log("No EndDate field in the document");
-        return;
-    }
-
-    // Ensure 'EndDate' is a Timestamp
-    if (!(endDate instanceof admin.firestore.Timestamp)) {
-        console.log("EndDate is not a Timestamp");
-        return;
-    }
-    // Add 1 day to 'EndDate'
-    const newEndDate = admin.firestore.Timestamp.fromMillis(endDate.toMillis() + 24 * 60 * 60 * 1000);
-
-    // Update the document with the new 'EndDate'
-    await snapshot.ref.update({ TestEndDate: newEndDate });
-
-    console.log('Field "EndDate" updated with value 1 day later');
-
-    return null; //Return null to indicate function is complete
-});*/
-
-
-
-/*
-exports.queueTask = functions.https.onRequest(async (request, response) => {
-    console.log("test");
-    const functionName = "taskFunction"
-    const queue = functions.taskQueue(functionName);
-});*/
-    
+    /*
 //This function is automatically invoked when a listing timestamp ends, and will select a winner at random
 exports.selectWinner = onRequest({region: "europe-west2"},async (request: any, response: any) => {
     //TODO Change listingID to function input when done with testing
@@ -281,7 +246,7 @@ exports.selectWinner = onRequest({region: "europe-west2"},async (request: any, r
         console.log("The winner is: ", winner)
     }
 });
-
+*/
 
 /**
  * This function was taken from the official firebase documentation [https://firebase.google.com/docs/functions/task-functions?gen=2nd]

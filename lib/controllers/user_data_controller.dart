@@ -30,6 +30,10 @@ class UserDataController extends GetxController{
     return userDataRepository.getCredits(uid);
   }
 
+  getNotificationToken(String userID) async {
+    return await userDataRepository.getNotificationToken(userID);
+  }
+
   updateNotificationToken(String notificationToken) async{
     return await userDataRepository.updateNotificationToken(notificationToken);
   }

@@ -49,6 +49,7 @@ dependencies:
 
   #Firebase Database
   cloud_firestore: ^4.13.6
+  cloud_functions: ^4.6.8
   get: ^4.6.6
   firebase_storage: ^11.6.6
   image_picker: ^1.0.7

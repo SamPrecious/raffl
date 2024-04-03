@@ -129,6 +129,16 @@ class UserDataRepository extends GetxController {
         .update({"NotificationToken": notificationToken});
   }
 
+  Future<String> getNotificationToken(String userID) async{
+    final snapshot = await db
+        .collection("UserData")
+        .where(FieldPath.documentId, isEqualTo: userID)
+        .get();
+    final notificationToken =
+        snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.notificationToken;
+    return (notificationToken!);
+  }
+
   Future<void> incrementCredits(int newCredits) async {
     //Increments field value by the new credits
     user = FirebaseAuth.instance.currentUser!;

@@ -5,12 +5,12 @@ import 'package:raffl/models/notification_model.dart';
 
 class UserDataModel {
   final int credits;
-
+  final String? notificationToken;
   //final List<NotificationDataModel> notifications;
 
   const UserDataModel({
     required this.credits,
-    //required this.notifications,
+    this.notificationToken,
   });
 
   //maps data to JSON format for FireStore
@@ -25,7 +25,7 @@ class UserDataModel {
     final data = snapshot.data()!; //TODO Remove or Keep !?
     return UserDataModel(
       credits: data["Credits"],
-      //notifications: [], //TODO
+      notificationToken: data["NotificationToken"],
     );
   }
 }

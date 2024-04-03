@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:raffl/controllers/notification_controller.dart';
+import 'package:raffl/controllers/push_notification_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
 import 'package:raffl/models/address_model.dart';
 import 'package:raffl/models/notification_model.dart';
@@ -42,6 +43,7 @@ class ViewListingPage extends StatefulWidget {
 class _ViewListingPageState extends State<ViewListingPage> {
   final listingController = Get.put(ListingController());
   final userDataController = Get.put(UserDataController());
+  final pushNotificationController = Get.put(PushNotificationController());
   ValueNotifier<bool> userIsWatching = ValueNotifier<bool>(false);
   bool userIsHost = false;
   int userCredits = 0;
@@ -551,10 +553,9 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                             description:
                                                                             'Item received. You have been awarded £${ticketsSold.value * listing.getTicketPrice()} credits',
                                                                           );
-                                                                          NotificationController().createNotification(boughtNotification, hostID);
-                                                                          //TODO send push notification to user
-
-
+                                                                          //NotificationController().createNotification(boughtNotification, hostID);
+                                                                          //Sends push notification to host AND generates inbox item
+                                                                          await pushNotificationController.sendPushNotification(hostID, boughtNotification);
 
                                                                           AutoRouter.of(context).popAndPush(ViewListingRoute(documentID: listing.getDocumentID()));
 
