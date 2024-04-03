@@ -18,32 +18,6 @@ let auth = new GoogleAuth({
 });
   
 
-
-
-
-  
-/*
-//Queues the select winner task for the endDate of our raffle auction
-exports.enqueueSelectedWinner = onRequest({region: "europe-west2"},
-    async (request: any, response: any) => {
-        const functionName = "selectWinnerQueue";
-        const queue = getFunctions().taskQueue(functionName);
-        const endDate = new Date(new Date().getTime() + 10000);
-        const targetUri = await getFunctionUrl(functionName);
-        console.log("targetUri is", targetUri);
-        const payload = '1234';
-        console.log("Payload is: ", payload); // Log the payload
-
-        const enqueuePromise = queue.enqueue({payload}, { //Add user ID inside curly braces for future
-              uri: targetUri,
-              scheduleTime: endDate,
-        });
-        await enqueuePromise;
-        console.log("Payload sent");
-        response.sendStatus(200);
-    }
-);*/
-
 //This function is automatically invoked when a listing timestamp ends, and will select a winner at random
 exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (request: any) => {
     //TODO Change listingID to function input when done with testing
@@ -56,12 +30,13 @@ exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (re
     //Create notification to tell user they have won:
     let listingName = "";
     let image = "";
-
+    let hostID = "";
     //Recovers information from snapshot
     const listingData = listingSnapshot.data();
     if (listingData) {
         listingName = listingData.Name;
         image = listingData.PrimaryImage;
+        hostID = listingData.HostID;
     } else {
         console.log('No data in document!');
     }
@@ -75,6 +50,9 @@ exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (re
     // Check if this document exists (i.e. hasn't been deleted)
     if (ticketsSnapshot.empty) {
         console.log('User has no tickets');
+        //TODO send notification saying sorry, your item did not sell, or something along those lines
+        createNotification(db, hostID, "Sorry, no one bought any tickets.", image, listingId, listingName);
+
     } else { // Select winner for current auction
         let ticketArray: string[] = []; //Array to contain a user for every ticket they own (i.e. a user with 5 tickets in the array 5 times)
         
@@ -94,6 +72,11 @@ exports.selectWinnerQueue = onTaskDispatched({region: "europe-west2"}, async (re
         nonWinningUsers.delete(winner); //Removes the winner from the nonWinningUsers set
         console.log("The winner is: ", winner);
         createNotification(db, winner, "Congratulations, you have won, please add your address.", image, listingId, listingName);
+
+
+        //TODO Send notification to item host
+        createNotification(db, hostID, "Congratulations, your item has a winner. Awaiting shipping address.", image, listingId, listingName);
+
     }
 
     //Now we want to loop through to all users interested in this item that didn't win and notify them they were unsuccessful
@@ -213,40 +196,6 @@ exports.queuedTask = onTaskDispatched({region: "europe-west2"},
     }
 );
 
-    /*
-//This function is automatically invoked when a listing timestamp ends, and will select a winner at random
-exports.selectWinner = onRequest({region: "europe-west2"},async (request: any, response: any) => {
-    //TODO Change listingID to function input when done with testing
-    const listingId = 1234;
-
-    const db = admin.firestore();
-    const listingDocument = db.collection('Listings').doc(listingId.toString());
-    const listingDoc = await listingDocument.get();
-
-    // Check if this document exists (i.e. hasn't been deleted)
-    if (!listingDoc.exists) {
-        console.log('Document no longer exists');
-    } else {
-        const ticketsCollection = listingDocument.collection('tickets');
-
-        const ticketsSnapshot = await ticketsCollection.get();
-
-        let ticketArray: string[] = [];
-
-        // We add an individual value into our array for all tickets, to randomly select one after
-        ticketsSnapshot.forEach((ticketDoc) => {
-            const ticketData = ticketDoc.data();
-            for (let i = 0; i < ticketData.TicketNum; i++) {
-                ticketArray.push(ticketDoc.id);
-            }            
-        });
-        //Selects the winning ticket at random
-        const winner = ticketArray[Math.floor(Math.random() * ticketArray.length)]
-        await listingDocument.update({Winner: winner})
-        console.log("The winner is: ", winner)
-    }
-});
-*/
 
 /**
  * This function was taken from the official firebase documentation [https://firebase.google.com/docs/functions/task-functions?gen=2nd]
