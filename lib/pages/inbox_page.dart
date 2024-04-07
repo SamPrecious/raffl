@@ -54,10 +54,6 @@ class InboxPage extends StatelessWidget {
                             onTap: () => AutoRouter.of(context).push(ViewListingRoute(documentID: listingID))
 
                         );
-                        return ListingResultWidget(
-                            name: notifName,
-                            endDate: int.parse(notifID),
-                            primaryImageUrl: imageUrl);
                       }),
                 );
               } else {

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:raffl/styles/colors.dart';
 
 class myTextStyles{
+  static final defaultTextBold = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+  );
   static final defaultText = TextStyle(
       fontSize: 16
   );

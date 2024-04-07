@@ -33,7 +33,6 @@ class _CreateListingPageState extends State<CreateListingPage> {
   final formKey = GlobalKey<FormState>();
   String? imageUrl;
   bool isUploading = false; //When uploading image, this is temporarily set to true until it is fully uploaded
-  String endDay = '1 day'; //default
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -322,6 +321,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 );
                                 return;
                               }
+
                               int timeIncrement = int.parse(listingEndController.text[0]);
                               //TODO change days back to minutes when debugging workflow
                               DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));

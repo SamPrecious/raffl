@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(32.0),
               child: SearchBar(
                 onSubmitted: (query){
-                  AutoRouter.of(context).push(SearchResultsRoute(searchInput: query));
+                  AutoRouter.of(context).push(SearchResultsRoute(searchInput: query, soldItems: false));
                 },
                 leading: const Icon(Icons.search),
               ),

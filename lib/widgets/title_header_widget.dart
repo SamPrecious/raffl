@@ -20,7 +20,7 @@ class TitleHeaderWidget extends StatelessWidget {
         Row(
           children: [
             IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back_ios_outlined),
               onPressed: () {
                 print("back");
                 AutoRouter.of(context).pop();

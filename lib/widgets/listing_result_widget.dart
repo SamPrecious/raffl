@@ -6,21 +6,29 @@ class ListingResultWidget extends StatelessWidget  {
   final String name;
   final int endDate;
   final String primaryImageUrl;
+  final int ticketsSold;
+  final int usersInterested;
+  final int views;
+  final int ticketPrice;
 
   const ListingResultWidget(
       {Key? key,
       required this.name,
-      required this.endDate,
-      required this.primaryImageUrl})
+      required this.endDate, required this.primaryImageUrl,
+        required this.ticketsSold,
+        required this.usersInterested,
+        required this.views,required this.ticketPrice,})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final double containerHeight = 180;
     final double topContainerHeight = containerHeight * 0.8;
-    final double lineHeight =
-        containerHeight * 0.0075; //Lines take up width of 0.02
+    final double lineHeight = containerHeight * 0.0075; //Lines take up width of 0.02
     final double bottomContainerHeight = containerHeight * 0.1850;
+
+    //Image height is the top container height and width for 4:3 image
+    final double imageWidth = topContainerHeight * 4/3;
 
     return Container(
         height: containerHeight, //Height of each individual widget
@@ -31,38 +39,97 @@ class ListingResultWidget extends StatelessWidget  {
             flex: 8000,
             child: Row(
               children: [
-                //Image widget taking up 35% width
-                Flexible(
-                  fit: FlexFit.tight,
-                  flex: 45,
-                  child: Container(
-                    color: Colors.blue,
-                    constraints: BoxConstraints(
-                      minHeight: topContainerHeight,
-                      maxHeight: topContainerHeight,
-                    ),
-                    child: Image.network(primaryImageUrl, fit: BoxFit.cover),
-                  ),
+                Container(
+                  color: Colors.blue,
+                  height: topContainerHeight,
+                  width: imageWidth,
+                  child: Image.network(primaryImageUrl, fit: BoxFit.cover),
                 ),
-                //Descriptive widget taking up 65% width
-                Flexible(
-                  fit: FlexFit.tight, // change this from loose to tight
-                  flex: 55,
-                  child: Container(
-                    color: secondaryColor,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Testing",
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            )
+                //Descriptive widget detailing extra stats
+                Expanded(
+                  child: Column(
+                    children: [
+                      Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: Container(
+                          color: secondaryColor,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Tickets Sold: ${ticketsSold}",
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                              ),
+                            ),
+                          ), //Descriptive stuff
                         ),
                       ),
-                    ), //Descriptive stuff
+                      Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: Container(
+                          color: secondaryColor,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Users Interested: ${usersInterested}",
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                              ),
+                            ),
+                          ), //Descriptive stuff
+                        ),
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: Container(
+                          color: secondaryColor,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Ticket Price: £${ticketPrice}",
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                              ),
+                            ),
+                          ), //Descriptive stuff
+                        ),
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: Container(
+                          color: secondaryColor,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4.0, right: 4.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Views: ${views}",
+                                  style: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  )
+                              ),
+                            ),
+                          ), //Descriptive stuff
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

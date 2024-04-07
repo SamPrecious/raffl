@@ -44,7 +44,7 @@ dependencies:
   firebase_auth: ^4.15.3
   firebase_ui_auth: ^1.7.0
   intl: ^0.18.1
-
+  dropdown_textfield: ^1.0.8
 
 
   algolia: ^1.1.2

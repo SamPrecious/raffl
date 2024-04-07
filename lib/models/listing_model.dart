@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:raffl/models/address_model.dart';
 import 'package:raffl/models/shipping_details_model.dart';
 
-
 class ListingModel {
   final String? documentID;
   final String? hostID;
@@ -43,21 +42,24 @@ class ListingModel {
     this.itemReceived,
   });
 
-
-
   //TODO - We don't need to retrieve tags BUT we want them to be queried with names, but nothing else
   //Maps data from Algolia JSON data to UserDataModel
-  factory ListingModel.fromAlgolia(AlgoliaObjectSnapshot snapshot) { //SnapshotOptions? options <-Another argument you can add
+  factory ListingModel.fromAlgolia(AlgoliaObjectSnapshot snapshot) {
+    //SnapshotOptions? options <-Another argument you can add
     return ListingModel(
       documentID: snapshot.objectID,
       name: snapshot.data['Name'],
       endDate: snapshot.data['EndDate'],
-      primaryImage: snapshot.data['PrimaryImage']
+      primaryImage: snapshot.data['PrimaryImage'],
+      ticketsSold: snapshot.data['TicketsSold'],
+      usersInterested: snapshot.data['UsersInterested'],
+      views: snapshot.data['Views'],
+      ticketPrice: snapshot.data['TicketPrice'],
     );
   }
 
-  toFirestore(){
-    return{
+  toFirestore() {
+    return {
       "Name": name,
       "HostID": hostID,
       "EndDate": Timestamp.fromMillisecondsSinceEpoch(endDate),
@@ -72,8 +74,9 @@ class ListingModel {
     };
   }
 
-
-  factory ListingModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, int ticketsOwned) { //SnapshotOptions? options <-Another argument you can add
+  factory ListingModel.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot, int ticketsOwned) {
+    //SnapshotOptions? options <-Another argument you can add
     final data = snapshot.data()!;
     return ListingModel(
       documentID: snapshot.id,
@@ -90,8 +93,12 @@ class ListingModel {
       usersWatching: data['UsersWatching'],
       usersInterested: data['UsersInterested'],
       views: data['Views'],
-      address: data['Address'] != null ? AddressModel.fromFirestore(data['Address']) : null,
-      shippingDetails: data['ShippingDetails'] != null ? ShippingDetailsModel.fromFirestore(data['ShippingDetails']) : null,
+      address: data['Address'] != null
+          ? AddressModel.fromFirestore(data['Address'])
+          : null,
+      shippingDetails: data['ShippingDetails'] != null
+          ? ShippingDetailsModel.fromFirestore(data['ShippingDetails'])
+          : null,
       itemReceived: data['ItemReceived'],
     );
   }
@@ -100,11 +107,11 @@ class ListingModel {
     return address != null; //Return true if has address, false otherwise
   }
 
-  bool hasShippingDetails(){
+  bool hasShippingDetails() {
     return shippingDetails != null; //todo
   }
 
-  bool hasBeenReceived(){
+  bool hasBeenReceived() {
     return itemReceived ?? false;
   }
 
@@ -113,17 +120,18 @@ class ListingModel {
     return '${documentID ?? 'No ID'} with name $name and date $endDate';
   }
 
-  AddressModel? getAddress(){
+  AddressModel? getAddress() {
     return address;
   }
 
-  ShippingDetailsModel? getShippingDetails(){
+  ShippingDetailsModel? getShippingDetails() {
     return shippingDetails;
   }
 
-  String getWinnerID(){
+  String getWinnerID() {
     return winner ?? "invalid";
   }
+
   String getHostID() {
     return hostID ?? 'No Owner ID';
   }
@@ -131,39 +139,46 @@ class ListingModel {
   int getTicketsOwned() {
     return ticketsOwned ?? 0;
   }
+
   String getDocumentID() {
     return documentID ?? 'No Document ID';
   }
 
-  String getName(){
+  String getName() {
     return '$name';
   }
 
-  String getPrimaryImageURL(){
+  String getPrimaryImageURL() {
     return '$primaryImage';
   }
 
-  int getTicketPrice(){
+  int getTicketPrice() {
     return ticketPrice ?? 0;
   }
 
-  int getTicketsSold(){
+  int getTicketsSold() {
     return ticketsSold ?? 0;
   }
 
-  int getUsersWatching(){
+  int getUsersWatching() {
     return usersWatching ?? 0;
   }
 
-  int getUsersInterested(){
+  int getUsersInterested() {
     return usersInterested ?? 0;
   }
-  String getDescription(){
+
+  int getViews() {
+    print("Views are: ${views}");
+    return views ?? 0;
+  }
+
+  String getDescription() {
     print("Description is: ${description}");
     return description ?? "No Description";
   }
 
-  int getDate(){
+  int getDate() {
     print("Returning date: $endDate");
     return endDate;
   }
@@ -171,8 +186,4 @@ class ListingModel {
   List<String> getTags() {
     return tags ?? []; //Returns empty array if tags is null
   }
-
-
 }
-
-

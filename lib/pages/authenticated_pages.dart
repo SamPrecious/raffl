@@ -49,6 +49,11 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                       break;
                     case 2:
                       print("wins");
+                      AutoRouter.of(context).push(
+                        WinsRoute(
+                          searchInput: "",
+                        ),
+                      );
                       break;
                     case 3:
                       //AutoRouter.of(context).push(HomeRoute()); TODO inbox route
