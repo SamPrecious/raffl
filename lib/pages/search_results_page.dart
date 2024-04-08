@@ -29,9 +29,9 @@ class SearchResultsPage extends StatefulWidget {
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
   final filterController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    ValueNotifier<String> searchInputNotifier = ValueNotifier<String>(widget.searchInput);
     filterController.text = widget.sortInput ?? 'Sort (Default)';
     RangeValues currentPriceRange = widget.priceRange ?? RangeValues(0, 50);
 
@@ -47,10 +47,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             child: Column(
               children: [
                 SearchBar(
+                  onChanged: (query){
+                    searchInputNotifier.value = query;
+                  },
                   onSubmitted: (query) {
+                    print("Current search input: ${searchInputNotifier.value}");
                     AutoRouter.of(context).push(
                       SearchResultsRoute(
-                        searchInput: widget.searchInput,
+                        searchInput: searchInputNotifier.value,
                         sortInput: filterController.text,
                         soldItems: soldItemCheckbox,
                         priceRange: currentPriceRange,
@@ -140,7 +144,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                             Navigator.pop(context);
                                             AutoRouter.of(context).push(
                                               SearchResultsRoute(
-                                                searchInput: widget.searchInput,
+                                                searchInput: searchInputNotifier.value,
                                                 sortInput:
                                                     filterController.text,
                                                 soldItems: soldItemCheckbox,
@@ -186,7 +190,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                         "Filtering by : ${filterController.text}");
                                     AutoRouter.of(context).push(
                                       SearchResultsRoute(
-                                        searchInput: widget.searchInput,
+                                        searchInput: searchInputNotifier.value,
                                         sortInput: filterController.text,
                                         soldItems: soldItemCheckbox,
                                         priceRange: currentPriceRange,
@@ -225,7 +229,7 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
           Expanded(
             child: FutureBuilder(
                 future: algoliaListingsController.getSearchResults(
-                    widget.searchInput,
+                    searchInputNotifier.value,
                     filterController.text,
                     soldItemCheckbox,
                     currentPriceRange),
@@ -246,14 +250,14 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                                     style: DefaultTextStyle.of(context).style,
                                     children: <TextSpan>[
                                       TextSpan(
-                                        text: widget.searchInput.isEmpty
+                                        text: searchInputNotifier.value.isEmpty
                                             ? "Everything:"
                                             : "Results for: ",
                                         style: myTextStyles.defaultTextBold,
                                       ),
-                                      if (!widget.searchInput.isEmpty)
+                                      if (!searchInputNotifier.value.isEmpty)
                                         TextSpan(
-                                          text: "${widget.searchInput}",
+                                          text: "${searchInputNotifier.value}",
                                           style: myTextStyles.defaultText,
                                         ),
                                     ],

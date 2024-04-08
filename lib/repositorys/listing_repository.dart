@@ -142,10 +142,17 @@ class ListingRepository extends GetxController {
     int ticketsOwned = await getTickets(documentID);
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, ticketsOwned)).single;
     print("Listing found");
-
-
     return listing;
   }
 
+
+  Future<List<ListingModel>> getSelling(String userID) async {
+    //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
+    final snapshot = await db.collection("Listings").where('HostID', isEqualTo: userID).get();
+    final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
+
+    return listing;
+
+  }
 
 }

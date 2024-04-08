@@ -95,6 +95,36 @@ class UserDataRepository extends GetxController {
     });
   }
 
+  Future<void> updateRecentlyViewed(String listingID) async{
+    final snapshot = await db
+        .collection("UserData")
+        .where(FieldPath.documentId, isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+
+    //final recentlyViewed = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.recentlyViewed;
+    /*
+    We want the most recent 2 listings SO:
+    IF(item doesnt exist)
+      Add item to front of array
+      remove last item if >2
+    IF item exists
+      IF item at front do nothing
+      IF item at back, swap order
+     */
+    /*
+    if(recentlyViewed != null){
+      print("Recently viewed exists");
+      if(recentlyViewed.contains(listingID)){
+        print("test");
+      }
+    }else{
+      print("Recently viewed doesnt exist");
+    }*/
+
+
+
+  }
+
   Future<int> getCredits(String uid) async {
     final snapshot = await db
         .collection("UserData")
@@ -104,6 +134,20 @@ class UserDataRepository extends GetxController {
         snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.credits;
     return (userCredits);
   }
+
+
+  Future<List<String>?> getWatching(String uid) async {
+    final snapshot = await db
+        .collection("UserData")
+        .where(FieldPath.documentId, isEqualTo: uid)
+        .get();
+    final watching =
+        snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.watching;
+    print("Ready to return watching");
+    return (watching);
+  }
+
+
 
   Future<UserDataModel> getUserDetails(String uid) async {
     final snapshot = await db

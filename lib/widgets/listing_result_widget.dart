@@ -10,14 +10,18 @@ class ListingResultWidget extends StatelessWidget  {
   final int usersInterested;
   final int views;
   final int ticketPrice;
-
+  final bool? includeTimer;
   const ListingResultWidget(
       {Key? key,
       required this.name,
-      required this.endDate, required this.primaryImageUrl,
+      required this.endDate,
+        required this.primaryImageUrl,
         required this.ticketsSold,
         required this.usersInterested,
-        required this.views,required this.ticketPrice,})
+        required this.views,
+        required this.ticketPrice,
+        this.includeTimer = true, //Default to true
+      })
       : super(key: key);
 
   @override
@@ -169,11 +173,13 @@ class ListingResultWidget extends StatelessWidget  {
                   ),
                 ),
                 //Countdown widget taking up 25% width
-                Flexible(
-                  fit: FlexFit.tight, // change this from loose to tight
-                  flex: 25,
-                  child: ListingResultTimerWidget(endTime: endDate),
-                ),
+                if (includeTimer == true) ... [ //Optional as we don't include it on our wins page, as its always already over
+                  Flexible(
+                    fit: FlexFit.tight, // change this from loose to tight
+                    flex: 25,
+                    child: ListingResultTimerWidget(endTime: endDate),
+                  ),
+                ],
               ])),
           Flexible(
             fit: FlexFit.tight,

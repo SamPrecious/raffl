@@ -5,7 +5,8 @@ import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 class CustomCountdownTimer extends StatelessWidget {
   final int endTime;
   final ValueChanged<bool>? lessThanHour;
-  CustomCountdownTimer({required this.endTime, this.lessThanHour});
+  final ValueChanged<bool>? timesUp;
+CustomCountdownTimer({required this.endTime, this.lessThanHour, this.timesUp});
   /*TODO
      Must add value to listen to tell us when timer ends, so we can refresh the page outside
    */
@@ -16,7 +17,10 @@ class CustomCountdownTimer extends StatelessWidget {
       widgetBuilder: (_, endTime) {
         if(endTime == null) {
           if(lessThanHour != null && lessThanHour != true){
-            lessThanHour!(true); //Tells owner that there is less than an hour left
+            lessThanHour!(true); //Tells owner that there is less than an hour left to set widget from blue to red
+          }
+          if(timesUp != null && timesUp != true){
+            timesUp!(true);
           }
           return Text('Time\'s up!');
         } else {

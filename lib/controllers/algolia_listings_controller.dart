@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:raffl/repositorys/user_data_repository.dart';
 import '../repositorys/algolia_listings_repository.dart';
 
 class AlgoliaListingsController extends GetxController{
@@ -17,8 +18,19 @@ class AlgoliaListingsController extends GetxController{
     return algoliaListingsRepository.getSearchResults(searchQuery, optionalSort, soldItems, priceRange);
   }
 
-  getWins(String searchQuery, String userID){
-    return algoliaListingsRepository.getWins(searchQuery, userID);
+
+
+  getWins(String userID){
+    return algoliaListingsRepository.getWins(userID);
+  }
+
+  getWatching(String userID) async {
+    final userDataRepository = UserDataRepository();
+    List<String>? watching = await userDataRepository.getWatching(userID);
+    if(watching != null){
+      return algoliaListingsRepository.getWatching(watching);
+    }
+    return null;
   }
 
 }

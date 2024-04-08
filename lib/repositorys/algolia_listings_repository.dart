@@ -55,13 +55,9 @@ class AlgoliaListingsRepository extends GetxController {
     return searchResults;
   }
 
+  Future<List<ListingModel>> getWins(String userID) async {
 
-  Future<List<ListingModel>> getWins(String searchQuery, String userID) async {
-    int currentTime = DateTime.now().millisecondsSinceEpoch;
-
-    AlgoliaQuery query = algolia.instance.index('listings_index').query(searchQuery);
-    // Add price range filter
-    print("Price ranges:");
+    AlgoliaQuery query = algolia.instance.index('listings_index').query("");
     String filterQuery = "Winner:${userID}";
     query = query.filters(filterQuery);
 
@@ -69,6 +65,24 @@ class AlgoliaListingsRepository extends GetxController {
     final searchResults = snapshot.hits.map((e) => ListingModel.fromAlgolia(e)).toList();
     return searchResults;
   }
+
+
+  Future<List<ListingModel>> getWatching(List<String> watching) async {
+    AlgoliaQuery query = algolia.instance.index('listings_index').query("");
+    String filterQuery = "objectID:${watching[0]}";
+
+    for (var i = 1; i < watching.length; i++) {
+      String userID = watching[i];
+      filterQuery += " OR objectID:${userID}";
+    }
+    print(filterQuery);
+    query = query.filters(filterQuery);
+
+    final snapshot = await query.getObjects();
+    final searchResults = snapshot.hits.map((e) => ListingModel.fromAlgolia(e)).toList();
+    return searchResults;
+  }
+
 
 
 }

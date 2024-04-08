@@ -28,55 +28,83 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false, //Stops trying to resize when keyboard appears
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: SearchBar(
-                onSubmitted: (query){
-                  AutoRouter.of(context).push(SearchResultsRoute(searchInput: query, soldItems: false));
-                },
-                leading: const Icon(Icons.search),
-              ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(32),
-            child: Center(
-              child: Column(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
+              child: Row(
                 children: [
-                  SizedBox(height: 120),
-                  Text('User: '),
-                  Text(user.email!),
-                  SizedBox(height: 10),
-                  ElevatedButton.icon(
-                    style: standardButton,
-                    onPressed: () {
-                      //ProfileRoute
-                      //AutoRoute.of(context).pa
-                      //clearBottomNavbar();
-                      AutoRouter.of(context).push(ProfileRoute());
-                    },
-                    icon: Icon(Icons.person_rounded, size: 32),
-                    label: const Text('Profile'),
+                  Expanded(
+                    flex: 15,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back_ios_rounded, size: 30),
+                      onPressed: () {
+                        print("back");
+                        AutoRouter.of(context).pop();
+                      },
+                    ),
                   ),
-                  /*
-                  UserDataController()).createUserData(userData)
-                   */
-                  SizedBox(height: 10),
-                  ElevatedButton.icon(
-                    style: standardButton,
-                    onPressed: () {
-                      AutoRouter.of(context).push(CreateListingRoute());
-                    },
-                    icon: Icon(Icons.create, size: 32),
-                    label: const Text('Create Listing'),
+                  Expanded(
+                    flex: 80,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: Transform.scale(
+                        scale: 0.9,
+                        child: SearchBar(
+                          onSubmitted: (query){
+                            AutoRouter.of(context).push(SearchResultsRoute(searchInput: query, soldItems: false));
+                          },
+                          leading: const Icon(Icons.search),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 15,
+                    child: Center(
+                      child: IconButton(
+                        onPressed: () {
+                          AutoRouter.of(context).push(ProfileRoute());
+                        },
+                        icon: Icon(Icons.person_rounded, size: 32),
+                        style: circularButton,
+                      
+                      ),
+                    ), // Empty container for the remaining space
                   ),
                 ],
               ),
-            )
-          ),
-        ],
+            ),
+            Padding(
+              padding: EdgeInsets.all(32),
+              child: Center(
+                child: Column(
+                  children: [
+                    SizedBox(height: 120),
+                    Text('User: '),
+                    Text(user.email!),
+                    SizedBox(height: 10),
+
+
+                    /*
+                    UserDataController()).createUserData(userData)
+                     */
+                    SizedBox(height: 10),
+                    ElevatedButton.icon(
+                      style: standardButton,
+                      onPressed: () {
+                        AutoRouter.of(context).push(CreateListingRoute());
+                      },
+                      icon: Icon(Icons.create, size: 32),
+                      label: const Text('Create Listing'),
+                    ),
+                  ],
+                ),
+              )
+            ),
+          ],
+        ),
       ),
     );
   }

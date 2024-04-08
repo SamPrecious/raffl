@@ -52,6 +52,10 @@ class UserDataController extends GetxController{
     return userIsWatching;
   }
 
+  updateRecentlyViewed(String listingID) async{
+    await userDataRepository.updateRecentlyViewed(listingID);
+  }
+
   incrementCredits(int newCredits) async{
     await userDataRepository.incrementCredits(newCredits);
   }

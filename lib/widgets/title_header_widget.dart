@@ -13,30 +13,38 @@ class TitleHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
+    return Row(
       children: [
-        //Using a row here allows us to center the back arrow
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back_ios_outlined),
-              onPressed: () {
-                print("back");
-                AutoRouter.of(context).pop();
-                // Add any other actions you want to perform when the button is tapped
-              },
-            ),
-          ],
+        Expanded(
+          flex: 1,
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios_rounded, size: 30),
+            onPressed: () {
+              print("back");
+              AutoRouter.of(context).pop();
+            },
+          ),
         ),
-        Text(title,
-            style: TextStyle(
-              color: secondaryColor,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            )
+        Expanded(
+          flex: 8,
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(title,
+                style: TextStyle(
+                  color: secondaryColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                )
+            ),
+          ),
+
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(), // Empty container for the remaining space
         ),
       ],
     );
+
   }
 }

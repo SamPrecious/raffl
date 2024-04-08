@@ -3,52 +3,51 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:raffl/controllers/algolia_listings_controller.dart';
-import 'package:raffl/controllers/listing_controller.dart';
 import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
 
 @RoutePage()
-class WinsPage extends StatefulWidget {
-  WinsPage({super.key});
+class WatchingPage extends StatefulWidget {
+
+  WatchingPage(
+      {super.key});
 
   @override
-  State<WinsPage> createState() => _WinsPageState();
+  State<WatchingPage> createState() => _WatchingPageState();
 }
 
-class _WinsPageState extends State<WinsPage> {
+class _WatchingPageState extends State<WatchingPage> {
   final searchController = TextEditingController();
   List<ListingModel> outputList = [];
   List<ListingModel> filteredList = [];
 
   Future? algoliaFuture;
   AlgoliaListingsController algoliaListingsController =
-      Get.put(AlgoliaListingsController());
-  ListingController listingController =
-  Get.put(ListingController());
+  Get.put(AlgoliaListingsController());
   void initState() {
     super.initState();
     searchController.addListener(onSearchChanged);
-    algoliaFuture =  algoliaListingsController.getWins(FirebaseAuth.instance.currentUser!.uid);
+    algoliaFuture = algoliaListingsController.getWatching(FirebaseAuth.instance.currentUser!.uid);
   }
 
   //Filter the list
-  onSearchChanged() {
+  onSearchChanged(){
+    print("Search input: ${searchController.text}");
     setState(() {
+      print("Output list is: ${filteredList}");
       filteredList = outputList.where((item) {
-        print(
-            "Search results: ${item.getName().toLowerCase().contains(searchController.text.toLowerCase())}");
-        return item
-            .getName()
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase());
+        print("Search results: ${item.getName().toLowerCase().contains(searchController.text.toLowerCase())}");
+        return item.getName().toLowerCase().contains(searchController.text.toLowerCase());
       }).toList();
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SafeArea(
         child: Column(children: [
@@ -90,12 +89,13 @@ class _WinsPageState extends State<WinsPage> {
             ),
           ),
           Center(
-            child: Text("Wins",
+            child: Text("Watching",
                 style: TextStyle(
                   color: secondaryColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                )),
+                )
+            ),
           ),
           Expanded(
             child: FutureBuilder(
@@ -103,9 +103,8 @@ class _WinsPageState extends State<WinsPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
-                      List<ListingModel> data =
-                          snapshot.data as List<ListingModel>;
-                      if (data != outputList) {
+                      List<ListingModel> data = snapshot.data as List<ListingModel>;
+                      if(data != outputList){
                         outputList = data;
                         filteredList = List.from(outputList);
                       }
@@ -161,25 +160,24 @@ class _WinsPageState extends State<WinsPage> {
                                       int endDate = item.getDate();
                                       int ticketsSold = item.getTicketsSold();
                                       int usersInterested =
-                                          item.getUsersInterested();
+                                      item.getUsersInterested();
                                       int views = item.getViews();
                                       int ticketPrice = item.getTicketPrice();
                                       String imageUrl =
-                                          item.getPrimaryImageURL();
+                                      item.getPrimaryImageURL();
                                       return GestureDetector(
+                                        //Constructs 'ListingResultWidget' for each separate listing
                                           child: ListingResultWidget(
-                                            name: name,
-                                            endDate: endDate,
-                                            primaryImageUrl: imageUrl,
-                                            ticketsSold: ticketsSold,
-                                            usersInterested: usersInterested,
-                                            views: views,
-                                            ticketPrice: ticketPrice,
-                                            includeTimer: false,
-                                          ),
+                                              name: name,
+                                              endDate: endDate,
+                                              primaryImageUrl: imageUrl,
+                                              ticketsSold: ticketsSold,
+                                              usersInterested: usersInterested,
+                                              views: views,
+                                              ticketPrice: ticketPrice),
                                           onTap: () => AutoRouter.of(context)
                                               .push(ViewListingRoute(
-                                                  documentID: documentID)));
+                                              documentID: documentID)));
                                     }),
                               ),
                             ),
@@ -203,7 +201,7 @@ class _WinsPageState extends State<WinsPage> {
         ]),
       ),
       resizeToAvoidBottomInset:
-          false, //Avoids whitespace above keyboard blocking content
+      false, //Avoids whitespace above keyboard blocking content
     );
   }
 }

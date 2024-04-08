@@ -7,48 +7,51 @@ import 'package:raffl/controllers/listing_controller.dart';
 import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
+import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
 
 @RoutePage()
-class WinsPage extends StatefulWidget {
-  WinsPage({super.key});
+class SellingPage extends StatefulWidget {
+
+  SellingPage(
+      {super.key});
 
   @override
-  State<WinsPage> createState() => _WinsPageState();
+  State<SellingPage> createState() => _SellingPageState();
 }
 
-class _WinsPageState extends State<WinsPage> {
+class _SellingPageState extends State<SellingPage> {
   final searchController = TextEditingController();
   List<ListingModel> outputList = [];
   List<ListingModel> filteredList = [];
 
   Future? algoliaFuture;
   AlgoliaListingsController algoliaListingsController =
-      Get.put(AlgoliaListingsController());
+  Get.put(AlgoliaListingsController());
   ListingController listingController =
   Get.put(ListingController());
+
   void initState() {
     super.initState();
     searchController.addListener(onSearchChanged);
-    algoliaFuture =  algoliaListingsController.getWins(FirebaseAuth.instance.currentUser!.uid);
+    algoliaFuture = listingController.getSelling(FirebaseAuth.instance.currentUser!.uid);
+    //algoliaFuture = algoliaListingsController.getSelling(FirebaseAuth.instance.currentUser!.uid);
   }
 
   //Filter the list
-  onSearchChanged() {
+  onSearchChanged(){
     setState(() {
       filteredList = outputList.where((item) {
-        print(
-            "Search results: ${item.getName().toLowerCase().contains(searchController.text.toLowerCase())}");
-        return item
-            .getName()
-            .toLowerCase()
-            .contains(searchController.text.toLowerCase());
+        print("Search results: ${item.getName().toLowerCase().contains(searchController.text.toLowerCase())}");
+        return item.getName().toLowerCase().contains(searchController.text.toLowerCase());
       }).toList();
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SafeArea(
         child: Column(children: [
@@ -70,14 +73,14 @@ class _WinsPageState extends State<WinsPage> {
                   flex: 8,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: Transform.scale(
-                      scale: 0.9,
-                      child: SearchBar(
-                        controller: searchController,
-                        onSubmitted: (query) {
-                          //TODO Implement
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        child: Text('List Item'),
+                        style: standardButton,
+                        onPressed: () {
+                          AutoRouter.of(context).push(CreateListingRoute());
                         },
-                        leading: const Icon(Icons.search),
                       ),
                     ),
                   ),
@@ -89,13 +92,24 @@ class _WinsPageState extends State<WinsPage> {
               ],
             ),
           ),
+          Transform.scale(
+            scale: 0.9,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: SearchBar(
+                controller: searchController,
+                leading: const Icon(Icons.search),
+              ),
+            ),
+          ),
           Center(
-            child: Text("Wins",
+            child: Text("My Listings",
                 style: TextStyle(
                   color: secondaryColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                )),
+                )
+            ),
           ),
           Expanded(
             child: FutureBuilder(
@@ -103,9 +117,8 @@ class _WinsPageState extends State<WinsPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
-                      List<ListingModel> data =
-                          snapshot.data as List<ListingModel>;
-                      if (data != outputList) {
+                      List<ListingModel> data = snapshot.data as List<ListingModel>;
+                      if(data != outputList){
                         outputList = data;
                         filteredList = List.from(outputList);
                       }
@@ -161,25 +174,23 @@ class _WinsPageState extends State<WinsPage> {
                                       int endDate = item.getDate();
                                       int ticketsSold = item.getTicketsSold();
                                       int usersInterested =
-                                          item.getUsersInterested();
+                                      item.getUsersInterested();
                                       int views = item.getViews();
                                       int ticketPrice = item.getTicketPrice();
                                       String imageUrl =
-                                          item.getPrimaryImageURL();
+                                      item.getPrimaryImageURL();
                                       return GestureDetector(
                                           child: ListingResultWidget(
-                                            name: name,
-                                            endDate: endDate,
-                                            primaryImageUrl: imageUrl,
-                                            ticketsSold: ticketsSold,
-                                            usersInterested: usersInterested,
-                                            views: views,
-                                            ticketPrice: ticketPrice,
-                                            includeTimer: false,
-                                          ),
+                                              name: name,
+                                              endDate: endDate,
+                                              primaryImageUrl: imageUrl,
+                                              ticketsSold: ticketsSold,
+                                              usersInterested: usersInterested,
+                                              views: views,
+                                              ticketPrice: ticketPrice),
                                           onTap: () => AutoRouter.of(context)
                                               .push(ViewListingRoute(
-                                                  documentID: documentID)));
+                                              documentID: documentID)));
                                     }),
                               ),
                             ),
@@ -203,7 +214,7 @@ class _WinsPageState extends State<WinsPage> {
         ]),
       ),
       resizeToAvoidBottomInset:
-          false, //Avoids whitespace above keyboard blocking content
+      false, //Avoids whitespace above keyboard blocking content
     );
   }
 }

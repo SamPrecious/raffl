@@ -324,7 +324,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
 
                               int timeIncrement = int.parse(listingEndController.text[0]);
                               //TODO change days back to minutes when debugging workflow
-                              DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));
+                              DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
                               int timestampInSeconds = newTime.millisecondsSinceEpoch;
                               print("Creating listing with timestamp: ${timestampInSeconds}");
                               final listing = ListingModel(

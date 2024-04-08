@@ -43,6 +43,11 @@ class ListingController extends GetxController{
     return listingRepository.getListing(documentID);
   }
 
+
+  getSelling(String userID){
+    return listingRepository.getSelling(userID);
+  }
+
   getAddress(String listingID) async{
     return await listingRepository.getAddress(listingID);
   }
