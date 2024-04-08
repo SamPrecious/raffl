@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:raffl/controllers/algolia_listings_controller.dart';
+import 'package:raffl/controllers/listing_controller.dart';
 import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
@@ -23,13 +23,14 @@ class _WatchingPageState extends State<WatchingPage> {
   List<ListingModel> outputList = [];
   List<ListingModel> filteredList = [];
 
-  Future? algoliaFuture;
-  AlgoliaListingsController algoliaListingsController =
-  Get.put(AlgoliaListingsController());
+  Future? listingFuture;
+
+  ListingController listingController =
+  Get.put(ListingController());
   void initState() {
     super.initState();
     searchController.addListener(onSearchChanged);
-    algoliaFuture = algoliaListingsController.getWatching(FirebaseAuth.instance.currentUser!.uid);
+    listingFuture = listingController.getWatching(FirebaseAuth.instance.currentUser!.uid);
   }
 
   //Filter the list
@@ -99,7 +100,7 @@ class _WatchingPageState extends State<WatchingPage> {
           ),
           Expanded(
             child: FutureBuilder(
-                future: algoliaFuture,
+                future: listingFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {

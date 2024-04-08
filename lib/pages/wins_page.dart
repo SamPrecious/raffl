@@ -22,15 +22,13 @@ class _WinsPageState extends State<WinsPage> {
   List<ListingModel> outputList = [];
   List<ListingModel> filteredList = [];
 
-  Future? algoliaFuture;
-  AlgoliaListingsController algoliaListingsController =
-      Get.put(AlgoliaListingsController());
+  Future? listingFuture;
   ListingController listingController =
   Get.put(ListingController());
   void initState() {
     super.initState();
     searchController.addListener(onSearchChanged);
-    algoliaFuture =  algoliaListingsController.getWins(FirebaseAuth.instance.currentUser!.uid);
+    listingFuture = listingController.getWins(FirebaseAuth.instance.currentUser!.uid);
   }
 
   //Filter the list
@@ -99,7 +97,7 @@ class _WinsPageState extends State<WinsPage> {
           ),
           Expanded(
             child: FutureBuilder(
-                future: algoliaFuture,
+                future: listingFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {

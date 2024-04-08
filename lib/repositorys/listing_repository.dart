@@ -150,9 +150,41 @@ class ListingRepository extends GetxController {
     //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
     final snapshot = await db.collection("Listings").where('HostID', isEqualTo: userID).get();
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
-
     return listing;
-
   }
+
+  Future<List<ListingModel>> getWins(String userID) async {
+    //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
+    final snapshot = await db.collection("Listings").where('Winner', isEqualTo: userID).get();
+    final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
+    return listing;
+  }
+  Future<List<ListingModel>> getWatching(List<String> watching) async {
+    List<ListingModel> watchingDocuments = [];
+
+    for (String documentID in watching){
+      final snapshot = await db.collection("Listings").where(FieldPath.documentId, isEqualTo: documentID).get();
+      final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).single;
+      watchingDocuments.add(listing);
+    }
+    return watchingDocuments;
+  }
+    /*
+  Future<List<ListingModel>> getWatching(List<String> watching) async {
+    AlgoliaQuery query = algolia.instance.index('listings_index').query("");
+    String filterQuery = "objectID:${watching[0]}";
+
+    for (var i = 1; i < watching.length; i++) {
+      String userID = watching[i];
+      filterQuery += " OR objectID:${userID}";
+    }
+    print(filterQuery);
+    query = query.filters(filterQuery);
+
+    final snapshot = await query.getObjects();
+    final searchResults = snapshot.hits.map((e) => ListingModel.fromAlgolia(e)).toList();
+    return searchResults;
+  }
+   */
 
 }

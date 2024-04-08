@@ -5,6 +5,7 @@ import 'package:raffl/models/address_model.dart';
 import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/models/shipping_details_model.dart';
 import 'package:raffl/repositorys/image_repository.dart';
+import 'package:raffl/repositorys/user_data_repository.dart';
 import '../models/user_data_model.dart';
 import '../repositorys/listing_repository.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,18 @@ class ListingController extends GetxController{
     return listingRepository.getListing(documentID);
   }
 
+  getWins(String userID){
+    return listingRepository.getWins(userID);
+  }
 
+  getWatching(String userID) async {
+    final userDataRepository = UserDataRepository();
+    List<String>? watching = await userDataRepository.getWatching(userID);
+    if(watching != null){
+      return listingRepository.getWatching(watching);
+    }
+    return null;
+  }
   getSelling(String userID){
     return listingRepository.getSelling(userID);
   }
