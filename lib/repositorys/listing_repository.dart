@@ -146,17 +146,18 @@ class ListingRepository extends GetxController {
 
 
   Future<List<ListingModel>> getSelling(String userID, bool ongoing) async {
-    int currentTime = DateTime.now().millisecondsSinceEpoch;
-
+    DateTime now = DateTime.now();
+    Timestamp timestamp = Timestamp.fromDate(now);
+    print("Current timestamp ${timestamp}");
     Filter dateFilter;
     if (ongoing) {
-      dateFilter = Filter('EndDate', isGreaterThan: currentTime);
+      dateFilter = Filter('EndDate', isGreaterThan: timestamp);
     }else{
-      dateFilter = Filter('EndDate', isLessThan: currentTime);
+      dateFilter = Filter('EndDate', isLessThanOrEqualTo: timestamp);
     }
 
     //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
-    final snapshot = await db.collection("Listings").where(Filter.and(Filter('HostID', isEqualTo: userID),dateFilter)).get();
+    final snapshot = await db.collection("Listings").where(Filter.and(Filter('HostID', isEqualTo: userID),dateFilter)).get(); //Filter('HostID', isEqualTo: userID)
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
     return listing;
   }
