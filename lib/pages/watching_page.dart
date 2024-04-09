@@ -7,6 +7,7 @@ import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
+import 'package:raffl/widgets/listing_results_list_widget.dart';
 
 @RoutePage()
 class WatchingPage extends StatefulWidget {
@@ -24,13 +25,13 @@ class _WatchingPageState extends State<WatchingPage> {
   List<ListingModel> filteredList = [];
 
   Future? listingFuture;
+  ListingController listingController = Get.put(ListingController());
 
-  ListingController listingController =
-  Get.put(ListingController());
+
   void initState() {
     super.initState();
     searchController.addListener(onSearchChanged);
-    listingFuture = listingController.getWatching(FirebaseAuth.instance.currentUser!.uid);
+    listingFuture = listingController.getWatching();
   }
 
   //Filter the list

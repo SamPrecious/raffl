@@ -46,9 +46,12 @@ class _AuthWidgetState extends State<AuthWidget> {
                       ),
                       TextFormField(
                           controller: emailController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),            filled: true,
+                            fillColor: Colors.grey.shade300,
                           ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (email) =>
@@ -69,7 +72,10 @@ class _AuthWidgetState extends State<AuthWidget> {
                           obscureText: true,
                           decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(8),
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),            filled: true,
+                            fillColor: Colors.grey.shade300,
                           ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) => value != null && value.length <= 4

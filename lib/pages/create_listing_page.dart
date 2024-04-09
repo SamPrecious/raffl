@@ -82,32 +82,6 @@ class _CreateListingPageState extends State<CreateListingPage> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            "End Date",
-                            style: myTextStyles.defaultText,
-                          ),
-                        ),
-                        DropdownButtonFormField<String>(
-                          value: listingEndController.text,
-                          // Set the initial value
-                          onChanged: (String? newValue) {
-                            if (newValue != null) {
-                              listingEndController.text =
-                                  newValue; // Update the controller value
-                            }
-                          },
-                          items: <String>['1 day', '3 days', '7 days']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                        ),
-                        SizedBox(height: 10),
-                        //TODO - Turn into some sort of text field that can add items to list. Max at 4 tags? Char limit of 8?
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
                             "Tags",
                             style: myTextStyles.defaultText,
                           ),
@@ -122,92 +96,97 @@ class _CreateListingPageState extends State<CreateListingPage> {
                               void Function(String)? onSubmitted) {
                             return ((context, sc, tags, onTagDelete) {
                               print("test");
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextField(
-                                  controller: tec,
-                                  focusNode: fn,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    border: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color.fromARGB(255, 74, 137, 92),
-                                        width: 3.0,
-                                      ),
+                              return TextField(
+                                controller: tec,
+                                focusNode: fn,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),            filled: true,
+                                  fillColor: Colors.grey.shade300,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: secondaryColor,
+                                      width: 3.0,
                                     ),
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Color.fromARGB(255, 74, 137, 92),
-                                        width: 3.0,
-                                      ),
-                                    ),
-                                    hintText: listingTagsController.hasTags
-                                        ? ''
-                                        : "Enter tags...",
-                                    errorText: error,
-                                    prefixIconConstraints: BoxConstraints(
-                                        maxWidth: distanceToField * 0.74),
-                                    prefixIcon: tags.isNotEmpty
-                                        ? SingleChildScrollView(
-                                            controller: sc,
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                                children: tags.map((String tag) {
-                                              return Container(
-                                                decoration: const BoxDecoration(
-                                                  borderRadius: BorderRadius.all(
-                                                    Radius.circular(20.0),
-                                                  ),
-                                                  color: Color.fromARGB(
-                                                      255, 74, 137, 92),
-                                                ),
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 5.0),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10.0,
-                                                        vertical: 5.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    InkWell(
-                                                      child: Text(
-                                                        '#$tag',
-                                                        style: const TextStyle(
-                                                            color: Colors.white),
-                                                      ),
-                                                      onTap: () {
-                                                        print("$tag selected");
-                                                      },
-                                                    ),
-                                                    const SizedBox(width: 4.0),
-                                                    InkWell(
-                                                      child: const Icon(
-                                                        Icons.cancel,
-                                                        size: 14.0,
-                                                        color: Color.fromARGB(
-                                                            255, 233, 233, 233),
-                                                      ),
-                                                      onTap: () {
-                                                        onTagDelete(tag);
-                                                      },
-                                                    )
-                                                  ],
-                                                ),
-                                              );
-                                            }).toList()),
-                                          )
-                                        : null,
                                   ),
-                                  onChanged: onChanged,
-                                  onSubmitted: onSubmitted,
+                                  errorText: error,
+                                  prefixIconConstraints: BoxConstraints(
+                                      maxWidth: distanceToField * 0.74),
+                                  prefixIcon: tags.isNotEmpty
+                                      ? SingleChildScrollView(
+                                          controller: sc,
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                              children: tags.map((String tag) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(20.0),
+                                                ),
+                                                color: secondaryColor,
+                                              ),
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0,
+                                                      vertical: 5.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  InkWell(
+                                                    child: Text(
+                                                      '#$tag',
+                                                      style: const TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    onTap: () {
+                                                      print("$tag selected");
+                                                    },
+                                                  ),
+                                                  const SizedBox(width: 4.0),
+                                                  InkWell(
+                                                    child: Icon(
+                                                      Icons.cancel,
+                                                      size: 14.0,
+                                                      color: primaryColor,
+                                                    ),
+                                                    onTap: () {
+                                                      onTagDelete(tag);
+                                                    },
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }).toList()),
+                                        )
+                                      : null,
                                 ),
+                                onChanged: onChanged,
+                                onSubmitted: onSubmitted,
                               );
                             });
                           },
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: <Widget>[
+                              DefaultTextStyle(
+                                style: myTextStyles.fadedTextSmall,
+                                child: Text(
+                                    'Suggested Tags: '
+                                        'Tech, Phone, Laptop, Mobile, Electronics, Health, Educational, Cheap, '
+                                        'Motors, Beauty, Sports, Toys, Expensive, Motors, Collectibles, Music, Books, Movies'
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(height: 10),
                         MandatoryInputWidget(
@@ -305,10 +284,40 @@ class _CreateListingPageState extends State<CreateListingPage> {
                           ),
                         ),
                         SizedBox(height: 10),
-                        MandatoryInputWidget(
-                          label: "Ticket Price",
-                          textEditingController: listingPriceController,
-                          textInputType: TextInputType.number,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "End Date",
+                              style: myTextStyles.defaultText,
+                            ),
+                            DropdownMenu<String>(
+                              controller: listingEndController,
+                              inputDecorationTheme:  InputDecorationTheme(
+                                filled: true,
+                                fillColor: Colors.grey.shade300,
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              dropdownMenuEntries: <String>['1 day', '3 days', '7 days']
+                                  .map<DropdownMenuEntry<String>>((String value) {
+                                return DropdownMenuEntry<String>(
+                                  label: value,
+                                  value: value,
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        FractionallySizedBox(
+                          widthFactor: 0.5,
+                          child: MandatoryInputWidget(
+                            label: "Ticket Price",
+                            textEditingController: listingPriceController,
+                            textInputType: TextInputType.number,
+                          ),
                         ),
                         SizedBox(height: 10),
                         ElevatedButton.icon(
@@ -321,9 +330,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 );
                                 return;
                               }
-
                               int timeIncrement = int.parse(listingEndController.text[0]);
-                              //TODO change days back to minutes when debugging workflow
                               DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
                               int timestampInSeconds = newTime.millisecondsSinceEpoch;
                               print("Creating listing with timestamp: ${timestampInSeconds}");

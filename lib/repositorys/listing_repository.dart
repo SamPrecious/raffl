@@ -56,7 +56,6 @@ class ListingRepository extends GetxController {
 
   //Adds tickets for given user
   buyTickets(String documentID, int ticketAmount, int ticketPrice) async {
-    //TODO Check if user has any tickets, if so, update, if not create new
     String uid = FirebaseAuth.instance.currentUser!.uid;
 
     //We make the transaction atomic so it is all or nothing
@@ -146,9 +145,18 @@ class ListingRepository extends GetxController {
   }
 
 
-  Future<List<ListingModel>> getSelling(String userID) async {
+  Future<List<ListingModel>> getSelling(String userID, bool ongoing) async {
+    int currentTime = DateTime.now().millisecondsSinceEpoch;
+
+    Filter dateFilter;
+    if (ongoing) {
+      dateFilter = Filter('EndDate', isGreaterThan: currentTime);
+    }else{
+      dateFilter = Filter('EndDate', isLessThan: currentTime);
+    }
+
     //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
-    final snapshot = await db.collection("Listings").where('HostID', isEqualTo: userID).get();
+    final snapshot = await db.collection("Listings").where(Filter.and(Filter('HostID', isEqualTo: userID),dateFilter)).get();
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
     return listing;
   }
@@ -159,7 +167,7 @@ class ListingRepository extends GetxController {
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
     return listing;
   }
-  Future<List<ListingModel>> getWatching(List<String> watching) async {
+  Future<List<ListingModel>> getDocuments(List<String> watching) async {
     List<ListingModel> watchingDocuments = [];
 
     for (String documentID in watching){
@@ -169,22 +177,5 @@ class ListingRepository extends GetxController {
     }
     return watchingDocuments;
   }
-    /*
-  Future<List<ListingModel>> getWatching(List<String> watching) async {
-    AlgoliaQuery query = algolia.instance.index('listings_index').query("");
-    String filterQuery = "objectID:${watching[0]}";
-
-    for (var i = 1; i < watching.length; i++) {
-      String userID = watching[i];
-      filterQuery += " OR objectID:${userID}";
-    }
-    print(filterQuery);
-    query = query.filters(filterQuery);
-
-    final snapshot = await query.getObjects();
-    final searchResults = snapshot.hits.map((e) => ListingModel.fromAlgolia(e)).toList();
-    return searchResults;
-  }
-   */
 
 }

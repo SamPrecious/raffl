@@ -48,16 +48,26 @@ class ListingController extends GetxController{
     return listingRepository.getWins(userID);
   }
 
-  getWatching(String userID) async {
+  getWatching() async {
     final userDataRepository = UserDataRepository();
-    List<String>? watching = await userDataRepository.getWatching(userID);
+    List<String>? watching = await userDataRepository.getWatching(FirebaseAuth.instance.currentUser!.uid);
     if(watching != null){
-      return listingRepository.getWatching(watching);
+      return listingRepository.getDocuments(watching);
     }
     return null;
   }
-  getSelling(String userID){
-    return listingRepository.getSelling(userID);
+
+  getRecentlyViewed() async {
+    final userDataRepository = UserDataRepository();
+    List<String>? recentlyViewed = await userDataRepository.getRecentlyViewed();
+    if(recentlyViewed != null){
+      return listingRepository.getDocuments(recentlyViewed);
+    }
+    return null;
+  }
+
+  getSelling(String userID, bool ongoing){
+    return listingRepository.getSelling(userID, ongoing);
   }
 
   getAddress(String listingID) async{

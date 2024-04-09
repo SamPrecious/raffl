@@ -9,12 +9,12 @@ import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
+import 'package:raffl/styles/text_styles.dart';
 
 @RoutePage()
 class SellingPage extends StatefulWidget {
-
-  SellingPage(
-      {super.key});
+  final bool ongoing;
+  SellingPage({super.key, required this.ongoing});
 
   @override
   State<SellingPage> createState() => _SellingPageState();
@@ -22,32 +22,42 @@ class SellingPage extends StatefulWidget {
 
 class _SellingPageState extends State<SellingPage> {
   final searchController = TextEditingController();
+  final filterController = TextEditingController();
+
   List<ListingModel> outputList = [];
   List<ListingModel> filteredList = [];
 
   Future? listingFuture;
-  ListingController listingController =
-  Get.put(ListingController());
+  ListingController listingController = Get.put(ListingController());
 
   void initState() {
     super.initState();
     searchController.addListener(onSearchChanged);
-    listingFuture = listingController.getSelling(FirebaseAuth.instance.currentUser!.uid);
+    listingFuture =
+        listingController.getSelling(FirebaseAuth.instance.currentUser!.uid, widget.ongoing);
   }
 
   //Filter the list
-  onSearchChanged(){
+  onSearchChanged() {
     setState(() {
       filteredList = outputList.where((item) {
-        print("Search results: ${item.getName().toLowerCase().contains(searchController.text.toLowerCase())}");
-        return item.getName().toLowerCase().contains(searchController.text.toLowerCase());
+        print(
+            "Search results: ${item.getName().toLowerCase().contains(searchController.text.toLowerCase())}");
+        return item
+            .getName()
+            .toLowerCase()
+            .contains(searchController.text.toLowerCase());
       }).toList();
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
+    if(widget.ongoing){
+      filterController.text = 'Ongoing';
+    }else{
+      filterController.text = 'Ended';
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -89,24 +99,70 @@ class _SellingPageState extends State<SellingPage> {
               ],
             ),
           ),
-          Transform.scale(
-            scale: 0.9,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: SearchBar(
-                controller: searchController,
-                leading: const Icon(Icons.search),
-              ),
+          SizedBox(height: 10),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                SizedBox(
+                  child: SearchBar(
+                    controller: searchController,
+                    leading: const Icon(Icons.search),
+                  ),
+                ),
+                DefaultTextStyle(
+                  style: myTextStyles.fadedText,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: ButtonTheme(
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: filterController.text,
+                          // Set the initial value
+                          onChanged: (String? newValue) {
+                            if (newValue != null) {
+                              //Use searchInput along with Sort value to push a new page
+                              print("Currently on: ${filterController.text}");
+                              if (filterController.text != newValue) {
+                                filterController.text =
+                                    newValue; // Update the controller value
+                                print("Filtering by : ${filterController.text}");
+                                AutoRouter.of(context).push(
+                                  SellingRoute(ongoing: !widget.ongoing), //Only 2 states, so if changed it will be the opposite of ongoing
+                                );
+                              }
+                            }
+                          },
+                          items: <String>[
+                            'Ongoing',
+                            'Ended',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(value, style: myTextStyles.fadedText)),
+                            );
+                          }).toList(),
+                          isDense: true,
+                          iconSize: 0.0, // Set the icon size to 0
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
+
           Center(
             child: Text("My Listings",
                 style: TextStyle(
                   color: secondaryColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                )
-            ),
+                )),
           ),
           Expanded(
             child: FutureBuilder(
@@ -114,8 +170,9 @@ class _SellingPageState extends State<SellingPage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
-                      List<ListingModel> data = snapshot.data as List<ListingModel>;
-                      if(data != outputList){
+                      List<ListingModel> data =
+                          snapshot.data as List<ListingModel>;
+                      if (data != outputList) {
                         outputList = data;
                         filteredList = List.from(outputList);
                       }
@@ -171,11 +228,11 @@ class _SellingPageState extends State<SellingPage> {
                                       int endDate = item.getDate();
                                       int ticketsSold = item.getTicketsSold();
                                       int usersInterested =
-                                      item.getUsersInterested();
+                                          item.getUsersInterested();
                                       int views = item.getViews();
                                       int ticketPrice = item.getTicketPrice();
                                       String imageUrl =
-                                      item.getPrimaryImageURL();
+                                          item.getPrimaryImageURL();
                                       return GestureDetector(
                                           child: ListingResultWidget(
                                               name: name,
@@ -187,7 +244,7 @@ class _SellingPageState extends State<SellingPage> {
                                               ticketPrice: ticketPrice),
                                           onTap: () => AutoRouter.of(context)
                                               .push(ViewListingRoute(
-                                              documentID: documentID)));
+                                                  documentID: documentID)));
                                     }),
                               ),
                             ),
@@ -211,7 +268,7 @@ class _SellingPageState extends State<SellingPage> {
         ]),
       ),
       resizeToAvoidBottomInset:
-      false, //Avoids whitespace above keyboard blocking content
+          false, //Avoids whitespace above keyboard blocking content
     );
   }
 }

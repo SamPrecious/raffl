@@ -4,10 +4,14 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:raffl/controllers/inbox_controller.dart';
+import 'package:raffl/controllers/listing_controller.dart';
 import 'package:raffl/controllers/user_data_controller.dart';
+import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
+import 'package:raffl/styles/colors.dart';
 import 'package:raffl/styles/standard_button.dart';
+import 'package:raffl/widgets/listing_result_widget.dart';
 import '../controllers/algolia_listings_controller.dart';
 import 'package:get/get.dart';
 
@@ -21,6 +25,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+
+  Future? listingFuture;
+
+  ListingController recentlyViewedController =
+  Get.put(ListingController());
+  void initState() {
+    super.initState();
+    listingFuture = recentlyViewedController.getRecentlyViewed();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,39 +84,112 @@ class _HomePageState extends State<HomePage> {
                         },
                         icon: Icon(Icons.person_rounded, size: 32),
                         style: circularButton,
-                      
+
                       ),
                     ), // Empty container for the remaining space
                   ),
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(32),
-              child: Center(
-                child: Column(
-                  children: [
-                    SizedBox(height: 120),
-                    Text('User: '),
-                    Text(user.email!),
-                    SizedBox(height: 10),
+            Center(
+              child: Text("Recently Viewed",
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  )
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                  future: listingFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        List<ListingModel> data = snapshot.data as List<ListingModel>;
+                        int outputLength = data.length;
 
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: Column(
+                            children: [
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: Container(
+                                  clipBehavior: Clip.hardEdge,
+                                  //Using foregroundDecoration prevents content overlapping borders
+                                  foregroundDecoration: BoxDecoration(
+                                    border: Border.symmetric(
+                                      vertical: BorderSide(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                      horizontal: BorderSide(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
 
-                    /*
-                    UserDataController()).createUserData(userData)
-                     */
-                    SizedBox(height: 10),
-                    ElevatedButton.icon(
-                      style: standardButton,
-                      onPressed: () {
-                        AutoRouter.of(context).push(CreateListingRoute());
-                      },
-                      icon: Icon(Icons.create, size: 32),
-                      label: const Text('Create Listing'),
-                    ),
-                  ],
-                ),
-              )
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      // This ensures that the ListView only occupies the space it needs
+                                      cacheExtent: 9999,
+                                      //Having a relatively large cache gives us longer before reloading images
+                                      padding: EdgeInsets.zero,
+                                      itemCount: outputLength,
+                                      itemBuilder: (context, index) {
+                                        ListingModel item = data[index];
+                                        String documentID = item.getDocumentID();
+                                        String name = item.getName();
+                                        int endDate = item.getDate();
+                                        int ticketsSold = item.getTicketsSold();
+                                        int usersInterested =
+                                        item.getUsersInterested();
+                                        int views = item.getViews();
+                                        int ticketPrice = item.getTicketPrice();
+                                        String imageUrl =
+                                        item.getPrimaryImageURL();
+                                        return GestureDetector(
+                                          //Constructs 'ListingResultWidget' for each separate listing
+                                            child: ListingResultWidget(
+                                                name: name,
+                                                endDate: endDate,
+                                                primaryImageUrl: imageUrl,
+                                                ticketsSold: ticketsSold,
+                                                usersInterested: usersInterested,
+                                                views: views,
+                                                ticketPrice: ticketPrice),
+                                            onTap: () => AutoRouter.of(context)
+                                                .push(ViewListingRoute(
+                                                documentID: documentID)));
+                                      }),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            Text("No Data"),
+                          ],
+                        );
+                      }
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else {
+                      return Center(child: Text("Error, no data found"));
+                    }
+                  }),
             ),
           ],
         ),

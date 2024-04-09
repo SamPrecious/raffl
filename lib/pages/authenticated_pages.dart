@@ -61,7 +61,7 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                       break;
                     case 4:
                       //AutoRouter.of(context).push(SellingRoute());
-                      AutoRouter.of(context).push(SellingRoute());
+                      AutoRouter.of(context).push(SellingRoute(ongoing: true));
 
                       break;
 

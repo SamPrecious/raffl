@@ -40,10 +40,14 @@ class MandatoryInputWidget extends StatelessWidget {
               bottom: MediaQuery.of(context).viewInsets.bottom),
           controller: textEditingController,
           maxLines: maxLines,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             contentPadding: EdgeInsets.all(8),
-            border: OutlineInputBorder(),
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+            ),            filled: true,
+            fillColor: Colors.grey.shade300,
           ),
+
             keyboardType: textInputType
         ),
       ],

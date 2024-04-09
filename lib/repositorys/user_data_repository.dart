@@ -94,14 +94,14 @@ class UserDataRepository extends GetxController {
       throw Exception(error.toString());
     });
   }
+  Future<List<String>?> getRecentlyViewed() async{
+    final snapshot = await db.collection("UserData").where(FieldPath.documentId, isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
 
+    final recentlyViewed = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.recentlyViewed;
+    return recentlyViewed;
+  }
   Future<void> updateRecentlyViewed(String listingID) async{
-    final snapshot = await db
-        .collection("UserData")
-        .where(FieldPath.documentId, isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-        .get();
-
-    //final recentlyViewed = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.recentlyViewed;
+    final recentlyViewed = await getRecentlyViewed();
     /*
     We want the most recent 2 listings SO:
     IF(item doesnt exist)
@@ -111,18 +111,45 @@ class UserDataRepository extends GetxController {
       IF item at front do nothing
       IF item at back, swap order
      */
-    /*
     if(recentlyViewed != null){
       print("Recently viewed exists");
-      if(recentlyViewed.contains(listingID)){
-        print("test");
+      List<String> newRecentlyViewed = List.from(recentlyViewed);
+      bool arrayChanged = false;
+      if(recentlyViewed.length == 2){
+        print("Shifting listing");
+        if(recentlyViewed.contains(listingID)){
+          //Swap order
+          if(recentlyViewed[1] == listingID){
+            String lastRecentlyViewed = newRecentlyViewed[0];
+            newRecentlyViewed[0] = listingID;
+            newRecentlyViewed[1] = lastRecentlyViewed;
+            arrayChanged = true;
+          }
+        }else{
+          newRecentlyViewed.insert(0, listingID);
+          newRecentlyViewed.removeLast();
+          arrayChanged = true;
+        }
+      }else{
+        if(!recentlyViewed.contains(listingID)){
+          newRecentlyViewed.insert(0, listingID);
+          arrayChanged = true;
+        }
       }
+      print("Old recently viewed: ${recentlyViewed}");
+      print("New recently viewed: ${newRecentlyViewed}");
+
+      if(arrayChanged == true){
+        //replace collection with new array
+        print("Replacing recently viewed");
+        await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).update({
+          'RecentlyViewed': newRecentlyViewed
+        });
+      }
+
     }else{
-      print("Recently viewed doesnt exist");
-    }*/
-
-
-
+      print("Error: Recently viewed NULL");
+    }
   }
 
   Future<int> getCredits(String uid) async {

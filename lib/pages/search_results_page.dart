@@ -28,11 +28,13 @@ class SearchResultsPage extends StatefulWidget {
 }
 
 class _SearchResultsPageState extends State<SearchResultsPage> {
+  final searchInputController = TextEditingController();
   final filterController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     ValueNotifier<String> searchInputNotifier = ValueNotifier<String>(widget.searchInput);
     filterController.text = widget.sortInput ?? 'Sort (Default)';
+    searchInputController.text = searchInputNotifier.value;
     RangeValues currentPriceRange = widget.priceRange ?? RangeValues(0, 50);
 
     bool soldItemCheckbox = widget.soldItems;
@@ -47,7 +49,9 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             child: Column(
               children: [
                 SearchBar(
+                  controller: searchInputController,
                   onChanged: (query){
+                    print("search input notifier is:${searchInputNotifier.value} " );
                     searchInputNotifier.value = query;
                   },
                   onSubmitted: (query) {

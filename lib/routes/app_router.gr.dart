@@ -84,11 +84,13 @@ abstract class $AppRouter extends _i13.RootStackRouter {
       );
     },
     SellingRoute.name: (routeData) {
-      final args = routeData.argsAs<SellingRouteArgs>(
-          orElse: () => const SellingRouteArgs());
+      final args = routeData.argsAs<SellingRouteArgs>();
       return _i13.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: _i8.SellingPage(key: args.key),
+        child: _i8.SellingPage(
+          key: args.key,
+          ongoing: args.ongoing,
+        ),
       );
     },
     SplashRoute.name: (routeData) {
@@ -307,10 +309,14 @@ class SearchResultsRouteArgs {
 class SellingRoute extends _i13.PageRouteInfo<SellingRouteArgs> {
   SellingRoute({
     _i14.Key? key,
+    required bool ongoing,
     List<_i13.PageRouteInfo>? children,
   }) : super(
           SellingRoute.name,
-          args: SellingRouteArgs(key: key),
+          args: SellingRouteArgs(
+            key: key,
+            ongoing: ongoing,
+          ),
           initialChildren: children,
         );
 
@@ -321,13 +327,18 @@ class SellingRoute extends _i13.PageRouteInfo<SellingRouteArgs> {
 }
 
 class SellingRouteArgs {
-  const SellingRouteArgs({this.key});
+  const SellingRouteArgs({
+    this.key,
+    required this.ongoing,
+  });
 
   final _i14.Key? key;
 
+  final bool ongoing;
+
   @override
   String toString() {
-    return 'SellingRouteArgs{key: $key}';
+    return 'SellingRouteArgs{key: $key, ongoing: $ongoing}';
   }
 }
 
