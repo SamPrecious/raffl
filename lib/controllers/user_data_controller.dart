@@ -30,7 +30,11 @@ class UserDataController extends GetxController{
     return userDataRepository.getCredits(uid);
   }
 
-  getNotificationToken(String userID) async {
+  updateUserPreferences(List<String> tags, int multiplier) async{
+    await userDataRepository.updateUserPreferences(tags, multiplier);
+  }
+
+    getNotificationToken(String userID) async {
     return await userDataRepository.getNotificationToken(userID);
   }
 
@@ -59,6 +63,8 @@ class UserDataController extends GetxController{
   incrementCredits(int newCredits) async{
     await userDataRepository.incrementCredits(newCredits);
   }
+
+
 
   //Gives credits to seller when item is received
   awardCredits(String userID, int newCredits) async{

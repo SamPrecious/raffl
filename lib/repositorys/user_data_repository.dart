@@ -77,6 +77,31 @@ class UserDataRepository extends GetxController {
     }
     return 2;
   }
+  updateUserPreferences(List<String> tags, int multiplier) async{
+    user = FirebaseAuth.instance.currentUser!;
+    print("To update user preferences:");
+    final snapshot = await db.collection("UserData").doc(user.uid).get();
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    Map<String, dynamic>? currentUserPreferences;
+    if (data.containsKey('userPreferences')) {
+      currentUserPreferences = snapshot.get('userPreferences');
+    }
+
+    for(String tag in tags){
+      int newValue = multiplier;
+      if(currentUserPreferences != null){
+        int currentValue = currentUserPreferences[tag] ?? 0;
+        newValue += currentValue;
+      }
+
+      print("Updating user preferences: ");
+      print(tag);
+      await db.collection("UserData").doc(user.uid).update({
+        'userPreferences': {tag: (newValue)}
+      });
+      //await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).update({'RecentlyViewed': newRecentlyViewed});
+    }
+  }
 
   //Notifications are a subcollection within userData
   createNotification(NotificationModel notificationData) async {

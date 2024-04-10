@@ -354,6 +354,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                           number,
                                                                           listing
                                                                               .getTicketPrice());
+                                                                      int multiplier = number * listing.getTicketPrice(); //Multiplier to convey interest in item is based on price x tickets bought (so money spent)
+                                                                      await userDataController.updateUserPreferences(listing.getTags(), multiplier);
                                                                       if (!ticketsBought) {
                                                                         print(
                                                                             "Tickets were not brought, exiting function");
