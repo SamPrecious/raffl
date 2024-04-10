@@ -97,7 +97,8 @@ class UserDataRepository extends GetxController {
       print("Updating user preferences: ");
       print(tag);
       await db.collection("UserData").doc(user.uid).update({
-        'userPreferences': {tag: (newValue)}
+        'userPreferences.$tag': newValue
+
       });
       //await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).update({'RecentlyViewed': newRecentlyViewed});
     }
@@ -125,6 +126,14 @@ class UserDataRepository extends GetxController {
     final recentlyViewed = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.recentlyViewed;
     return recentlyViewed;
   }
+
+  Future<List<String>?> getRecommendations(List<String> recentlyViewed) async{
+    //Make sure our listing is NOT in recently viewed:
+
+
+  }
+
+
   Future<void> updateRecentlyViewed(String listingID) async{
     final recentlyViewed = await getRecentlyViewed();
     /*
