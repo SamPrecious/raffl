@@ -186,7 +186,9 @@ class ListingRepository extends GetxController {
 
   //If we do not have enough recommended listings from our tags, we randomly select the rest
   Future<ListingModel?> getRecommendListingRandom(List<String> blacklist) async {
-    final snapshot = await db.collection("Listings").get();
+    Filter hostFilter = Filter("HostID", isNotEqualTo: FirebaseAuth.instance.currentUser!.uid);
+    final snapshot = await db.collection("Listings").where(hostFilter).get();
+
     List<ListingModel> listings = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
     if(listings.isNotEmpty){
       return await selectListing(listings, blacklist);
