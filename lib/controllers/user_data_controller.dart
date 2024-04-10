@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:raffl/models/listing_model.dart';
 
 import '../models/user_data_model.dart';
 import '../repositorys/user_data_repository.dart';
@@ -34,8 +35,13 @@ class UserDataController extends GetxController{
     await userDataRepository.updateUserPreferences(tags, multiplier);
   }
 
-    getNotificationToken(String userID) async {
+  getNotificationToken(String userID) async {
     return await userDataRepository.getNotificationToken(userID);
+  }
+
+  Future<List<ListingModel>> getRecommendations(List<String>? recentlyViewed) async{
+    final userDataRepository = UserDataRepository();
+    return userDataRepository.getRecommendations(recentlyViewed);
   }
 
   updateNotificationToken(String notificationToken) async{

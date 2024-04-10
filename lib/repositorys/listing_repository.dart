@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -27,7 +29,7 @@ class ListingRepository extends GetxController {
     });
   }
 
-  markReceieved(String listingID) async{
+  markReceived(String listingID) async{
     await db.collection("Listings").doc(listingID).update({"ItemReceived": true})
         .catchError((error, stackTrace) {
       throw Exception(error.toString());
@@ -51,8 +53,6 @@ class ListingRepository extends GetxController {
       return addressModel;
     }
   }
-
-
 
   //Adds tickets for given user
   buyTickets(String documentID, int ticketAmount, int ticketPrice) async {
@@ -119,8 +119,6 @@ class ListingRepository extends GetxController {
     await transaction.update(listingDoc, {"TicketNum": FieldValue.increment(ticketAmount)});
   }
 
-
-
   getTickets(String documentID) async {
     final snapshot = await db.collection("Listings").doc(documentID)
         .collection("Tickets").doc(FirebaseAuth.instance.currentUser!.uid)
@@ -132,7 +130,6 @@ class ListingRepository extends GetxController {
     return ticketNum;
   }
 
-
   Future<ListingModel> getListing(String documentID) async {
     print("Retrieving listing with ID: $documentID");
     final snapshot = await db.collection("Listings").where(FieldPath.documentId, isEqualTo: documentID).get();
@@ -143,7 +140,6 @@ class ListingRepository extends GetxController {
     print("Listing found");
     return listing;
   }
-
 
   Future<List<ListingModel>> getSelling(String userID, bool ongoing) async {
     DateTime now = DateTime.now();
@@ -162,12 +158,49 @@ class ListingRepository extends GetxController {
     return listing;
   }
 
+  Future<ListingModel?> selectListing(List<ListingModel> listings, List<String> blacklist) async {
+
+    //We manually filter out listings on our blacklist, as it doesn't seem to like Querying on the documentID AND the other filters at the same time 'An error occured while parsing query arguments'
+    listings = listings.where((listing) => !blacklist.contains(listing.documentID)).toList();
+
+    print("Filtered listings: ${listings}");
+    if (!listings.isEmpty) {
+      // Pick a random listing
+      final random = Random();
+      final randomListing = listings[random.nextInt(listings.length)];
+      return randomListing;
+    }
+    return null;
+  }
+
+  Future<ListingModel?> getRecommendedListingByTag(String tag, List<String> blacklist) async {
+    Filter hostFilter = Filter("HostID", isNotEqualTo: FirebaseAuth.instance.currentUser!.uid);
+    Filter tagsFilter = Filter("Tags", arrayContains: tag);
+    final snapshot = await db.collection("Listings").where(Filter.and(hostFilter, tagsFilter)).get();
+    List<ListingModel> listings = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
+    if(listings.isNotEmpty){
+      return await selectListing(listings, blacklist);
+    }
+    return null;
+  }
+
+  //If we do not have enough recommended listings from our tags, we randomly select the rest
+  Future<ListingModel?> getRecommendListingRandom(List<String> blacklist) async {
+    final snapshot = await db.collection("Listings").get();
+    List<ListingModel> listings = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
+    if(listings.isNotEmpty){
+      return await selectListing(listings, blacklist);
+    }
+    return null;
+  }
+
   Future<List<ListingModel>> getWins(String userID) async {
     //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
     final snapshot = await db.collection("Listings").where('Winner', isEqualTo: userID).get();
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
     return listing;
   }
+
   Future<List<ListingModel>> getDocuments(List<String> watching) async {
     List<ListingModel> watchingDocuments = [];
 
@@ -178,5 +211,6 @@ class ListingRepository extends GetxController {
     }
     return watchingDocuments;
   }
+
 
 }

@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/models/notification_model.dart';
 import 'package:raffl/models/user_data_model.dart';
+import 'package:raffl/repositorys/listing_repository.dart';
 
 class UserDataRepository extends GetxController {
   static UserDataRepository get instance =>
@@ -77,15 +81,85 @@ class UserDataRepository extends GetxController {
     }
     return 2;
   }
-  updateUserPreferences(List<String> tags, int multiplier) async{
-    user = FirebaseAuth.instance.currentUser!;
-    print("To update user preferences:");
-    final snapshot = await db.collection("UserData").doc(user.uid).get();
-    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-    Map<String, dynamic>? currentUserPreferences;
-    if (data.containsKey('userPreferences')) {
-      currentUserPreferences = snapshot.get('userPreferences');
+
+  //Construct a list of 3 recommendations relevant to the users interest
+  Future<List<ListingModel>> getRecommendations(List<String>? recentlyViewed) async{
+    int recommendationsLength = 4; //Modify this as you wish
+    print("The recommendations");
+    Map<String, dynamic>? currentUserPreferences = await getUserPreferences();
+    List<String> blacklist = []; //A blacklist of things we dont want
+    if(recentlyViewed != null){
+      for(String listing in recentlyViewed){
+        blacklist.add(listing); //Recently viewed listings already on home page, so we don't want to see them again
+      }
     }
+    List<ListingModel> recommendationsList = [];
+    final listingRepository = Get.put(ListingRepository());
+
+    if(currentUserPreferences != null){
+      Map<String, int>? integerPreferencesMap = currentUserPreferences.map((key, value) => MapEntry(key, value as int));
+      //List<String> preferenceArray = [];
+      int totalRange = 0;
+      for (var entry in integerPreferencesMap.entries) {
+        int multiplier = entry.value;
+        totalRange += multiplier;
+      }
+
+      while(integerPreferencesMap.length > 0 && recommendationsList.length < recommendationsLength){
+        print("Total range: ${totalRange}");
+        Random random = new Random();
+        int randomTagNum = random.nextInt(totalRange);
+        print(randomTagNum);
+        int currentRange = 0;
+        for (var entry in integerPreferencesMap.entries) {
+          int multiplier = entry.value;
+          currentRange += multiplier;
+          print("Cur Range: ${currentRange}");
+          if(randomTagNum < currentRange){
+            String selectedTag = entry.key;
+            print("Our random tag is: ${selectedTag}");
+            integerPreferencesMap.remove(selectedTag);
+            print("new integerPreferencesMap ${integerPreferencesMap}");
+            totalRange -= multiplier;
+            //TODO select a random search result with this tag that ISN'T in recentlyViewed AND hasn't been selected yet. Add it to recommendations
+            ListingModel? randomListing = await listingRepository.getRecommendedListingByTag(selectedTag, blacklist);
+            if(randomListing != null){
+              recommendationsList.add(randomListing);
+              blacklist.add(randomListing.getDocumentID()); //To avoid re-selecting the same listing
+            }
+            break;
+          }
+        }
+      }
+    }
+
+    print("We have got the recommended listings: ${recommendationsList}");
+    while(recommendationsList.length < recommendationsLength){
+      ListingModel? randomListing = await listingRepository.getRecommendListingRandom(blacklist);
+      if(randomListing != null){
+        recommendationsList.add(randomListing);
+        blacklist.add(randomListing.getDocumentID()); //To avoid re-selecting the same listing
+      }
+    }
+
+    print("Final recommended listings: ${recommendationsList}");
+    return recommendationsList;
+  }
+
+  getUserPreferences() async{
+    final snapshot = await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).get();
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    if (data.containsKey('userPreferences')) {
+      return snapshot.get('userPreferences');
+    }
+    return null;
+  }
+
+  updateUserPreferences(List<String> tags, int multiplier) async{
+    print("To update user preferences:");
+    final snapshot = await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).get();
+    Map<String, dynamic>? currentUserPreferences = await getUserPreferences();
+
 
     for(String tag in tags){
       int newValue = multiplier;
@@ -98,7 +172,6 @@ class UserDataRepository extends GetxController {
       print(tag);
       await db.collection("UserData").doc(user.uid).update({
         'userPreferences.$tag': newValue
-
       });
       //await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).update({'RecentlyViewed': newRecentlyViewed});
     }
@@ -124,14 +197,11 @@ class UserDataRepository extends GetxController {
     final snapshot = await db.collection("UserData").where(FieldPath.documentId, isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
 
     final recentlyViewed = snapshot.docs.map((e) => UserDataModel.fromFirestore(e)).single.recentlyViewed;
+
     return recentlyViewed;
   }
 
-  Future<List<String>?> getRecommendations(List<String> recentlyViewed) async{
-    //Make sure our listing is NOT in recently viewed:
 
-
-  }
 
 
   Future<void> updateRecentlyViewed(String listingID) async{

@@ -28,7 +28,7 @@ class ListingController extends GetxController{
   }
 
   Future<void> markReceived(String listingID) async{
-    await listingRepository.markReceieved(listingID);
+    await listingRepository.markReceived(listingID);
   }
 
   Future<void> addShippingDetails(String listingID, ShippingDetailsModel shippingDetails) async {
@@ -57,13 +57,28 @@ class ListingController extends GetxController{
     return null;
   }
 
-  getRecentlyViewed() async {
-    final userDataRepository = UserDataRepository();
-    List<String>? recentlyViewed = await userDataRepository.getRecentlyViewed();
+  getDocuments(List<String>? recentlyViewed) async {
     if(recentlyViewed != null){
       return listingRepository.getDocuments(recentlyViewed);
     }
     return null;
+  }
+  getRecentlyViewed(UserDataRepository userDataRepository) async {
+    List<String>? recentlyViewed = await userDataRepository.getRecentlyViewed();
+    return recentlyViewed;
+  }
+
+
+  Future<List<List<ListingModel>>> getHomepageResults() async{
+    final userDataRepository = UserDataRepository();
+    List<String>? recentlyViewed = await getRecentlyViewed(userDataRepository);
+
+    List<ListingModel> recentlyViewedResults = await getDocuments(recentlyViewed);
+    //List<ListingModel> recommendedResults = await getDocuments(recentlyViewed);
+
+
+    List<ListingModel> recommendedResults = await userDataRepository.getRecommendations(recentlyViewed);
+    return [recentlyViewedResults, recommendedResults];
   }
 
   getSelling(String userID, bool ongoing){

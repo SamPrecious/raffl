@@ -28,13 +28,16 @@ class _HomePageState extends State<HomePage> {
 
 
 
-  Future? listingFuture;
-
-  ListingController recentlyViewedController =
-  Get.put(ListingController());
+  Future<List<List<ListingModel>>>? homepageFutures;
+  ListingController recentlyViewedController = Get.put(ListingController());
+  UserDataController userDataController = Get.put(UserDataController());
   void initState() {
     super.initState();
-    listingFuture = recentlyViewedController.getRecentlyViewed();
+    homepageFutures = recentlyViewedController.getHomepageResults();
+    //recentlyViewedFuture = ;
+
+    //recentlyViewedFuture = homepageFutures[0];
+    //recommendedFuture = userDataController.getRecommendations
   }
 
   @override
@@ -102,12 +105,13 @@ class _HomePageState extends State<HomePage> {
             ),
             Expanded(
               child: FutureBuilder(
-                  future: listingFuture,
+                  future: homepageFutures,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       if (snapshot.hasData) {
-                        List<ListingModel> data = snapshot.data as List<ListingModel>;
-                        int outputLength = data.length;
+                        List<List<ListingModel>> data = snapshot.data as List<List<ListingModel>>;
+                        List<ListingModel> recommendedData = data[0];
+                        int outputLength = recommendedData.length;
 
                         return Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -147,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                                       padding: EdgeInsets.zero,
                                       itemCount: outputLength,
                                       itemBuilder: (context, index) {
-                                        ListingModel item = data[index];
+                                        ListingModel item = recommendedData[index];
                                         String documentID = item.getDocumentID();
                                         String name = item.getName();
                                         int endDate = item.getDate();
@@ -191,7 +195,107 @@ class _HomePageState extends State<HomePage> {
                     }
                   }),
             ),
+            Center(
+              child: Text("Recommended",
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  )
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                  future: homepageFutures,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData) {
+                        List<List<ListingModel>> data = snapshot.data as List<List<ListingModel>>;
+                        List<ListingModel> recommendedData = data[1];
+                        int outputLength = recommendedData.length;
 
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: Column(
+                            children: [
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: Container(
+                                  clipBehavior: Clip.hardEdge,
+                                  //Using foregroundDecoration prevents content overlapping borders
+                                  foregroundDecoration: BoxDecoration(
+                                    border: Border.symmetric(
+                                      vertical: BorderSide(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                      horizontal: BorderSide(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      // This ensures that the ListView only occupies the space it needs
+                                      cacheExtent: 9999,
+                                      //Having a relatively large cache gives us longer before reloading images
+                                      padding: EdgeInsets.zero,
+                                      itemCount: outputLength,
+                                      itemBuilder: (context, index) {
+                                        ListingModel item = recommendedData[index];
+                                        String documentID = item.getDocumentID();
+                                        String name = item.getName();
+                                        int endDate = item.getDate();
+                                        int ticketsSold = item.getTicketsSold();
+                                        int usersInterested =
+                                        item.getUsersInterested();
+                                        int views = item.getViews();
+                                        int ticketPrice = item.getTicketPrice();
+                                        String imageUrl =
+                                        item.getPrimaryImageURL();
+                                        return GestureDetector(
+                                          //Constructs 'ListingResultWidget' for each separate listing
+                                            child: ListingResultWidget(
+                                                name: name,
+                                                endDate: endDate,
+                                                primaryImageUrl: imageUrl,
+                                                ticketsSold: ticketsSold,
+                                                usersInterested: usersInterested,
+                                                views: views,
+                                                ticketPrice: ticketPrice),
+                                            onTap: () => AutoRouter.of(context)
+                                                .push(ViewListingRoute(
+                                                documentID: documentID)));
+                                      }),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            Text("No Data"),
+                          ],
+                        );
+                      }
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text(snapshot.error.toString()));
+                    } else {
+                      return Center(child: Text("Error, no data found"));
+                    }
+                  }),
+            ),
           ],
         ),
       ),
