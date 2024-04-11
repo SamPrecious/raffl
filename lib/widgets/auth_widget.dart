@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/styles/text_styles.dart';
@@ -31,6 +32,8 @@ class _AuthWidgetState extends State<AuthWidget> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Image.asset('assets/icons/raffl_logo_slanted.png'),
+                      SizedBox(height: 30),
                       Text(
                         widget.login ?
                         "Log In":"Register",
@@ -78,17 +81,27 @@ class _AuthWidgetState extends State<AuthWidget> {
                             fillColor: Colors.grey.shade300,
                           ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => value != null && value.length <= 4
-                          ? 'Enter 4 characters minimum'
+                        validator: (value) => value != null && value.length <= 8
+                          ? 'Enter 8 characters minimum'
                         : null
                       ),
                       widget.login ?
-                      Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text(
-                            'Forgot Password?',
-                            style: myTextStyles.fadedText,
-                          )
+                      GestureDetector(
+                        onTap: () async{
+                          await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Reset link sent to Email'),
+                            ),
+                          );
+                        },
+                        child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              'Forgot Password?',
+                              style: myTextStyles.fadedText,
+                            )
+                        ),
                       ):
                       const SizedBox(height: 20),
                       ElevatedButton(onPressed: (){

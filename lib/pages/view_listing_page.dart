@@ -94,12 +94,19 @@ class _ViewListingPageState extends State<ViewListingPage> {
   }
   @override
   Widget build(BuildContext context) {
+    bool firstRun = true;
+    final ValueNotifier<int> ticketsOwned = ValueNotifier<int>(0);
+    final ValueNotifier<int> ticketsSold = ValueNotifier<int>(0);
+    final ValueNotifier<int> usersInterested = ValueNotifier<int>(0);
+    final ValueNotifier<int> usersWatching = ValueNotifier<int>(0);
+
     return Scaffold(
         body: SafeArea(
           child: FutureBuilder(
               future: listingController.getListing(widget.documentID),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
+
                   String uid = FirebaseAuth.instance.currentUser!.uid;
                   ListingModel listing = snapshot.data as ListingModel;
                   AddressModel? address;
@@ -110,6 +117,14 @@ class _ViewListingPageState extends State<ViewListingPage> {
                   int endTime = listing.getDate();
                   PageType pageType = PageType.unfinished;
                   bool isWinner = false;
+
+                  if(firstRun){
+                    ticketsOwned.value = listing.getTicketsOwned();
+                    ticketsSold.value = listing.getTicketsSold();
+                    usersInterested.value = listing.getUsersInterested();
+                    usersWatching.value = listing.getUsersWatching();
+                    firstRun = false;
+                  }
 
                   if (endTime < DateTime.now().millisecondsSinceEpoch) {
                     //Listing is finished so is either sold or unsold
@@ -125,17 +140,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                       }
                     }
                   }
-                  print("Pagetype is: ${pageType}");
-                  print("Winner status: ${isWinner}");
                   double itemSpacing = 6.0;
-                  final ValueNotifier<int> ticketsOwned =
-                      ValueNotifier<int>(listing.getTicketsOwned());
-                  final ValueNotifier<int> ticketsSold =
-                      ValueNotifier<int>(listing.getTicketsSold());
-                  final ValueNotifier<int> usersInterested =
-                      ValueNotifier<int>(listing.getUsersInterested());
-                  final ValueNotifier<int> usersWatching =
-                      ValueNotifier<int>(listing.getUsersWatching());
+
                   print("User is watching ${userIsWatching}");
                   if (snapshot.hasData) {
                     return DefaultTextStyle(
@@ -272,16 +278,18 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                             GlobalKey<
                                                                 FormState>();
                                                         return AlertDialog(
-                                                          title: Text(
-                                                              'Buy Tickets',
-                                                              style: TextStyle(
-                                                                color:
-                                                                    secondaryColor,
-                                                                fontSize: 24,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              )),
+                                                          title: Center(
+                                                            child: Text(
+                                                                'Buy Tickets',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      secondaryColor,
+                                                                  fontSize: 24,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                )),
+                                                          ),
                                                           content: Form(
                                                             key: inputKey,
                                                             child: Column(
@@ -292,41 +300,61 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                 Align(
                                                                   alignment:
                                                                       Alignment
-                                                                          .centerLeft,
+                                                                          .center,
                                                                 ),
-                                                                TextFormField(
-                                                                  controller:
-                                                                      ticketNum,
-                                                                  decoration:
-                                                                      InputDecoration(
-                                                                          hintText:
-                                                                              'Enter number of tickets'),
-                                                                  keyboardType:
-                                                                      TextInputType.numberWithOptions(
-                                                                          decimal:
-                                                                              false),
-                                                                  validator:
-                                                                      (value) {
-                                                                    int?
-                                                                        number =
-                                                                        int.tryParse(
-                                                                            value!);
-                                                                    if (number ==
-                                                                            null ||
-                                                                        number <=
-                                                                            0) {
-                                                                      return 'Please enter a valid number of tickets';
-                                                                    } else {
-                                                                      int totalCost =
-                                                                          listing.getTicketPrice() *
-                                                                              number;
-                                                                      if (userCredits <
-                                                                          totalCost) {
-                                                                        return 'You do not have enough credits';
+                                                                Container(
+                                                                  width: MediaQuery.of(context).size.width * 0.3,
+                                                                  child: TextFormField(
+                                                                    textAlign: TextAlign.center,
+
+                                                                    style: TextStyle(
+                                                                      color: primaryColor,
+                                                                      fontSize: 16,
+                                                                      fontWeight: FontWeight.bold,
+                                                                    ),
+                                                                    controller:
+                                                                        ticketNum,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                            isDense: true,
+                                                                            border: OutlineInputBorder(
+                                                                              borderSide: BorderSide.none,
+                                                                            ),            filled: true,
+                                                                            fillColor: secondaryColor,
+                                                                            focusedBorder: OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: secondaryColor,
+                                                                                width: 3.0,
+                                                                              ),
+                                                                            )
+                                                                        ),
+                                                                    keyboardType:
+                                                                        TextInputType.numberWithOptions(
+                                                                            decimal:
+                                                                                false),
+                                                                    validator:
+                                                                        (value) {
+                                                                      int?
+                                                                          number =
+                                                                          int.tryParse(
+                                                                              value!);
+                                                                      if (number ==
+                                                                              null ||
+                                                                          number <=
+                                                                              0) {
+                                                                        return 'Please enter a valid number of tickets';
+                                                                      } else {
+                                                                        int totalCost =
+                                                                            listing.getTicketPrice() *
+                                                                                number;
+                                                                        if (userCredits <
+                                                                            totalCost) {
+                                                                          return 'You do not have enough credits';
+                                                                        }
                                                                       }
-                                                                    }
-                                                                    return null;
-                                                                  },
+                                                                      return null;
+                                                                    },
+                                                                  ),
                                                                 ),
                                                               ],
                                                             ),
@@ -365,6 +393,7 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                       print(
                                                                           'Failed to update tickets: $e');
                                                                     }
+                                                                    print("--------------------");
                                                                     if (ticketsOwned
                                                                             .value ==
                                                                         0) {
@@ -374,12 +403,12 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                       print(
                                                                           "Incrementing users interested");
                                                                     }
-                                                                    ticketsOwned
-                                                                            .value +=
-                                                                        number;
-                                                                    ticketsSold
-                                                                            .value +=
-                                                                        number;
+                                                                    print("Tickets owned: ${ticketsOwned.value}");
+                                                                    ticketsOwned.value += number;
+                                                                    print("Tickets owned: ${ticketsOwned.value}");
+                                                                    ticketsSold.value += number;
+                                                                    usersWatching.value += number;
+                                                                    print("New users watching ${usersWatching.value}");
                                                                     /*
                                                                                                       By storing the notification name as a timestamp, we:
                                                                                                           Save storage on extra value

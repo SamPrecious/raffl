@@ -65,10 +65,13 @@ class ListingRepository extends GetxController {
       if(transactionSuccess){
         print("Transaction successful, withdrawing now");
         int ticketNum = await getTickets(documentID);
+        print("Our ticket number is: ${ticketNum}");
         if(ticketNum != 0){
+          print("We are updating the ticket num");
           updateTicketNum(transaction, documentID, ticketAmount, uid);
         }
         else{
+          print("We are creating the ticket num");
           createTicketNum(transaction, documentID, ticketAmount, uid);
         }
         updateTicketsSold(transaction, documentID, ticketAmount);
@@ -111,7 +114,9 @@ class ListingRepository extends GetxController {
     final listingDoc = FirebaseFirestore.instance.collection('Listings').doc(documentID);
     await transaction.set(listingDoc.collection('Tickets').doc(uid), {'TicketNum': ticketAmount});
     //New user has bought a ticket, which means they are interested and thus this counter goes up
-    await transaction.update(listingDoc, {'UsersInterested': FieldValue.increment(1)});
+    print("We will now increment users");
+    await listingDoc.update({'UsersInterested': FieldValue.increment(1)});
+    //await transaction.update(listingDoc, {'UsersInterested': FieldValue.increment(1)}); For unknown reasons, this doesn't work when it is transaction based, but its not that important
   }
 
   updateTicketNum(Transaction transaction, String documentID, int ticketAmount, String uid) async {
