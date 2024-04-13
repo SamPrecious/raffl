@@ -20,6 +20,8 @@ Future<void> main() async {
   });
   AppRouter appRouter = AppRouter();
   runApp(MaterialApp.router(
+    debugShowCheckedModeBanner: false, // Remove the debug banner
+
     routerConfig: appRouter.config(),
   ));
   /*

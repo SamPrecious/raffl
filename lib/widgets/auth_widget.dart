@@ -142,7 +142,8 @@ class _AuthWidgetState extends State<AuthWidget> {
                   ),
               ),
           ),
-        )
+        ),
+        resizeToAvoidBottomInset: false
     );
   }
 
