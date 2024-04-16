@@ -122,15 +122,15 @@ class _AuthWidgetState extends State<AuthWidget> {
                           ),
                         ):
                         const SizedBox(height: 20),
-                        ElevatedButton(onPressed: (){
+                        ElevatedButton(onPressed: () async {
                           if(widget.login){
-                            AccessAuth.loginUser(context, emailController.text.trim(), passwordController.text.trim());
-                            widget.onResult.call(true);
+                            bool isLoggedIn = await AccessAuth.loginUser(context, emailController.text.trim(), passwordController.text.trim());
+                            widget.onResult.call(isLoggedIn);
                           }
                           else if(formKey.currentState?.validate() ?? false){
 
                             AccessAuth.registerUser(context, emailController.text.trim(), passwordController.text.trim());
-                            widget.onResult.call(true);
+                            //widget.onResult.call(true);
 
                           }
 

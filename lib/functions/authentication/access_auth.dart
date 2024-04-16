@@ -11,11 +11,25 @@ class AccessAuth {
   static Future loginUser(BuildContext context, String email, String password) async {
     //TODO Maybe add a loading indicator here
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userDetails = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
+
+      if (!userDetails.user!.emailVerified) { //Sign out and show error if not verified
+        await FirebaseAuth.instance.signOut();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please verify your email before login.'),
+          ),
+        );
+        return false;
+      }
+      else{ //Login successful
+        await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
+        return true;
+      }
+
     } on FirebaseAuthException catch (e) {
       print(e);
       showFlashError(context, e.message);
@@ -26,9 +40,18 @@ class AccessAuth {
     //TODO Maybe add a loading indicator here (or where this is called)
 
     try{
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userDetails = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
+      );
+
+
+      await userDetails.user!.sendEmailVerification(); //Sends email verification to user
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Awaiting email verification.'),
+        ),
       );
     } on FirebaseAuthException catch (e) {
       print(e);
