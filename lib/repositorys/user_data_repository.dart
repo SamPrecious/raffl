@@ -12,11 +12,6 @@ class UserDataRepository extends GetxController {
   static UserDataRepository get instance =>
       Get.find(); //Static instance of all getx controllers
   final db = FirebaseFirestore.instance;
-
-  /* TODO
-       Make the user accessible from the UserDataRepository rather than redefinining it in all classes
-       If not, nullify user if signed out
-  */
   User user = FirebaseAuth.instance.currentUser!;
 
 

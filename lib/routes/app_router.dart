@@ -12,7 +12,6 @@ class AppRouter extends $AppRouter {
         AutoRoute(page: AuthRoute.page, keepHistory: false),
         //keepHistory false means this is removed froms tack when another entry added
         //The following routes are protected as they require Login access
-        //AutoRoute(page: HomeRoute.page,guards: [AuthGuard()]),
         AutoRoute(page: AuthenticatedRoutes.page, guards: [
           AuthGuard()
         ], children: [

@@ -18,7 +18,7 @@ class AuthenticatedPages extends StatefulWidget {
 
 class _AuthenticatedPagesState extends State<AuthenticatedPages> {
   int currentIndex = 0;
-  
+
   @override
   Widget build(BuildContext context) {
     //return const AutoRouter();

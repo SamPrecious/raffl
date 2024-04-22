@@ -38,5 +38,4 @@ class PushNotificationController extends GetxController{
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
   print("Title: ${message.notification?.title}");
   print("Description: ${message.notification?.body}");
-  //TODO Could navigate to the page of notification when pressed. I.e. if about a product, navigate to that product page?
 }
