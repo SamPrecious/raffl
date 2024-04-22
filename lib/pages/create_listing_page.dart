@@ -182,7 +182,8 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 child: Text(
                                     'Suggested Tags: '
                                         'Tech, Phone, Laptop, Mobile, Electronics, Health, Educational, Cheap, '
-                                        'Motors, Beauty, Sports, Toys, Expensive, Motors, Collectibles, Music, Books, Movies'
+                                        'Motors, Beauty, Sports, Toys, Expensive, Motors, Collectibles, '
+                                        'Music, Books, Movies, Audio, '
                                 ),
                               ),
                             ],
@@ -331,7 +332,8 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 return;
                               }
                               int timeIncrement = int.parse(listingEndController.text[0]);
-                              DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
+                              //TODO revert to days after
+                              DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));
                               int timestampInSeconds = newTime.millisecondsSinceEpoch;
                               print("Creating listing with timestamp: ${timestampInSeconds}");
                               final listing = ListingModel(

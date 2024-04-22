@@ -70,7 +70,7 @@ class ListingModel {
       "TicketsSold": ticketsSold,
       "UsersWatching": usersWatching,
       "UsersInterested": usersInterested,
-      "Views:": views,
+      "Views": views,
     };
   }
 

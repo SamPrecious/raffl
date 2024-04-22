@@ -130,7 +130,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                           else if(formKey.currentState?.validate() ?? false){
 
                             AccessAuth.registerUser(context, emailController.text.trim(), passwordController.text.trim());
-                            //widget.onResult.call(true);
+                            widget.onResult.call(true);
 
                           }
 

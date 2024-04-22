@@ -149,8 +149,8 @@ class UserDataRepository extends GetxController {
   getUserPreferences() async{
     final snapshot = await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).get();
     Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-    if (data.containsKey('userPreferences')) {
-      return snapshot.get('userPreferences');
+    if (data.containsKey('UserPreferences')) {
+      return snapshot.get('UserPreferences');
     }
     return null;
   }
@@ -171,7 +171,7 @@ class UserDataRepository extends GetxController {
       print("Updating user preferences: ");
       print(tag);
       await db.collection("UserData").doc(user.uid).update({
-        'userPreferences.$tag': newValue
+        'UserPreferences.$tag': newValue
       });
       //await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).update({'RecentlyViewed': newRecentlyViewed});
     }

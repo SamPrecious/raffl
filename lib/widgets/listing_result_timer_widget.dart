@@ -23,7 +23,7 @@ class _ListingResultTimerWidgetState extends State<ListingResultTimerWidget> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {  // Add this check
           setState(() {
-            containerColor = Colors.red;
+            containerColor = warningColor;
           });
         }
       });

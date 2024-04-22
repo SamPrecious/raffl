@@ -18,6 +18,7 @@ class AuthenticatedPages extends StatefulWidget {
 
 class _AuthenticatedPagesState extends State<AuthenticatedPages> {
   int currentIndex = 0;
+  
   @override
   Widget build(BuildContext context) {
     //return const AutoRouter();
@@ -42,27 +43,37 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                     case 0:
                       if(currentRouteName != HomeRoute.name){
                         AutoRouter.of(context).push(HomeRoute());
+                      }else{ //Refresh page with popAndPush if page already selected
+                        AutoRouter.of(context).popAndPush(HomeRoute());
                       }
                       break;
                     case 1:
-                      print("watch");
-                      AutoRouter.of(context).push(WatchingRoute());
-
+                      if(currentRouteName != WatchingRoute.name){
+                        AutoRouter.of(context).push(WatchingRoute());
+                      }else{
+                        AutoRouter.of(context).popAndPush(WatchingRoute());
+                      }
                       break;
                     case 2:
-                      print("wins");
-                      AutoRouter.of(context).push(WinsRoute());
+                      if(currentRouteName != WinsRoute.name){
+                        AutoRouter.of(context).push(WinsRoute());
+                      }else{
+                        AutoRouter.of(context).popAndPush(WinsRoute());
+                      }
                       break;
                     case 3:
-                      //AutoRouter.of(context).push(HomeRoute()); TODO inbox route
                       if(currentRouteName != InboxRoute.name){
                         AutoRouter.of(context).push(InboxRoute());
+                      }else{
+                        AutoRouter.of(context).popAndPush(InboxRoute());
                       }
                       break;
                     case 4:
-                      //AutoRouter.of(context).push(SellingRoute());
-                      AutoRouter.of(context).push(SellingRoute(ongoing: true));
-
+                      if(currentRouteName != SellingRoute.name){
+                        AutoRouter.of(context).push(SellingRoute(ongoing: true));
+                      }else{
+                        AutoRouter.of(context).popAndPush(SellingRoute(ongoing: true));
+                      }
                       break;
 
                   }
@@ -73,8 +84,9 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                     label: 'Home',
                   ),
                   BottomNavigationBarItem(
-                    //TODO Change to custom binoculars icon
-                    icon: Image.asset('assets/icons/watch_white.png', width: 24, height: 24),
+                    icon: currentIndex == 1
+                        ? Image.asset('assets/icons/watch_blue.png', width: 24, height: 24)
+                        : Image.asset('assets/icons/watch_white.png', width: 24, height: 24),
                     label: 'Watching',
                   ),
                   BottomNavigationBarItem(
