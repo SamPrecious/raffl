@@ -99,7 +99,6 @@ class _AuthWidgetState extends State<AuthWidget> {
                                   return 'Must contain 1 special character';
                                 }
                               }
-
                             return null;
                           }
                         ),

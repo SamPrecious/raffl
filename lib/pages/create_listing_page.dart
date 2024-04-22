@@ -333,7 +333,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                               }
                               int timeIncrement = int.parse(listingEndController.text[0]);
                               //TODO revert to days after
-                              DateTime newTime = new DateTime.now().add(Duration(minutes: timeIncrement));
+                              DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
                               int timestampInSeconds = newTime.millisecondsSinceEpoch;
                               print("Creating listing with timestamp: ${timestampInSeconds}");
                               final listing = ListingModel(

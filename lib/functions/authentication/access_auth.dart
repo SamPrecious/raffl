@@ -47,11 +47,9 @@ class AccessAuth {
         email: email,
         password: password,
       );
-
       await userDetails;
-      //await userDetails.user!.sendEmailVerification(); //Sends email verification to user
-
       /*
+      await userDetails.user!.sendEmailVerification(); //Sends email verification to user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Awaiting email verification.'),

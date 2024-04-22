@@ -48,184 +48,216 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
             padding: const EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
             child: Column(
               children: [
-                SearchBar(
-                  controller: searchInputController,
-                  onChanged: (query){
-                    print("search input notifier is:${searchInputNotifier.value} " );
-                    searchInputNotifier.value = query;
-                  },
-                  onSubmitted: (query) {
-                    print("Current search input: ${searchInputNotifier.value}");
-                    AutoRouter.of(context).push(
-                      SearchResultsRoute(
-                        searchInput: searchInputNotifier.value,
-                        sortInput: filterController.text,
-                        soldItems: soldItemCheckbox,
-                        priceRange: currentPriceRange,
-                      ),
-                    );
-                  },
-                  leading: const Icon(Icons.search),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(builder:
-                                (BuildContext context,
-                                    StateSetter setModalState) {
-                              return Container(
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: DefaultTextStyle(
-                                    style: myTextStyles.defaultText,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        CheckboxListTile(
-                                          title: Text("Finished Items"),
-                                          activeColor: secondaryColor,
-                                          checkColor: primaryColor,
-                                          value: soldItemCheckbox,
-                                          onChanged: (bool? value) {
-                                            setModalState(() {
-                                              soldItemCheckbox = value!;
-                                            });
-                                          },
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              right: 16.0, left: 16.0),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                flex: 2,
-                                                child: Text(
-                                                  'Price Range',
-                                                  style: TextStyle(
-                                                      color: Colors.black),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: RangeSlider(
-                                                  values: currentPriceRange,
-                                                  max: 50,
-                                                  divisions: 50,
-                                                  labels: RangeLabels(
-                                                    "£ ${currentPriceRange.start.round().toString()}",
-                                                    "£ ${currentPriceRange.end.round().toString()}",
-                                                  ),
-                                                  onChanged:
-                                                      (RangeValues values) {
-                                                    setModalState(() {
-                                                      currentPriceRange =
-                                                          values;
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          child: const Text('Apply'),
-                                          style: standardButton,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            AutoRouter.of(context).push(
-                                              SearchResultsRoute(
-                                                searchInput: searchInputNotifier.value,
-                                                sortInput:
-                                                    filterController.text,
-                                                soldItems: soldItemCheckbox,
-                                                priceRange: currentPriceRange,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, right: 8.0, left: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back_ios_rounded, size: 30),
+                          onPressed: () {
+                            print("back");
+                            AutoRouter.of(context).pop();
                           },
-                        );
-                      },
-                      child: Text(
-                        "Filter",
-                        style: myTextStyles.fadedText,
+                        ),
                       ),
-                    ),
-                    DefaultTextStyle(
-                      style: myTextStyles.fadedText,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          //Matches dropdown width to button width
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: filterController.text,
-                              // Set the initial value
-                              onChanged: (String? newValue) {
-                                if (newValue != null) {
-                                  //Use searchInput along with Sort value to push a new page
-                                  print(
-                                      "Currently on: ${filterController.text}");
-                                  if (filterController.text != newValue) {
-                                    filterController.text =
-                                        newValue; // Update the controller value
-                                    print(
-                                        "Filtering by : ${filterController.text}");
-                                    AutoRouter.of(context).push(
-                                      SearchResultsRoute(
-                                        searchInput: searchInputNotifier.value,
-                                        sortInput: filterController.text,
-                                        soldItems: soldItemCheckbox,
-                                        priceRange: currentPriceRange,
-                                      ),
-                                    );
-                                  }
-                                }
+                      Expanded(
+                        flex: 8,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                          child: Transform.scale(
+                            scale: 0.9,
+                            child: SearchBar(
+                              controller: searchInputController,
+                              onChanged: (query){
+                                searchInputNotifier.value = query;
                               },
-                              items: <String>[
-                                'Sort (Default)',
-                                'Ending Soonest',
-                                'Cheapest Tickets',
-                                'Most Sold',
-                                'Most Viewed'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(value,
-                                          style: myTextStyles.fadedText)),
+                              onSubmitted: (query) {
+                                AutoRouter.of(context).push(
+                                  SearchResultsRoute(
+                                    searchInput: searchInputNotifier.value,
+                                    sortInput: filterController.text,
+                                    soldItems: soldItemCheckbox,
+                                    priceRange: currentPriceRange,
+                                  ),
                                 );
-                              }).toList(),
-                              isDense: true,
-                              iconSize: 0.0, // Set the icon size to 0
+                              },
+                              leading: const Icon(Icons.search),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 1,
+                        child: Container(), // Empty container for the remaining space
+                      ),
+                    ],
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return StatefulBuilder(builder:
+                                  (BuildContext context,
+                                      StateSetter setModalState) {
+                                return Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: DefaultTextStyle(
+                                      style: myTextStyles.defaultText,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          CheckboxListTile(
+                                            title: Text("Finished Items"),
+                                            activeColor: secondaryColor,
+                                            checkColor: primaryColor,
+                                            value: soldItemCheckbox,
+                                            onChanged: (bool? value) {
+                                              setModalState(() {
+                                                soldItemCheckbox = value!;
+                                              });
+                                            },
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 16.0, left: 16.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    'Price Range',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  flex: 2,
+                                                  child: RangeSlider(
+                                                    values: currentPriceRange,
+                                                    max: 50,
+                                                    divisions: 50,
+                                                    labels: RangeLabels(
+                                                      "£ ${currentPriceRange.start.round().toString()}",
+                                                      "£ ${currentPriceRange.end.round().toString()}",
+                                                    ),
+                                                    onChanged:
+                                                        (RangeValues values) {
+                                                      setModalState(() {
+                                                        currentPriceRange =
+                                                            values;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            child: const Text('Apply'),
+                                            style: standardButton,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              AutoRouter.of(context).push(
+                                                SearchResultsRoute(
+                                                  searchInput: searchInputNotifier.value,
+                                                  sortInput:
+                                                      filterController.text,
+                                                  soldItems: soldItemCheckbox,
+                                                  priceRange: currentPriceRange,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
+                            },
+                          );
+                        },
+                        child: Text(
+                          "Filter",
+                          style: myTextStyles.fadedText,
+                        ),
+                      ),
+                      DefaultTextStyle(
+                        style: myTextStyles.fadedText,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: ButtonTheme(
+                            alignedDropdown: true,
+                            //Matches dropdown width to button width
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: filterController.text,
+                                // Set the initial value
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    //Use searchInput along with Sort value to push a new page
+                                    print(
+                                        "Currently on: ${filterController.text}");
+                                    if (filterController.text != newValue) {
+                                      filterController.text =
+                                          newValue; // Update the controller value
+                                      print(
+                                          "Filtering by : ${filterController.text}");
+                                      AutoRouter.of(context).push(
+                                        SearchResultsRoute(
+                                          searchInput: searchInputNotifier.value,
+                                          sortInput: filterController.text,
+                                          soldItems: soldItemCheckbox,
+                                          priceRange: currentPriceRange,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                                items: <String>[
+                                  'Sort (Default)',
+                                  'Ending Soonest',
+                                  'Cheapest Tickets',
+                                  'Most Sold',
+                                  'Most Viewed'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text(value,
+                                            style: myTextStyles.fadedText)),
+                                  );
+                                }).toList(),
+                                isDense: true,
+                                iconSize: 0.0, // Set the icon size to 0
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
