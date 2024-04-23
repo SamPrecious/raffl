@@ -15,9 +15,20 @@ class AccessAuth {
         email: email,
         password: password,
       );
+      print("Logging user IN");
+
+      final User? user = FirebaseAuth.instance.currentUser;
+
+      if (user != null) {
+        print('Logged in user is ${user.email}');
+      } else {
+        print('No user is currently logged in.');
+      }
+
+
       await userDetails;
       await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
-
+      return true;
       /*
       if (!userDetails.user!.emailVerified) { //Sign out and show error if not verified
         await FirebaseAuth.instance.signOut();
@@ -47,6 +58,8 @@ class AccessAuth {
         email: email,
         password: password,
       );
+      print("Registering User");
+
       await userDetails;
       /*
       await userDetails.user!.sendEmailVerification(); //Sends email verification to user

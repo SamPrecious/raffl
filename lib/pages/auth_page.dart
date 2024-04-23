@@ -25,7 +25,6 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
-    //Calls the
     return AuthWidget(onResult: widget.onResult, onClickedSwapState: toggleLogin, login: isLogin);
   }
 

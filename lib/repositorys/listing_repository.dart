@@ -165,7 +165,8 @@ class ListingRepository extends GetxController {
 
   Future<ListingModel?> selectListing(List<ListingModel> listings, List<String> blacklist) async {
 
-    //We manually filter out listings on our blacklist, as it doesn't seem to like Querying on the documentID AND the other filters at the same time 'An error occured while parsing query arguments'
+    //We manually filter out listings on our blacklist,
+    //as it doesn't seem to like Querying on the documentID AND the other filters at the same time
     listings = listings.where((listing) => !blacklist.contains(listing.documentID)).toList();
 
     print("Filtered listings: ${listings}");

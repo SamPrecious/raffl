@@ -7,7 +7,6 @@ import 'package:raffl/models/listing_model.dart';
 import 'package:raffl/routes/app_router.gr.dart';
 import 'package:raffl/styles/colors.dart';
 import 'package:raffl/widgets/listing_result_widget.dart';
-import 'package:raffl/widgets/listing_results_list_widget.dart';
 
 @RoutePage()
 class WatchingPage extends StatefulWidget {

@@ -34,7 +34,6 @@ class _ListingResultTimerWidgetState extends State<ListingResultTimerWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: containerColor,
-
       child: Padding(
         padding: const EdgeInsets.only(left: 4.0, right: 4.0),
         child: Align(

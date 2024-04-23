@@ -172,7 +172,6 @@ class ListingResultWidget extends StatelessWidget  {
                     ),
                   ),
                 ),
-                //Countdown widget taking up 25% width
                 if (includeTimer == true) ... [ //Optional as we don't include it on our wins page, as its always already over
                   Flexible(
                     fit: FlexFit.tight, // change this from loose to tight

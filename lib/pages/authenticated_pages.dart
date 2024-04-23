@@ -29,7 +29,6 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
             Expanded(child: const AutoRouter()),
             //TODO Change icons to custom icons
             BottomNavigationBar(
-
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: secondaryColor,
                 selectedItemColor: tertiaryColor,
@@ -75,7 +74,6 @@ class _AuthenticatedPagesState extends State<AuthenticatedPages> {
                         AutoRouter.of(context).popAndPush(SellingRoute(ongoing: true));
                       }
                       break;
-
                   }
                 },
                 items: <BottomNavigationBarItem>[

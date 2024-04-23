@@ -95,7 +95,6 @@ class _SearchResultsPageState extends State<SearchResultsPage> {
                     ],
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.1),
                   child: Row(

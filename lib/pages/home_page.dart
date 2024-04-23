@@ -34,10 +34,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     homepageFutures = recentlyViewedController.getHomepageResults();
-    //recentlyViewedFuture = ;
-
-    //recentlyViewedFuture = homepageFutures[0];
-    //recommendedFuture = userDataController.getRecommendations
   }
 
   @override

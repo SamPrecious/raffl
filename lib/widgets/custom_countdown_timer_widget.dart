@@ -38,7 +38,6 @@ CustomCountdownTimer({required this.endTime, this.lessThanHour, this.timesUp});
               return Text('${endTime.min}m${endTime.sec != 0 ? ', ${endTime.sec}s' : ''}');
             }
             else{
-              //TODO ADD HERE:
               return Text('${endTime.sec}s');
             }
           }

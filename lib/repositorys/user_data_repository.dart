@@ -77,12 +77,11 @@ class UserDataRepository extends GetxController {
     return 2;
   }
 
-  //Construct a list of 3 recommendations relevant to the users interest
+  //Construct a list of 4 recommendations relevant to the users interest
   Future<List<ListingModel>> getRecommendations(List<String>? recentlyViewed) async{
     int recommendationsLength = 4; //Modify this as you wish
-    print("The recommendations");
     Map<String, dynamic>? currentUserPreferences = await getUserPreferences();
-    List<String> blacklist = []; //A blacklist of things we dont want
+    List<String> blacklist = []; //A blacklist of things we don't want
     if(recentlyViewed != null){
       for(String listing in recentlyViewed){
         blacklist.add(listing); //Recently viewed listings already on home page, so we don't want to see them again
@@ -97,26 +96,29 @@ class UserDataRepository extends GetxController {
       int totalRange = 0;
       for (var entry in integerPreferencesMap.entries) {
         int multiplier = entry.value;
+        //Each preference represents part of the
         totalRange += multiplier;
       }
 
       while(integerPreferencesMap.length > 0 && recommendationsList.length < recommendationsLength){
         print("Total range: ${totalRange}");
         Random random = new Random();
+        //Random number corresponding to a preference we have is selected
         int randomTagNum = random.nextInt(totalRange);
         print(randomTagNum);
         int currentRange = 0;
+
         for (var entry in integerPreferencesMap.entries) {
           int multiplier = entry.value;
           currentRange += multiplier;
-          print("Cur Range: ${currentRange}");
+          //Calculate what preference our current random number is pointing to
           if(randomTagNum < currentRange){
             String selectedTag = entry.key;
-            print("Our random tag is: ${selectedTag}");
+
+            //Remove current tag and its range from the preferences so we don't select it again
             integerPreferencesMap.remove(selectedTag);
-            print("new integerPreferencesMap ${integerPreferencesMap}");
             totalRange -= multiplier;
-            //TODO select a random search result with this tag that ISN'T in recentlyViewed AND hasn't been selected yet. Add it to recommendations
+            //Gets a listing with the corresponding tag that is NOT blacklisted
             ListingModel? randomListing = await listingRepository.getRecommendedListingByTag(selectedTag, blacklist);
             if(randomListing != null){
               recommendationsList.add(randomListing);
@@ -127,8 +129,7 @@ class UserDataRepository extends GetxController {
         }
       }
     }
-
-    print("We have got the recommended listings: ${recommendationsList}");
+    //If we still need to fill space in the recommendations but haven't yet, select random listings as follows
     while(recommendationsList.length < recommendationsLength){
       ListingModel? randomListing = await listingRepository.getRecommendListingRandom(blacklist);
       if(randomListing != null){
@@ -136,8 +137,6 @@ class UserDataRepository extends GetxController {
         blacklist.add(randomListing.getDocumentID()); //To avoid re-selecting the same listing
       }
     }
-
-    print("Final recommended listings: ${recommendationsList}");
     return recommendationsList;
   }
 
@@ -201,15 +200,7 @@ class UserDataRepository extends GetxController {
 
   Future<void> updateRecentlyViewed(String listingID) async{
     final recentlyViewed = await getRecentlyViewed();
-    /*
-    We want the most recent 2 listings SO:
-    IF(item doesnt exist)
-      Add item to front of array
-      remove last item if >2
-    IF item exists
-      IF item at front do nothing
-      IF item at back, swap order
-     */
+
     if(recentlyViewed != null){
       print("Recently viewed exists");
       List<String> newRecentlyViewed = List.from(recentlyViewed);
@@ -235,12 +226,8 @@ class UserDataRepository extends GetxController {
           arrayChanged = true;
         }
       }
-      print("Old recently viewed: ${recentlyViewed}");
-      print("New recently viewed: ${newRecentlyViewed}");
-
       if(arrayChanged == true){
         //replace collection with new array
-        print("Replacing recently viewed");
         await db.collection("UserData").doc(FirebaseAuth.instance.currentUser!.uid).update({
           'RecentlyViewed': newRecentlyViewed
         });
