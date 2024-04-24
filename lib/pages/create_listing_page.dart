@@ -6,6 +6,7 @@ import 'package:raffl/styles/colors.dart';
 import 'package:raffl/styles/standard_button.dart';
 import 'package:raffl/styles/text_styles.dart';
 import 'package:raffl/widgets/mandatory_input_widget.dart';
+import 'package:raffl/widgets/small_mandatory_input_widget.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 import 'package:image_picker/image_picker.dart';
 import '../controllers/listing_controller.dart';
@@ -13,6 +14,8 @@ import '../models/listing_model.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+import '../routes/app_router.gr.dart';
 
 @RoutePage()
 class CreateListingPage extends StatefulWidget {
@@ -312,13 +315,10 @@ class _CreateListingPageState extends State<CreateListingPage> {
                           ],
                         ),
                         SizedBox(height: 10),
-                        FractionallySizedBox(
-                          widthFactor: 0.5,
-                          child: MandatoryInputWidget(
-                            label: "Ticket Price",
-                            textEditingController: listingPriceController,
-                            textInputType: TextInputType.number,
-                          ),
+                        SmallMandatoryInputWidget(
+                          label: "Ticket Price",
+                          textEditingController: listingPriceController,
+                          textInputType: TextInputType.number,
                         ),
                         SizedBox(height: 10),
                         ElevatedButton.icon(
@@ -332,7 +332,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                                 return;
                               }
                               int timeIncrement = int.parse(listingEndController.text[0]);
-                              //TODO revert to days after
+                              //Note: Normally days, but sometimes set to minutes for debugging purposes
                               DateTime newTime = new DateTime.now().add(Duration(days: timeIncrement));
                               int timestampInSeconds = newTime.millisecondsSinceEpoch;
                               print("Creating listing with timestamp: ${timestampInSeconds}");
@@ -351,7 +351,7 @@ class _CreateListingPageState extends State<CreateListingPage> {
                               );
                               print("Creating Listing");
                               Get.put(ListingController()).createListing(listing);
-                              AutoRouter.of(context).pop();
+                              AutoRouter.of(context).popAndPush(SellingRoute(ongoing: true));
                             }else{
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(

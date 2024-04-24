@@ -203,7 +203,6 @@ class ListingRepository extends GetxController {
   }
 
   Future<List<ListingModel>> getWins(String userID) async {
-    //AlgoliaQuery query = algolia.instance.index('listings_index').query("");
     final snapshot = await db.collection("Listings").where('Winner', isEqualTo: userID).get();
     final listing = snapshot.docs.map((e) => ListingModel.fromFirestore(e, 0)).toList();
     return listing;
