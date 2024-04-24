@@ -20,6 +20,7 @@ class InboxPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
         body: SafeArea(
             child: Column(children: [
       TitleHeaderWidget(title: 'Inbox'),
@@ -33,7 +34,7 @@ class InboxPage extends StatelessWidget {
                     snapshot.data as List<NotificationModel>;
                 int outputLength = outputList.length;
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
                   child: ListView.builder(
                       itemCount: outputLength,
                       itemBuilder: (context, index) {
