@@ -639,6 +639,8 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                       ] else ...[
                                                         Text(
                                                             "Item has been shipped"),
+                                                        Text("Courier: ${listing.getShippingDetails()!.getCourier()}"),
+                                                        Text("Tracking Number: ${listing.getShippingDetails()!.getTrackingNumber()}"),
                                                         ElevatedButton(
                                                           style: standardButton,
                                                           onPressed: () async {
