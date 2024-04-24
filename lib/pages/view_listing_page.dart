@@ -297,13 +297,16 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                   MainAxisSize
                                                                       .min,
                                                               children: [
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
+                                                                Text(
+                                                                    'Credits: $userCredits',
+                                                                  style: TextStyle(
+                                                                    color:
+                                                                    secondaryColor,
+                                                                    fontSize: 16,
+                                                                  ),
                                                                 ),
                                                                 Container(
-                                                                  width: MediaQuery.of(context).size.width * 0.3,
+                                                                  width: MediaQuery.of(context).size.width * 0.4,
                                                                   child: TextFormField(
                                                                     textAlign: TextAlign.center,
 
@@ -342,14 +345,14 @@ class _ViewListingPageState extends State<ViewListingPage> {
                                                                               null ||
                                                                           number <=
                                                                               0) {
-                                                                        return 'Please enter a valid number of tickets';
+                                                                        return 'Invalid number';
                                                                       } else {
                                                                         int totalCost =
                                                                             listing.getTicketPrice() *
                                                                                 number;
                                                                         if (userCredits <
                                                                             totalCost) {
-                                                                          return 'You do not have enough credits';
+                                                                          return 'Needs ${totalCost-userCredits} more credits';
                                                                         }
                                                                       }
                                                                       return null;
