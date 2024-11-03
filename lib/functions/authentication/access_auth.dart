@@ -26,10 +26,10 @@ class AccessAuth {
       }
 
 
-      await userDetails;
-      await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
-      return true;
-      /*
+      //await userDetails;
+      //await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
+      //return true;
+
       if (!userDetails.user!.emailVerified) { //Sign out and show error if not verified
         await FirebaseAuth.instance.signOut();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +42,7 @@ class AccessAuth {
       else{ //Login successful
         await PushNotificationController().initNotifications(); //Call this on every login in-case token changes
         return true;
-      }*/
+      }
 
     } on FirebaseAuthException catch (e) {
       print(e);
@@ -61,13 +61,13 @@ class AccessAuth {
       print("Registering User");
 
       await userDetails;
-      /*
+
       await userDetails.user!.sendEmailVerification(); //Sends email verification to user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Awaiting email verification.'),
         ),
-      );*/
+      );
     } on FirebaseAuthException catch (e) {
       print(e);
       showFlashError(context, e.message);
